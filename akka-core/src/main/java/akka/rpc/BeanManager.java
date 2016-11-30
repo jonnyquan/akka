@@ -51,7 +51,7 @@ public class BeanManager extends InstantiationAwareBeanPostProcessorAdapter {
         return bean;
     }
 
-    public void checkAkkaRpcRef(Object bean, Field field) {
+    private void checkAkkaRpcRef(Object bean, Field field) {
         try {
             field.setAccessible(true);
             field.set(bean, akkaInitFactory.getBean(field.getType()));
@@ -60,7 +60,7 @@ public class BeanManager extends InstantiationAwareBeanPostProcessorAdapter {
         }
     }
 
-    public void checkActorRef(Object bean, Field field, ActorRef actorRef) {
+    private void checkActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
             field.setAccessible(true);
             AskHandle handle = null;
