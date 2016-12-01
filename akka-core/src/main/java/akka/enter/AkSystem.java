@@ -4,14 +4,10 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterActor;
-import akka.actors.RpcServerActor;
-import akka.msg.Constant;
 import akka.params.AskHandle;
 import akka.params.RegisterBean;
-import akka.rpc.ProxyIntecept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cglib.proxy.Enhancer;
 
 /**
  * 系统初始化时候   生成MsgSenderWrapper之前必须要先进行 @prepareLoadAdd (集群状态初始化等待 以及路由模式地址生成后的某种等待。。暂时找不到原因)
@@ -25,7 +21,6 @@ public class AkSystem {
 
     private AddressContex addressContex = new AddressContex();
 
-    private ActorRef rpcActor;
 
     private ActorRef clusterActor;
 
@@ -33,28 +28,14 @@ public class AkSystem {
     /**
      * @param system
      * @param withCluster            启动集群监听
-     * @param applicationContextUtil
      */
-    public AkSystem(ActorSystem system, Boolean withCluster, Boolean rpcServerProvider, SpringContextUtil applicationContextUtil) {
+    public AkSystem(ActorSystem system, Boolean withCluster) {
         this.system = system;
         if (withCluster) {
             clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContex));
         }
-        if (rpcServerProvider) {
-            system.actorOf(Props.create(RpcServerActor.class, applicationContextUtil), Constant.RPC_PATH);
-        }
     }
 
-    public Object getBean(Class clazzInterface) {
-        //对象可以交于spring托管
-        if (rpcActor == null) {
-            rpcActor = addressContex.getRoutActor(getSystem(), Constant.RPC_PATH);
-        }
-        Enhancer enhancer = new Enhancer();
-        enhancer.setCallback(new ProxyIntecept(clazzInterface, rpcActor));
-        enhancer.setSuperclass(clazzInterface);
-        return enhancer.create();
-    }
 
     /**
      * 生成给

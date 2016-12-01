@@ -38,8 +38,6 @@ public class AkkaInitFactory {
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
-    @Autowired
-    private SpringContextUtil springContextUtil;
 
     public AkkaInitFactory() {
         init();
@@ -90,18 +88,14 @@ public class AkkaInitFactory {
         return Optional.ofNullable(classes);
     }
 
-    private AkSystem createSystem(String systemName, SpringContextUtil applicationContextUtil) {
-        return createSystem(systemName, true, true, applicationContextUtil);
+    private AkSystem createSystem(String systemName) {
+        return createSystem(systemName, true);
     }
 
     private AkSystem createSystem(String systemName, Boolean withCluster) {
-        return createSystem(systemName, withCluster, false, null);
-    }
-
-    private AkSystem createSystem(String systemName, Boolean withCluster, Boolean withRpc, SpringContextUtil applicationContextUtil) {
         Config config = ConfigFactory.load();
         ActorSystem system = ActorSystem.create(systemName, config);
-        AkSystem akSystem = new AkSystem(system, withCluster, withRpc, applicationContextUtil);
+        AkSystem akSystem = new AkSystem(system, withCluster);
         //在节点监听还未成功建立前阻塞消息
         Cluster.get(system).registerOnMemberUp(() ->
                 countDownLatch.countDown()
@@ -117,9 +111,6 @@ public class AkkaInitFactory {
         return akSystem;
     }
 
-    public Object getBean(Class clazzInterface) {
-        return akSystem.getBean(clazzInterface);
-    }
 
     /**
      * @param name 该路径与接收消息短的 @actor name保持一致
