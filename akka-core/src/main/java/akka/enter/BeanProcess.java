@@ -1,25 +1,23 @@
-package akka.rpc;
+package akka.enter;
 
 import akka.anntations.ActorRef;
-import akka.enter.AkkaInitFactory;
 import akka.params.AskHandle;
 import akka.params.DefaultAskHandle;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
-import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Field;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/10.
  */
-@Service
-public class BeanManager extends InstantiationAwareBeanPostProcessorAdapter {
+public class BeanProcess extends InstantiationAwareBeanPostProcessorAdapter {
 
-    @Autowired
     private AkkaInitFactory akkaInitFactory;
 
+    public BeanProcess(AkkaInitFactory akkaInitFactory) {
+        this.akkaInitFactory = akkaInitFactory;
+    }
 
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {

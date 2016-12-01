@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
  */
-public abstract class MsgSenderWrapper {
+public abstract class AbstractSenderWrapper implements Sender{
 
-    private static final Logger logger = LoggerFactory.getLogger(MsgSenderWrapper.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSenderWrapper.class);
 
 
     private ActorRef sender;
@@ -28,7 +28,7 @@ public abstract class MsgSenderWrapper {
     private AddressContex addressContex;
 
 
-    protected MsgSenderWrapper(String gettersKey, AddressContex addressContex, ActorSystem system) {
+    protected AbstractSenderWrapper(String gettersKey, AddressContex addressContex, ActorSystem system) {
         this.sender = addressContex.getSender(system, gettersKey);
         this.gettersKey = gettersKey;
         this.system = system;
@@ -57,6 +57,7 @@ public abstract class MsgSenderWrapper {
         return system;
     }
 
+    @Override
     public Object sendMsg(Message message) {
         return handleMsg(message, false);
     }
@@ -66,6 +67,7 @@ public abstract class MsgSenderWrapper {
      * @param ifCluster false 默认 路由模式 单条消息发送   true 集群模式 一对多发送
      * @return
      */
+    @Override
     public Object sendMsg(Message message, Boolean ifCluster) {
         return handleMsg(message, ifCluster);
     }

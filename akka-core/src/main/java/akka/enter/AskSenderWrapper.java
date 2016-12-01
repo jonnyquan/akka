@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
  */
-public class AskSenderWrapper<S, R> extends MsgSenderWrapper {
+public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     private final Long time = 5000l;

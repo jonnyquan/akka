@@ -67,7 +67,7 @@ public class AkSystem {
      * @param name
      * @return
      */
-    public MsgSenderWrapper createTellMsgWrapper(final String name) {
+    public AbstractSenderWrapper createTellMsgWrapper(final String name) {
         return new TellSenderWrapper(
                 name,
                 addressContex,
@@ -84,7 +84,7 @@ public class AkSystem {
      * @param askHandle
      * @return
      */
-    public MsgSenderWrapper createAskMsgWrapper(final String name, AskHandle<?, ?> askHandle) {
+    public AbstractSenderWrapper createAskMsgWrapper(final String name, AskHandle<?, ?> askHandle) {
         return new AskSenderWrapper<>(
                 name,
                 addressContex,

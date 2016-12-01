@@ -9,9 +9,9 @@ import akka.params.AskHandle;
  */
 public class MsgGun implements MsgSender {
 
-    private MsgSenderWrapper askWrapper;
+    private Sender askWrapper;
 
-    private MsgSenderWrapper tellWrapper;
+    private Sender tellWrapper;
 
 
     public MsgGun(String name, AkSystem akSystem, AskHandle askHandle) {

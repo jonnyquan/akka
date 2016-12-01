@@ -11,9 +11,18 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Actor {
+
     String name();
 
+    /**
+     * rout模式下的路由策略
+     * @return
+     */
     PoolType pool() default PoolType.ROUBIN;
 
+    /**
+     * 对第二个参数的补充数量
+     * @return
+     */
     int number() default 1;
 }

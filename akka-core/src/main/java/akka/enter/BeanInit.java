@@ -9,8 +9,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanInit {
 
+    private AkkaInitFactory akkaInitFactory;
+
     @Bean
     public AkkaInitFactory akkaInit(){
-        return new AkkaInitFactory();
+       this.akkaInitFactory = new AkkaInitFactory();
+        return akkaInitFactory;
+    }
+
+    @Bean
+    public BeanProcess beanManager(){
+        return new BeanProcess(akkaInitFactory);
     }
 }

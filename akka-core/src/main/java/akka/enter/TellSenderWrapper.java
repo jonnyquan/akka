@@ -7,7 +7,7 @@ import akka.msg.Message;
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
  */
-public class TellSenderWrapper extends MsgSenderWrapper {
+public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
     public TellSenderWrapper(String name, AddressContex addressContex, ActorSystem system) {
