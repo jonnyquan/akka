@@ -1,4 +1,4 @@
-package akka.anntations;
+package akka.annotations;
 
 
 import akka.params.AskHandle;

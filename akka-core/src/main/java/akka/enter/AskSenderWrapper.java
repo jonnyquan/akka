@@ -3,6 +3,7 @@ package akka.enter;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.dispatch.*;
+import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskHandle;
 import akka.params.CutParam;
@@ -35,8 +36,8 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     @Override
-    public Object handleMsg(Message message, Boolean ifCluster) {
-        List<ActorRef> actorRefs = getGetters(ifCluster);
+    public Object handleMsg(Message message, TransferType transferType) {
+        List<ActorRef> actorRefs = getGetters(transferType);
         if (actorRefs == null) {
             return null;
         }

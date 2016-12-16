@@ -1,6 +1,7 @@
-package akka.enter;
+package akka;
 
-import akka.anntations.ActorRef;
+import akka.annotations.ActorRef;
+import akka.enter.AkkaInitFactory;
 import akka.params.AskHandle;
 import akka.params.DefaultAskHandle;
 import org.springframework.beans.BeansException;
@@ -11,12 +12,16 @@ import java.lang.reflect.Field;
 /**
  * Created by ruancl@xkeshi.com on 16/11/10.
  */
-public class BeanProcess extends InstantiationAwareBeanPostProcessorAdapter {
+public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapter {
 
-    private AkkaInitFactory akkaInitFactory;
+    private AkkaInit akkaInitFactory;
 
-    public BeanProcess(AkkaInitFactory akkaInitFactory) {
-        this.akkaInitFactory = akkaInitFactory;
+    public AkkaProcessHandler() {
+        this.akkaInitFactory = new AkkaInit();
+    }
+
+    public AkkaInitFactory getAkkaInitFactory() {
+        return akkaInitFactory;
     }
 
     @Override

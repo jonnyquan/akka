@@ -1,14 +1,13 @@
 package test;
 
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import akka.enter.AkkaInitFactory;
 
 /**
- * Created by ruancl@xkeshi.com on 16/11/16.
+ * Created by ruancl@xkeshi.com on 2016/12/15.
  */
 public class Main {
-    public static void main(String[] args) {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+    public static void main(String[] args) {
+        AkkaInitFactory akkaInitFactory = new AkkaInitFactory();
     }
 }

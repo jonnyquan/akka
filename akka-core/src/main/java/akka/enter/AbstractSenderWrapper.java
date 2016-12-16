@@ -2,8 +2,8 @@ package akka.enter;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.enums.TransferType;
 import akka.msg.Message;
-import com.xkeshi.core.utils.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,12 +40,12 @@ public abstract class AbstractSenderWrapper implements Sender{
         return sender;
     }
 
-    protected List<ActorRef> getGetters(Boolean ifCluster) {
-        if (!ifCluster) {
+    protected List<ActorRef> getGetters(TransferType transferType) {
+        if (transferType == TransferType.ROUTER) {
             return Arrays.asList(addressContex.getRoutActor(system, gettersKey));
         }
         List<ActorRefMap> maps = addressContex.getActorRefs(gettersKey);
-        if (CollectionUtils.isEmpty(maps)) {
+        if (maps==null || maps.size()==0) {
             System.out.println("暂无可用客户端接收消息");
             logger.info("暂无可用客户端接收消息");
             return null;
@@ -59,19 +59,18 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     @Override
     public Object sendMsg(Message message) {
-        return handleMsg(message, false);
+        return handleMsg(message, TransferType.ROUTER);
     }
 
     /**
      * @param message
-     * @param ifCluster false 默认 路由模式 单条消息发送   true 集群模式 一对多发送
      * @return
      */
     @Override
-    public Object sendMsg(Message message, Boolean ifCluster) {
-        return handleMsg(message, ifCluster);
+    public Object sendMsg(Message message, TransferType transferType) {
+        return handleMsg(message, transferType);
     }
 
 
-    protected abstract Object handleMsg(Message message, Boolean ifCluster);
+    protected abstract Object handleMsg(Message message, TransferType transferType);
 }

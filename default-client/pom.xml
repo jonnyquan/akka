@@ -9,13 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>demon-client</artifactId>
-
+    <artifactId>default-client</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>com.xkeshi</groupId>
-            <artifactId>akka-spring</artifactId>
+            <artifactId>akka-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

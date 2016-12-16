@@ -1,5 +1,7 @@
 package akka.enter;
 
+import akka.enums.RequestType;
+import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskHandle;
 
@@ -19,30 +21,23 @@ public class MsgGun implements MsgSender {
         this.tellWrapper = akSystem.createTellMsgWrapper(name);
     }
 
-
     /**
-     * 默认使用tell方式的  rout模式
-     *
      * @param message
      * @return
      */
     @Override
-    public Object sendMsg(Message message) {
-        return sendMsg(message, false, false);
-    }
-
-    /**
-     * @param message
-     * @param ifAsk     消息类型 ask  tell
-     * @param ifCluster true为群发  false为路由模式单发
-     * @return
-     */
-    @Override
-    public Object sendMsg(Message message, Boolean ifAsk, Boolean ifCluster) {
-        if (ifAsk) {
-            return askWrapper.sendMsg(message, ifCluster);
-        } else {
-            return tellWrapper.sendMsg(message, ifCluster);
+    public Object sendMsg(Message message, RequestType requestType, TransferType transferType) {
+        Sender sender;
+        switch (requestType){
+            case TELL:
+                sender = tellWrapper;
+                break;
+            case ACK:
+                sender = askWrapper;
+                break;
+            default:
+                throw new IllegalArgumentException("未知的发送类型");
         }
+        return sender.sendMsg(message,transferType);
     }
 }

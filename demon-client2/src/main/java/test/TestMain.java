@@ -1,9 +1,7 @@
 package test;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import akka.enter.AkkaInitFactory;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/16.
@@ -11,23 +9,14 @@ import java.util.Map;
 public class TestMain {
 
     public static void main(String[] args) {
-        Map<String, List<Integer>> map = new HashMap<>();
-        map.put("a", Arrays.asList(1));
-        A a = new A(map.get("a"));
-        a.hello();
-        map.put("a", Arrays.asList(1, 2));
-        a.hello();
+       /* try {
+            Class clazz = Class.forName("test.TestActor");
+            System.out.println(clazz);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }*/
+        AkkaInitFactory akkaInitFactory = new AkkaInitFactory();
     }
 
-    static class A {
-        private List<Integer> list;
 
-        public A(List<Integer> list) {
-            this.list = list;
-        }
-
-        public void hello() {
-            System.out.println(list.size());
-        }
-    }
 }

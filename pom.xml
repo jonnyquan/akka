@@ -13,6 +13,9 @@
         <module>demon-server</module>
         <module>demon-client</module>
         <module>demon-client2</module>
+        <module>default-client</module>
+        <module>default-server</module>
+        <module>akka-spring</module>
     </modules>
 
     <build>

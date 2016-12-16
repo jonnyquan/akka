@@ -1,6 +1,7 @@
 package akka.enter;
 
 import akka.actor.ActorSystem;
+import akka.enums.TransferType;
 import akka.msg.Message;
 
 
@@ -15,7 +16,7 @@ public class TellSenderWrapper extends AbstractSenderWrapper {
     }
 
     @Override
-    public Object handleMsg(Message message, Boolean ifCluster) {
+    public Object handleMsg(Message message, TransferType ifCluster) {
         getGetters(ifCluster).forEach(o -> o.tell(message, getSender()));
         return null;
     }

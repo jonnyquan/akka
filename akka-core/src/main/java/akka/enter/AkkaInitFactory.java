@@ -12,16 +12,9 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.io.support.ResourcePatternResolver;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.core.type.classreading.MetadataReaderFactory;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
 
-import java.io.IOException;
+import java.io.File;
+import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,6 +36,8 @@ public class AkkaInitFactory {
         init();
     }
 
+
+
     private void init() {
         this.akSystem = createSystem(Constant.SYSTEM_NAME, true);
         scanPackage().ifPresent(list ->
@@ -51,41 +46,37 @@ public class AkkaInitFactory {
                     logger.info("注册actor:{}成功", bean.getName());
                 }));
     }
-
-    private Optional<List<RegisterBean>> scanPackage() {
-        List<RegisterBean> classes = new ArrayList();
-        ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
-        try {
-            Resource[] resources = resourcePatternResolver.getResources(Constant.SCAN_PATH_PATTEN);
-
-            MetadataReaderFactory metadataReaderFactory =
-                    new CachingMetadataReaderFactory(new PathMatchingResourcePatternResolver());
-            AnnotationTypeFilter filter = new AnnotationTypeFilter(Actor.class);
-            for (Resource resource : resources) {
-                if (!resource.isReadable()) {
-                    continue;
-                }
-                MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
-                if (!filter.match(metadataReader, metadataReaderFactory)) {
-                    continue;
-                }
-                //将标记actor注解的类收集 注册到akkasystem
-                String className = metadataReader.getClassMetadata().getClassName();
-                Class clazz = Class.forName(className);
+    private void scanFile(File file,List<RegisterBean> classes){
+        if(file.isDirectory()){
+            for(File ff : file.listFiles(f->f.getName().endsWith(EXT) || f.isDirectory())){
+                scanFile(ff,classes);
+            }
+        }else{
+            try {
+                Class clazz = Class.forName(file.getAbsolutePath().replace(ROOT_PATH,"").replace(EXT,"").replace("/","."));
                 Actor actor = (Actor) clazz.getAnnotation(Actor.class);
+                if(actor == null){
+                    return;
+                }
                 if (clazz.getSuperclass() != AbstractActor.class) {
                     throw new IllegalArgumentException("无效的actor继承类型", new IllegalArgumentException());
                 }
                 classes.add(new RegisterBean(clazz, actor.name(), actor.pool().getPool(actor.number())));
+            } catch (ClassNotFoundException e) {
+                logger.error("扫描获取的类路径异常,找不对对应class");
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            logger.error("actor类资源读取io异常");
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            logger.error("扫描获取的类路径异常,找不对对应class");
-            e.printStackTrace();
         }
-        return Optional.ofNullable(classes);
+    }
+
+    private final String ROOT_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+    private final String EXT = ".class";
+
+    protected Optional<List<RegisterBean>> scanPackage() {
+        List<RegisterBean> classes = new ArrayList();
+        File file = new File(ROOT_PATH);
+        scanFile(file,classes);
+       return Optional.ofNullable(classes);
     }
 
     private AkSystem createSystem(String systemName) {

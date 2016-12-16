@@ -1,5 +1,7 @@
 package akka.enter;
 
+import akka.enums.RequestType;
+import akka.enums.TransferType;
 import akka.msg.Message;
 
 
@@ -9,18 +11,10 @@ import akka.msg.Message;
 public interface MsgSender {
 
     /**
-     * 默认使用tell方式的  rout模式
-     *
      * @param message
+     * @param requestType     消息类型 ack双工  tell单工
+     * @param transferType broadcast广播  router路由模式单发
      * @return
      */
-    Object sendMsg(Message message);
-
-    /**
-     * @param message
-     * @param ifAsk     消息类型 ask  tell
-     * @param ifCluster true为群发  false为路由模式单发
-     * @return
-     */
-    Object sendMsg(Message message, Boolean ifAsk, Boolean ifCluster);
+    Object sendMsg(Message message, RequestType requestType, TransferType transferType);
 }
