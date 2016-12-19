@@ -10,8 +10,6 @@ public class Constant {
 
     public final static String SYSTEM_NAME = "EsbSystem";
 
-    public final static String SCAN_PATH_PATTEN = "classpath:*/**/*.class";
-
     public final static Boolean WITH_CLUSTER = true;
 
 }

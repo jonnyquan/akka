@@ -1,8 +1,8 @@
 package akka.annotations;
 
 
-import akka.params.AskHandle;
-import akka.params.DefaultAskHandle;
+import akka.params.AskProcessHandler;
+import akka.params.DefaultAskProcessHandler;
 
 import java.lang.annotation.*;
 
@@ -24,6 +24,6 @@ public @interface ActorRef {
      * 支持自定义ask模式下面的handle  暂不支持带参构造函数  如需要带参数 请手动调用 @AkkaInitFactory.createMsgGun(name,handle)
      * @return
      */
-    Class<? extends AskHandle> askHandle() default DefaultAskHandle.class;
+    Class<? extends AskProcessHandler> askHandle() default DefaultAskProcessHandler.class;
 
 }

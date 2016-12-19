@@ -1,25 +1,27 @@
-package akka.enter;
+package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterActor;
-import akka.params.AskHandle;
+import akka.params.AskProcessHandler;
+import akka.params.DefaultAskProcessHandler;
 import akka.params.RegisterBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * 对akka的system简单包装 绑定了集群地址管理器AddressContext   已经集群检测actor
  * 系统初始化时候   生成MsgSenderWrapper之前必须要先进行 @prepareLoadAdd (集群状态初始化等待 以及路由模式地址生成后的某种等待。。暂时找不到原因)
  * <p>
  * Created by ruancl@xkeshi.com on 16/10/9.
  */
-public class AkSystem {
+public class AkkaSystem {
 
-    private static final Logger logger = LoggerFactory.getLogger(AkSystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(AkkaSystem.class);
     private final ActorSystem system;
 
-    private AddressContex addressContex = new AddressContex();
+    private AddressContext addressContext;
 
 
     private ActorRef clusterActor;
@@ -29,22 +31,23 @@ public class AkSystem {
      * @param system
      * @param withCluster            启动集群监听
      */
-    public AkSystem(ActorSystem system, Boolean withCluster) {
+    public AkkaSystem(ActorSystem system, Boolean withCluster) {
         this.system = system;
         if (withCluster) {
-            clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContex));
+            clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContext));
         }
+        this.addressContext = new AddressContext();
     }
 
 
     /**
-     * 生成给
+     * 接收方actor引用预加载
      *
      * @param name
      */
     public void prepareLoadAdd(String name) {
         //地址预加载
-        addressContex.prepareLoadAdd(system, name);
+        addressContext.prepareLoadAdd(system, name);
     }
 
     /**
@@ -53,7 +56,7 @@ public class AkSystem {
      * @param registerBean
      * @return
      */
-    public AkSystem register(RegisterBean registerBean) {
+    public AkkaSystem register(RegisterBean registerBean) {
         ActorRef ref = system.actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass())), registerBean.getName());
         logger.info("register actor:{}", ref.path());
         System.out.println("注册actor:" + ref.path() + "成功========================");
@@ -70,7 +73,7 @@ public class AkSystem {
     public AbstractSenderWrapper createTellMsgWrapper(final String name) {
         return new TellSenderWrapper(
                 name,
-                addressContex,
+                addressContext,
                 system);
     }
 
@@ -81,20 +84,37 @@ public class AkSystem {
      * (ask模式)
      *
      * @param name
-     * @param askHandle
+     * @param askProcessHandler
      * @return
      */
-    public AbstractSenderWrapper createAskMsgWrapper(final String name, AskHandle<?, ?> askHandle) {
+    public AbstractSenderWrapper createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler) {
         return new AskSenderWrapper<>(
                 name,
-                addressContex,
+                addressContext,
                 system,
-                askHandle);
+                askProcessHandler);
     }
 
 
     public ActorSystem getSystem() {
         return system;
+    }
+
+    /**
+     * @param name 该路径与接收消息短的 @actor name保持一致
+     */
+    public MsgSender createMsgGun(String name) {
+        return createMsgGun(name, new DefaultAskProcessHandler());
+    }
+
+    /**
+     * @param name
+     * @param askProcessHandler 自定义ask模式下的 对于请求的各种情况处理
+     * @return
+     */
+    public MsgSender createMsgGun(String name, AskProcessHandler<?, ?> askProcessHandler) {
+        this.prepareLoadAdd(name);
+        return new MsgGun(name, this, askProcessHandler);
     }
 
 }

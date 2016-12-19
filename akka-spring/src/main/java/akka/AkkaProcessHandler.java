@@ -1,9 +1,9 @@
 package akka;
 
 import akka.annotations.ActorRef;
-import akka.enter.AkkaInitFactory;
-import akka.params.AskHandle;
-import akka.params.DefaultAskHandle;
+import akka.core.AkkaSystem;
+import akka.params.AskProcessHandler;
+import akka.params.DefaultAskProcessHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 
@@ -11,17 +11,15 @@ import java.lang.reflect.Field;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/10.
+ *
+ * 将该对象配置入spring容器 akka随spring启动
  */
 public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapter {
 
-    private AkkaInit akkaInitFactory;
+    private AkkaSystem akkaSystem;
 
     public AkkaProcessHandler() {
-        this.akkaInitFactory = new AkkaInit();
-    }
-
-    public AkkaInitFactory getAkkaInitFactory() {
-        return akkaInitFactory;
+        this.akkaSystem = AkkaInit.InitAkkaSystem();
     }
 
     @Override
@@ -42,14 +40,14 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
     private void checkActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
             field.setAccessible(true);
-            AskHandle handle = null;
+            AskProcessHandler handle = null;
             Class handleClazz = actorRef.askHandle();
-            if (handleClazz == AskHandle.class) {
-                handle = new DefaultAskHandle();
+            if (handleClazz == AskProcessHandler.class) {
+                handle = new DefaultAskProcessHandler();
             } else {
-                handle = (AskHandle) handleClazz.newInstance();
+                handle = (AskProcessHandler) handleClazz.newInstance();
             }
-            field.set(bean, akkaInitFactory.createMsgGun(actorRef.name(), handle));
+            field.set(bean, akkaSystem.createMsgGun(actorRef.name(), handle));
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {

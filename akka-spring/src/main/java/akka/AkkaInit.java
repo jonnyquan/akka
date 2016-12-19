@@ -2,7 +2,7 @@ package akka;
 
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
-import akka.enter.AkkaInitFactory;
+import akka.main.AkkaMain;
 import akka.msg.Constant;
 import akka.params.RegisterBean;
 import org.slf4j.Logger;
@@ -23,16 +23,19 @@ import java.util.Optional;
 /**
  * Created by ruancl@xkeshi.com on 2016/12/15.
  */
-public class AkkaInit extends AkkaInitFactory {
+public class AkkaInit extends AkkaMain {
 
     private static final Logger logger = LoggerFactory.getLogger(AkkaInit.class);
+
+    public final static String SCAN_PATH_PATTEN = "classpath:*/**/*.class";
+
 
     @Override
     protected Optional<List<RegisterBean>> scanPackage() {
         List<RegisterBean> classes = new ArrayList();
         ResourcePatternResolver resourcePatternResolver = new PathMatchingResourcePatternResolver();
         try {
-            Resource[] resources = resourcePatternResolver.getResources(Constant.SCAN_PATH_PATTEN);
+            Resource[] resources = resourcePatternResolver.getResources(SCAN_PATH_PATTEN);
 
             MetadataReaderFactory metadataReaderFactory =
                     new CachingMetadataReaderFactory(new PathMatchingResourcePatternResolver());

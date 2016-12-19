@@ -1,7 +1,7 @@
 package test;
 
 
-import akka.enter.AkkaInitFactory;
+import akka.main.AkkaMain;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/16.
@@ -15,7 +15,7 @@ public class TestMain {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }*/
-        AkkaInitFactory akkaInitFactory = new AkkaInitFactory();
+        AkkaMain.InitAkkaSystem();
     }
 
 

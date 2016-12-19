@@ -1,4 +1,4 @@
-package akka.enter;
+package akka.core;
 
 import akka.actor.ActorRef;
 import akka.event.japi.SubchannelEventBus;

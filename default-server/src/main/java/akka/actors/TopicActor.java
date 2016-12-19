@@ -2,7 +2,7 @@ package akka.actors;
 
 import akka.actor.ActorSelection;
 import akka.actor.UntypedActor;
-import akka.enter.SubChannelBus;
+import akka.core.SubChannelBus;
 
 
 /**

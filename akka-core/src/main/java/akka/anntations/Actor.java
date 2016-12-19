@@ -1,6 +1,6 @@
 package akka.anntations;
 
-import akka.enums.PoolType;
+import akka.enums.RouterStrategy;
 
 import java.lang.annotation.*;
 
@@ -18,7 +18,7 @@ public @interface Actor {
      * rout模式下的路由策略
      * @return
      */
-    PoolType pool() default PoolType.ROUBIN;
+    RouterStrategy pool() default RouterStrategy.ROUBIN;
 
     /**
      * 对第二个参数的补充数量

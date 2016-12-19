@@ -1,13 +1,15 @@
-package akka.enter;
+package akka.core;
 
 import akka.enums.RequestType;
 import akka.enums.TransferType;
 import akka.msg.Message;
-import akka.params.AskHandle;
+import akka.params.AskProcessHandler;
 
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/17.
+ *
+ *  消息发送接口实现
  */
 public class MsgGun implements MsgSender {
 
@@ -16,9 +18,9 @@ public class MsgGun implements MsgSender {
     private Sender tellWrapper;
 
 
-    public MsgGun(String name, AkSystem akSystem, AskHandle askHandle) {
-        this.askWrapper = akSystem.createAskMsgWrapper(name, askHandle);
-        this.tellWrapper = akSystem.createTellMsgWrapper(name);
+    public MsgGun(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler) {
+        this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler);
+        this.tellWrapper = akkaSystem.createTellMsgWrapper(name);
     }
 
     /**
@@ -32,7 +34,7 @@ public class MsgGun implements MsgSender {
             case TELL:
                 sender = tellWrapper;
                 break;
-            case ACK:
+            case ASK:
                 sender = askWrapper;
                 break;
             default:

@@ -1,12 +1,11 @@
-package akka.enter;
+package akka.main;
 
 import akka.actor.ActorSystem;
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
 import akka.cluster.Cluster;
+import akka.core.AkkaSystem;
 import akka.msg.Constant;
-import akka.params.AskHandle;
-import akka.params.DefaultAskHandle;
 import akka.params.RegisterBean;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -14,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -22,29 +20,38 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/19.
+ * 启动入口
+ * akka启动
+ * actor对象扫描注册
  */
-public class AkkaInitFactory {
+public class AkkaMain {
 
-    private static final Logger logger = LoggerFactory.getLogger(AkkaInitFactory.class);
+    private static final Logger logger = LoggerFactory.getLogger(AkkaMain.class);
 
-    private AkSystem akSystem;
+    final private AkkaSystem akkaSystem;
 
     private CountDownLatch countDownLatch = new CountDownLatch(1);
 
+    protected AkkaMain() {
+        this.akkaSystem = createSystem(Constant.SYSTEM_NAME, true);
+    }
 
-    public AkkaInitFactory() {
-        init();
+    public static AkkaSystem InitAkkaSystem(){
+        return new AkkaMain().init().getAkkaSystem();
+    }
+
+    public AkkaSystem getAkkaSystem() {
+        return akkaSystem;
     }
 
 
-
-    private void init() {
-        this.akSystem = createSystem(Constant.SYSTEM_NAME, true);
+    private AkkaMain init() {
         scanPackage().ifPresent(list ->
                 list.forEach(bean -> {
-                    this.akSystem.register(bean);
+                    this.akkaSystem.register(bean);
                     logger.info("注册actor:{}成功", bean.getName());
                 }));
+        return this;
     }
     private void scanFile(File file,List<RegisterBean> classes){
         if(file.isDirectory()){
@@ -79,14 +86,14 @@ public class AkkaInitFactory {
        return Optional.ofNullable(classes);
     }
 
-    private AkSystem createSystem(String systemName) {
+    private AkkaSystem createSystem(String systemName) {
         return createSystem(systemName, true);
     }
 
-    private AkSystem createSystem(String systemName, Boolean withCluster) {
+    private AkkaSystem createSystem(String systemName, Boolean withCluster) {
         Config config = ConfigFactory.load();
         ActorSystem system = ActorSystem.create(systemName, config);
-        AkSystem akSystem = new AkSystem(system, withCluster);
+        AkkaSystem akkaSystem = new AkkaSystem(system, withCluster);
         //在节点监听还未成功建立前阻塞消息
         Cluster.get(system).registerOnMemberUp(() ->
                 countDownLatch.countDown()
@@ -99,24 +106,9 @@ public class AkkaInitFactory {
             }
         }
         logger.info("actor system创建完毕");
-        return akSystem;
+        return akkaSystem;
     }
 
 
-    /**
-     * @param name 该路径与接收消息短的 @actor name保持一致
-     */
-    public MsgSender createMsgGun(String name) {
-        return createMsgGun(name, new DefaultAskHandle());
-    }
 
-    /**
-     * @param name
-     * @param askHandle 自定义ask模式下的 对于请求的各种情况处理
-     * @return
-     */
-    public MsgSender createMsgGun(String name, AskHandle<?, ?> askHandle) {
-        akSystem.prepareLoadAdd(name);
-        return new MsgGun(name, akSystem, askHandle);
-    }
 }

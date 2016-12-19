@@ -1,4 +1,4 @@
-package akka.enter;
+package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
@@ -9,36 +9,51 @@ import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
 import akka.cluster.metrics.HeapMetricsSelector;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
+import akka.enums.RouterStrategy;
 import akka.msg.Constant;
+import akka.routing.Group;
+import akka.routing.RandomGroup;
+import akka.routing.RoundRobinGroup;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/9.
+ *
+ * 维护了路由模式的actor引用和广播模式的actor引用
+ *
  */
-public class AddressContex {
+public class AddressContext {
 
 
     private final int MAX_THREAD_COUNT = 100;
 
+    /**
+     * 集群中所有存活的地址
+     */
     private List<Address> addresses = new ArrayList<>();
 
     /**
-     * 集群的地址维护
+     * 路由策略 默认随机 可修改
+     */
+    private RouterStrategy routerStrategy = RouterStrategy.RANDOM;
+
+    /**
+     * 集群的actor地址维护  k: actorName  v:集群中actor引用
      */
     private Map<String, List<ActorRefMap>> map = new HashMap<>();
+
+    /**
+     * 集群模式下消息初始化actor 用作初始化接收方actorRef   key为actorName 不重复生成
+     */
+    private Map<String, ActorRef> sender = new HashMap<>();
 
     /**
      * 路由地址
      * k path : v getter
      */
     private Map<String, ActorRef> routActor = new HashMap<>();
-
-    /**
-     * 发送器actor
-     */
-    private Map<String, ActorRef> sender = new HashMap<>();
 
     public ActorRef getSender(ActorSystem system, String path) {
         ActorRef senderActor = sender.get(path);
@@ -72,14 +87,16 @@ public class AddressContex {
 
 
     private ActorRef getRouterActor(ActorSystem system, Iterable<String> routeesPaths) {
-        ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(
-                new AdaptiveLoadBalancingGroup(
-                        HeapMetricsSelector.getInstance(),
-                        Collections.emptyList()),
+
+        Group local = routerStrategy.getGroup(routeesPaths);
+
+        ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
                 new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
                         false, Constant.ROLE_NAME));
+
         return system.actorOf(clusterRouterGroup.props());
     }
+
 
 
     public void addAddress(Address address) {
@@ -88,6 +105,10 @@ public class AddressContex {
         }
     }
 
+    /**
+     * 移除断线的机器
+     * @param address
+     */
     public void deleteAddress(Address address) {
         synchronized (addresses) {
             addresses.remove(address);
@@ -103,7 +124,7 @@ public class AddressContex {
         synchronized (map) {
             for (String key : map.keySet()) {
                 List<ActorRefMap> actorRefMaps = map.get(key);
-                map.put(key, actorRefMaps.stream().filter(o -> !o.removeAdd(address)).collect(Collectors.toList()));
+                map.put(key, actorRefMaps.stream().filter(o -> !o.containAddr(address)).collect(Collectors.toList()));
             }
         }
     }

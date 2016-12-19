@@ -1,8 +1,5 @@
 package test;
 
-import akka.enter.AkkaInitFactory;
-import akka.enter.MsgSender;
-import akka.msg.Message;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 

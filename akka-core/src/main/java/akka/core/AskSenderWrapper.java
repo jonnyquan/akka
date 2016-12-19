@@ -1,11 +1,11 @@
-package akka.enter;
+package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.dispatch.*;
 import akka.enums.TransferType;
 import akka.msg.Message;
-import akka.params.AskHandle;
+import akka.params.AskProcessHandler;
 import akka.params.CutParam;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
@@ -21,17 +21,19 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
+ *
+ * ask 方式的消息发送
  */
 public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     private final Long time = 5000l;
-    private AskHandle<S, R> askHandle;
+    private AskProcessHandler<S, R> askProcessHandler;
 
 
-    public AskSenderWrapper(String gettersK, AddressContex addressContex, ActorSystem system, AskHandle<S, R> askHandle) {
-        super(gettersK, addressContex, system);
-        this.askHandle = askHandle;
+    public AskSenderWrapper(String gettersK, AddressContext addressContext, ActorSystem system, AskProcessHandler<S, R> askProcessHandler) {
+        super(gettersK, addressContext, system);
+        this.askProcessHandler = askProcessHandler;
     }
 
 
@@ -48,23 +50,23 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
         final ArrayList<Future<Object>> futures = new ArrayList<Future<Object>>();
 
         actorRefs.forEach(getter -> {
-            final Future future = Patterns.ask(getter, askHandle.cut(cutParam), timeout);
+            final Future future = Patterns.ask(getter, askProcessHandler.cut(cutParam), timeout);
             future.onFailure(new OnFailure() {
                 @Override
                 public void onFailure(Throwable throwable) throws Throwable {
-                    askHandle.onFailure(getter, throwable, askHandle, cutParam);
+                    askProcessHandler.onFailure(getter, throwable, askProcessHandler, cutParam);
                 }
             }, ec);
             future.onSuccess(new OnSuccess() {
                 @Override
                 public void onSuccess(Object o) throws Throwable {
-                    askHandle.onSuccess(getter, o);
+                    askProcessHandler.onSuccess(getter, o);
                 }
             }, ec);
             future.onComplete(new OnComplete() {
                 @Override
                 public void onComplete(Throwable throwable, Object o) throws Throwable {
-                    askHandle.onComplete(getter, throwable, o);
+                    askProcessHandler.onComplete(getter, throwable, o);
                 }
             }, ec);
             futures.add(future);//任务切割 参数2为消息内容  需要与消息处理的地方类型统一
@@ -76,7 +78,7 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
         Future<R> back = aggregate.map(
                 new Mapper<Iterable<Object>, R>() {
                     public R apply(Iterable<Object> coll) {
-                        return askHandle.getReturn(coll.iterator());
+                        return askProcessHandler.getReturn(coll.iterator());
                     }
                 }
                 , ec);

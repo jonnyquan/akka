@@ -5,7 +5,7 @@ import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent;
 import akka.cluster.Member;
-import akka.enter.AddressContex;
+import akka.core.AddressContext;
 
 /**
  * Created by ruancl@xkeshi.com on 16/9/29.
@@ -14,10 +14,10 @@ public class ClusterActor extends UntypedActor {
 
     Cluster cluster = Cluster.get(getContext().system());
 
-    private AddressContex addressContex;
+    private AddressContext addressContext;
 
-    public ClusterActor(AddressContex addressContex) {
-        this.addressContex = addressContex;
+    public ClusterActor(AddressContext addressContext) {
+        this.addressContext = addressContext;
     }
 
     @Override
@@ -38,14 +38,14 @@ public class ClusterActor extends UntypedActor {
             Member member = memberUp.member();
             Address address = member.address();
             System.out.println("member up :" + member);
-            addressContex.addAddress(address);
+            addressContext.addAddress(address);
             System.out.println("roles:" + memberUp.member().getRoles() + " || " + member.roles());
         } else if (o instanceof ClusterEvent.MemberRemoved) {
             System.out.println("member removed :" + ((ClusterEvent.MemberRemoved) o).member());
         } else if (o instanceof ClusterEvent.UnreachableMember) {
             ClusterEvent.UnreachableMember unreachableMember = (ClusterEvent.UnreachableMember) o;
             Address address = unreachableMember.member().address();
-            addressContex.deleteAddress(address);
+            addressContext.deleteAddress(address);
             // addressesMap.deleteAddress(address);
             System.out.println("member unreachable :" + ((ClusterEvent.UnreachableMember) o).member());
         } else if (o instanceof ClusterEvent.MemberEvent) {

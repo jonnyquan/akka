@@ -6,6 +6,7 @@ import akka.routing.RoundRobinPool;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/20.
+ * actor注册包装类
  */
 public class RegisterBean<T extends AbstractActor> {
 

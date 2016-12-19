@@ -1,4 +1,4 @@
-package akka.enter;
+package akka.core;
 
 import akka.actor.ActorSystem;
 import akka.enums.TransferType;
@@ -7,12 +7,14 @@ import akka.msg.Message;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
+ *
+ *   tell模式消息发送
  */
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name, AddressContex addressContex, ActorSystem system) {
-        super(name, addressContex, system);
+    public TellSenderWrapper(String name, AddressContext addressContext, ActorSystem system) {
+        super(name, addressContext, system);
     }
 
     @Override

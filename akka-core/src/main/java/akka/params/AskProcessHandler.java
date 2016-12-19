@@ -10,7 +10,7 @@ import java.util.Iterator;
  * <p>
  * 任务分割策略  需自己实现  返回对象为消息对象  汇总使用   需要序列化
  */
-public interface AskHandle<S, R> {
+public interface AskProcessHandler<S, R> {
 
     /**
      * 任务结果统一返回处理  需实现该接口自定义返回内容
@@ -41,10 +41,10 @@ public interface AskHandle<S, R> {
      *
      * @param actorRef
      * @param throwable
-     * @param askHandle
+     * @param askProcessHandler
      * @param cutParam
      */
-    void onFailure(ActorRef actorRef, Throwable throwable, AskHandle<S, R> askHandle, CutParam cutParam);
+    void onFailure(ActorRef actorRef, Throwable throwable, AskProcessHandler<S, R> askProcessHandler, CutParam cutParam);
 
     /**
      * 推送完结

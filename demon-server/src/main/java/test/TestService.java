@@ -1,11 +1,11 @@
 package test;
 
 import akka.annotations.ActorRef;
-import akka.enter.MsgSender;
+import akka.core.MsgSender;
 import akka.enums.RequestType;
 import akka.enums.TransferType;
 import akka.msg.Message;
-import akka.params.DefaultAskHandle;
+import akka.params.DefaultAskProcessHandler;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestService {
 
-    @ActorRef(name = "test", askHandle = DefaultAskHandle.class)
+    @ActorRef(name = "test", askHandle = DefaultAskProcessHandler.class)
     private MsgSender msgGun;
 
     @ActorRef(name = "test2")

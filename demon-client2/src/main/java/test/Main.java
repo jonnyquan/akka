@@ -1,6 +1,6 @@
 package test;
 
-import akka.enter.AkkaInitFactory;
+import akka.main.AkkaMain;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/15.
@@ -9,6 +9,6 @@ import akka.enter.AkkaInitFactory;
 public class Main {
 
     public static void main(String[] args) {
-        AkkaInitFactory akkaInitFactory = new AkkaInitFactory();
+        AkkaMain.InitAkkaSystem();
     }
 }

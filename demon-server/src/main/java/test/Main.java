@@ -1,7 +1,8 @@
 package test;
 
-import akka.enter.AkkaInitFactory;
-import akka.enter.MsgSender;
+import akka.core.AkkaSystem;
+import akka.main.AkkaMain;
+import akka.core.MsgSender;
 import akka.enums.RequestType;
 import akka.enums.TransferType;
 import akka.msg.Message;
@@ -13,9 +14,8 @@ import akka.msg.Message;
 public class Main {
 
     public static void main(String[] args) {
-        AkkaInitFactory akkaInitFactory = new AkkaInitFactory();
-
-        MsgSender sender = akkaInitFactory.createMsgGun("test2");
+        AkkaSystem akkaSystem = AkkaMain.InitAkkaSystem();
+        MsgSender sender = akkaSystem.createMsgGun("test2");
         for (int i = 0; i < 10; i++) {
             try {
                 Thread.sleep(1000);

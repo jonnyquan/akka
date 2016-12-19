@@ -1,4 +1,4 @@
-package akka.enter;
+package akka.core;
 
 import akka.enums.RequestType;
 import akka.enums.TransferType;
@@ -7,6 +7,7 @@ import akka.msg.Message;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/17.
+ *  消息发送使用接口
  */
 public interface MsgSender {
 

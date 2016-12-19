@@ -1,8 +1,8 @@
 package akka.actors;
 
 import akka.actor.*;
-import akka.enter.ActorRefMap;
-import akka.enter.AddressContex;
+import akka.core.ActorRefMap;
+import akka.core.AddressContext;
 import akka.msg.Message;
 
 import java.util.ArrayList;
@@ -10,6 +10,10 @@ import java.util.List;
 
 /**
  * Created by ruancl@xkeshi.com on 16/9/30.
+ *
+ * 作为通用的消息发送端actor    sender
+ * 在初始化时候 addressContex.getActorRefs(path)为空  为集群模式初始化接收端actorRef
+ * 从集群地址里面获取到所有集群地址 加上actorName  使用actorSelection方法获取到actorRef并放入AddressContex
  */
 public class DefaultSenderActor extends UntypedActor {
 
@@ -17,12 +21,12 @@ public class DefaultSenderActor extends UntypedActor {
 
 
 
-    public DefaultSenderActor(AddressContex addressContex, String path) {
-        this.actorRefs = addressContex.getActorRefs(path);
+    public DefaultSenderActor(AddressContext addressContext, String path) {
+        this.actorRefs = addressContext.getActorRefs(path);
         if (actorRefs == null) {
             actorRefs = new ArrayList<>();
-            addressContex.addMap(path, actorRefs);
-            List<Address> addresses = addressContex.getAddresses();
+            addressContext.addMap(path, actorRefs);
+            List<Address> addresses = addressContext.getAddresses();
             if (addresses.size() == 0) {
                 throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
             }
