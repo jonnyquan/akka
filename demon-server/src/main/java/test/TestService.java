@@ -3,6 +3,7 @@ package test;
 import akka.annotations.ActorRef;
 import akka.core.MsgSender;
 import akka.enums.RequestType;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.DefaultAskProcessHandler;
@@ -22,7 +23,7 @@ public class TestService {
 
 
     public void testMsg() {
-        msgGun.sendMsg(new Message("ask 路由"), RequestType.TELL, TransferType.ROUTER);//ask 路由
+        msgGun.sendMsg(new Message("ask 路由"), RequestType.TELL, RouterStrategy.RANDOM);//ask 路由
     }
 
 }

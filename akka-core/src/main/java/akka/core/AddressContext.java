@@ -5,15 +5,6 @@ import akka.actor.ActorSystem;
 import akka.actor.Address;
 import akka.actor.Props;
 import akka.actors.DefaultSenderActor;
-import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
-import akka.cluster.metrics.HeapMetricsSelector;
-import akka.cluster.routing.ClusterRouterGroup;
-import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.enums.RouterStrategy;
-import akka.msg.Constant;
-import akka.routing.Group;
-import akka.routing.RandomGroup;
-import akka.routing.RoundRobinGroup;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,10 +25,7 @@ public class AddressContext {
      */
     private List<Address> addresses = new ArrayList<>();
 
-    /**
-     * 路由策略 默认随机 可修改
-     */
-    private RouterStrategy routerStrategy = RouterStrategy.RANDOM;
+
 
     /**
      * 集群的actor地址维护  k: actorName  v:集群中actor引用
@@ -49,11 +37,6 @@ public class AddressContext {
      */
     private Map<String, ActorRef> sender = new HashMap<>();
 
-    /**
-     * 路由地址
-     * k path : v getter
-     */
-    private Map<String, ActorRef> routActor = new HashMap<>();
 
     public ActorRef getSender(ActorSystem system, String path) {
         ActorRef senderActor = sender.get(path);
@@ -65,36 +48,8 @@ public class AddressContext {
     }
 
     public void prepareLoadAdd(ActorSystem system, String path) {
-        //路由地址预加载
-        getRoutActor(system, path);
         //集群地址列表预加载
         getSender(system, path);
-    }
-
-
-    private void addRoutAdd(String path, ActorRef actorRef) {
-        routActor.put(path, actorRef);
-    }
-
-    public ActorRef getRoutActor(ActorSystem system, String path) {
-        ActorRef actorRef = this.routActor.get(path);
-        if (actorRef == null) {
-            actorRef = getRouterActor(system, Arrays.asList(String.format("/user/%s", path)));
-            addRoutAdd(path, actorRef);
-        }
-        return actorRef;
-    }
-
-
-    private ActorRef getRouterActor(ActorSystem system, Iterable<String> routeesPaths) {
-
-        Group local = routerStrategy.getGroup(routeesPaths);
-
-        ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
-                new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
-                        false, Constant.ROLE_NAME));
-
-        return system.actorOf(clusterRouterGroup.props());
     }
 
 

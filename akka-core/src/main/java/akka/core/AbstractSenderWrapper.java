@@ -2,6 +2,8 @@ package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.enums.PoolStrategy;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -42,20 +45,28 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     /**
      * 每次消息发送 都会去addressContext获取相应的接收方 actorRef
-     * @param transferType
+     * @param
      * @return
      */
-    protected List<ActorRef> getGetters(TransferType transferType) {
-        if (transferType == TransferType.ROUTER) {
-            return Arrays.asList(addressContext.getRoutActor(system, gettersKey));
-        }
+    protected List<ActorRef> getGetters(RouterStrategy routerStrategy) {
         List<ActorRefMap> maps = addressContext.getActorRefs(gettersKey);
         if (maps==null || maps.size()==0) {
             System.out.println("暂无可用客户端接收消息");
             logger.info("暂无可用客户端接收消息");
             return null;
         }
-        return maps.stream().map(ActorRefMap::getV).collect(Collectors.toList());
+        List<ActorRef> actorRefs = maps.stream().map(ActorRefMap::getV).collect(Collectors.toList());
+        switch (routerStrategy){
+            case BROADCAST:
+                return actorRefs;
+            case RANDOM:
+                int size = actorRefs.size();
+                int index = new Random().nextInt(size);
+                return Arrays.asList(actorRefs.get(index));
+            default:
+                return actorRefs;
+        }
+
     }
 
     protected ActorSystem getSystem() {
@@ -68,10 +79,10 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     @Override
-    public Object sendMsg(Message message, TransferType transferType) {
+    public Object sendMsg(Message message, RouterStrategy transferType) {
         return handleMsg(message, transferType);
     }
 
 
-    protected abstract Object handleMsg(Message message, TransferType transferType);
+    protected abstract Object handleMsg(Message message, RouterStrategy transferType);
 }

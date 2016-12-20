@@ -1,6 +1,7 @@
 package akka.core;
 
 import akka.enums.RequestType;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
@@ -28,7 +29,7 @@ public class MsgSenderImpl implements MsgSender {
      * @return
      */
     @Override
-    public Object sendMsg(Message message, RequestType requestType, TransferType transferType) {
+    public Object sendMsg(Message message, RequestType requestType, RouterStrategy transferType) {
         Sender sender;
         switch (requestType){
             case TELL:

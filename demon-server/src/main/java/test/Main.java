@@ -1,6 +1,7 @@
 package test;
 
 import akka.core.AkkaSystem;
+import akka.enums.RouterStrategy;
 import akka.main.AkkaMain;
 import akka.core.MsgSender;
 import akka.enums.RequestType;
@@ -23,7 +24,7 @@ public class Main {
                 e.printStackTrace();
             }
             System.out.println("发送消息" + i);
-            sender.sendMsg(new Message("tell 路由"), RequestType.TELL, TransferType.ROUTER);
+            sender.sendMsg(new Message("tell 路由"), RequestType.TELL, RouterStrategy.RANDOM);
         }
     }
 }

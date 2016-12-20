@@ -3,6 +3,7 @@ package akka.core;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.dispatch.*;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
@@ -38,7 +39,7 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     @Override
-    public Object handleMsg(Message message, TransferType transferType) {
+    public Object handleMsg(Message message, RouterStrategy transferType) {
         List<ActorRef> actorRefs = getGetters(transferType);
         if (actorRefs == null) {
             return null;
