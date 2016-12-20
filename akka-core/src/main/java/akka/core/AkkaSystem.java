@@ -33,10 +33,10 @@ public class AkkaSystem {
      */
     public AkkaSystem(ActorSystem system, Boolean withCluster) {
         this.system = system;
+        this.addressContext = new AddressContext();
         if (withCluster) {
             clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContext));
         }
-        this.addressContext = new AddressContext();
     }
 
 
@@ -114,7 +114,7 @@ public class AkkaSystem {
      */
     public MsgSender createMsgGun(String name, AskProcessHandler<?, ?> askProcessHandler) {
         this.prepareLoadAdd(name);
-        return new MsgGun(name, this, askProcessHandler);
+        return new MsgSenderImpl(name, this, askProcessHandler);
     }
 
 }

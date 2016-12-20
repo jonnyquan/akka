@@ -30,8 +30,8 @@ public class DefaultSenderActor extends UntypedActor {
             if (addresses.size() == 0) {
                 throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
             }
-            addresses.forEach(add ->
-                    getContext().actorSelection(String.format("%s/user/%s", add.toString(), path)).tell(new Identify(add), getSelf())
+            addresses.forEach(addr ->
+                    getContext().actorSelection(String.format("%s/user/%s", addr.toString(), path)).tell(new Identify(addr), getSelf())
             );
         }
     }

@@ -14,12 +14,13 @@ import java.util.Collections;
  */
 public enum RouterStrategy {
 
-    ROUBIN, RANDOM, BROADCAST, BALANCE, CONSISTENTHASH;
+
+    ROBIN, RANDOM, BROADCAST, BALANCE, CONSISTENTHASH;
 
 
     public Pool getPool(int num) {
         switch (this) {
-            case ROUBIN:
+            case ROBIN:
                 return new RoundRobinPool(num);
             case RANDOM:
                 return new RandomPool(num);
@@ -37,7 +38,7 @@ public enum RouterStrategy {
         switch (this){
             case RANDOM:
                 return new RandomGroup(routeesPaths);
-            case ROUBIN:
+            case ROBIN:
                 return new RoundRobinGroup(routeesPaths);
             case BALANCE:
                 return new AdaptiveLoadBalancingGroup(HeapMetricsSelector.getInstance(),

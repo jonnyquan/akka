@@ -30,7 +30,6 @@ public class AkkaMain {
 
     final private AkkaSystem akkaSystem;
 
-    private CountDownLatch countDownLatch = new CountDownLatch(1);
 
     protected AkkaMain() {
         this.akkaSystem = createSystem(Constant.SYSTEM_NAME, true);
@@ -94,6 +93,7 @@ public class AkkaMain {
         Config config = ConfigFactory.load();
         ActorSystem system = ActorSystem.create(systemName, config);
         AkkaSystem akkaSystem = new AkkaSystem(system, withCluster);
+        CountDownLatch countDownLatch = new CountDownLatch(1);
         //在节点监听还未成功建立前阻塞消息
         Cluster.get(system).registerOnMemberUp(() ->
                 countDownLatch.countDown()

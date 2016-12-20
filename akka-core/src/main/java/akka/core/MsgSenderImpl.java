@@ -11,14 +11,14 @@ import akka.params.AskProcessHandler;
  *
  *  消息发送接口实现
  */
-public class MsgGun implements MsgSender {
+public class MsgSenderImpl implements MsgSender {
 
     private Sender askWrapper;
 
     private Sender tellWrapper;
 
 
-    public MsgGun(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler) {
+    public MsgSenderImpl(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler) {
         this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler);
         this.tellWrapper = akkaSystem.createTellMsgWrapper(name);
     }

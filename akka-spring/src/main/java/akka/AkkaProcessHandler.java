@@ -29,7 +29,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
         for (Field field : fields) {
             ActorRef actorRef = field.getAnnotation(ActorRef.class);
             if (actorRef != null) {
-                checkActorRef(bean, field, actorRef);
+                autoWireActorRef(bean, field, actorRef);
             }
         }
 
@@ -37,7 +37,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
     }
 
 
-    private void checkActorRef(Object bean, Field field, ActorRef actorRef) {
+    private void autoWireActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
             field.setAccessible(true);
             AskProcessHandler handle = null;
