@@ -2,7 +2,9 @@ package test;
 
 import akka.annotations.ActorRef;
 import akka.core.MsgSender;
+import akka.core.Sender;
 import akka.enums.RequestType;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.DefaultAskProcessHandler;
@@ -14,15 +16,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TestService {
 
-    @ActorRef(name = "test", askHandle = DefaultAskProcessHandler.class)
-    private MsgSender msgGun;
+    @ActorRef(name = "test", request_type = RequestType.ASK,routerStrategy = RouterStrategy.BROADCAST,askHandle = DefaultAskProcessHandler.class)
+    private Sender sender1;
 
     @ActorRef(name = "test2")
-    private MsgSender msgGun2;
+    private Sender sender;
 
 
     public void testMsg() {
-        msgGun.sendMsg(new Message("ask 路由"), RequestType.TELL, TransferType.ROUTER);//ask 路由
+        sender.sendMsg(new Message("ask 路由"));//ask 路由
     }
 
 }

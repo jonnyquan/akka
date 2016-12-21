@@ -4,6 +4,7 @@ import akka.actor.ActorSystem;
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
 import akka.cluster.Cluster;
+import akka.core.Akka;
 import akka.core.AkkaSystem;
 import akka.msg.Constant;
 import akka.params.RegisterBean;
@@ -35,7 +36,7 @@ public class AkkaMain {
         this.akkaSystem = createSystem(Constant.SYSTEM_NAME, true);
     }
 
-    public static AkkaSystem InitAkkaSystem(){
+    public static Akka InitAkka(){
         return new AkkaMain().init().getAkkaSystem();
     }
 

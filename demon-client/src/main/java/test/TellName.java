@@ -8,7 +8,7 @@ import akka.msg.Message;
 /**
  * Created by ruancl@xkeshi.com on 16/11/16.
  */
-@Actor(name = "test", pool = RouterStrategy.ROUBIN, number = 5)
+@Actor(name = "test", pool = RouterStrategy.ROBIN, number = 5)
 public class TellName extends AbstractActor {
 
 

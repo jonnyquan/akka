@@ -14,8 +14,7 @@ public interface MsgSender {
     /**
      * @param message
      * @param requestType     消息类型 ack双工  tell单工
-     * @param transferType broadcast广播  router路由模式单发
      * @return
      */
-    Object sendMsg(Message message, RequestType requestType, TransferType transferType);
+    Object sendMsg(Message message, RequestType requestType);
 }

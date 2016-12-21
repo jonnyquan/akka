@@ -1,7 +1,8 @@
 package akka;
 
 import akka.annotations.ActorRef;
-import akka.core.AkkaSystem;
+import akka.core.Akka;
+import akka.core.Sender;
 import akka.params.AskProcessHandler;
 import akka.params.DefaultAskProcessHandler;
 import org.springframework.beans.BeansException;
@@ -16,10 +17,10 @@ import java.lang.reflect.Field;
  */
 public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapter {
 
-    private AkkaSystem akkaSystem;
+    private Akka akka;
 
     public AkkaProcessHandler() {
-        this.akkaSystem = AkkaInit.InitAkkaSystem();
+        this.akka = AkkaInit.InitAkka();
     }
 
     @Override
@@ -39,6 +40,9 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
 
     private void autoWireActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
+            if(field.getDeclaringClass()!=Sender.class){
+                throw new IllegalAccessError("对象类型错误 必须是sender接口");
+            }
             field.setAccessible(true);
             AskProcessHandler handle = null;
             Class handleClazz = actorRef.askHandle();
@@ -47,7 +51,19 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
             } else {
                 handle = (AskProcessHandler) handleClazz.newInstance();
             }
-            field.set(bean, akkaSystem.createMsgGun(actorRef.name(), handle));
+            Sender sender;
+            switch (actorRef.request_type()){
+                case TELL:
+                    sender = akka.createTellSender(actorRef.name(),actorRef.routerStrategy());
+                    break;
+                case ASK:
+                    sender = akka.createAskSender(actorRef.name(),handle,actorRef.routerStrategy());
+                    break;
+                default:
+                    sender = akka.createTellSender(actorRef.name(),actorRef.routerStrategy());
+                    break;
+            }
+            field.set(bean, sender);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {

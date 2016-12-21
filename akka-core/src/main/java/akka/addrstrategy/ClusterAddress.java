@@ -1,8 +1,9 @@
-package akka.routerstrategy;
+package akka.addrstrategy;
 
 import akka.actor.*;
 import akka.actors.IdentityActor;
 import akka.core.ActorRefMap;
+import akka.params.ActorAddress;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
-public class ClusterStrategy {
+public class ClusterAddress {
 
     /**
      * 集群中所有存活的地址
@@ -72,9 +73,6 @@ public class ClusterStrategy {
         }
     }
 
-    public List<Address> getAddresses() {
-        return addresses;
-    }
 
     private void deleteActorRef(Address address) {
         synchronized (map) {
@@ -101,7 +99,7 @@ public class ClusterStrategy {
     public List<ActorRef> getReceivers(String name){
         List<ActorRefMap> maps = getActorRefs(name);
         if (maps==null || maps.size()==0) {
-            System.out.println("暂无可用客户端接收消息");
+            System.out.println("暂无可用客户端接收消息 客户端已下线 或者 未启用集群监听功能");
             return null;
         }
         return maps.stream().map(ActorRefMap::getV).collect(Collectors.toList());

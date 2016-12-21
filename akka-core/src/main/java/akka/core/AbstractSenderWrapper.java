@@ -2,6 +2,7 @@ package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import org.slf4j.Logger;
@@ -15,41 +16,25 @@ import java.util.List;
  */
 public abstract class AbstractSenderWrapper implements Sender{
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSenderWrapper.class);
-
-    private ActorRef sender;
-
     private String gettersKey;
 
-    private ActorSystem system;
-
-    private AddressContextImpl addressContextImpl;
+    private RouterStrategy routerStrategy;
 
 
-    protected AbstractSenderWrapper(String gettersKey, AddressContextImpl addressContextImpl, ActorSystem system) {
-        this.sender = addressContextImpl.getSender(system, gettersKey);
+    protected AbstractSenderWrapper(String gettersKey,RouterStrategy routerStrategy) {
         this.gettersKey = gettersKey;
-        this.system = system;
-        this.addressContextImpl = addressContextImpl;
+        this.routerStrategy = routerStrategy;
     }
 
-
-    protected ActorRef getSender() {
-        return sender;
-    }
 
     /**
      * 每次消息发送 都会去addressContext获取相应的接收方 actorRef
-     * @param transferType
      * @return
      */
-    protected List<ActorRef> getGetters(TransferType transferType) {
-        return addressContextImpl.getReceivers(transferType,this.gettersKey,system);
+    protected List<ActorRef> getGetters() {
+        return AddressStrategy.getReceivers(this.gettersKey,routerStrategy);
     }
 
-    protected ActorSystem getSystem() {
-        return system;
-    }
 
 
     /**
@@ -57,10 +42,10 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     @Override
-    public Object sendMsg(Message message, TransferType transferType) {
-        return handleMsg(message, transferType);
+    public Object sendMsg(Message message) {
+        return handleMsg(message);
     }
 
 
-    protected abstract Object handleMsg(Message message, TransferType transferType);
+    protected abstract Object handleMsg(Message message);
 }

@@ -3,6 +3,7 @@ package akka.core;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.dispatch.*;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
@@ -28,28 +29,27 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     private final Long time = 5000l;
+
     private AskProcessHandler<S, R> askProcessHandler;
 
+    private final ExecutionContext ec;
 
-    public AskSenderWrapper(String gettersK, AddressContextImpl addressContextImpl, ActorSystem system, AskProcessHandler<S, R> askProcessHandler) {
-        super(gettersK, addressContextImpl, system);
+
+    public AskSenderWrapper(String gettersK,  ExecutionContext ec, AskProcessHandler<S, R> askProcessHandler, RouterStrategy routerStrategy) {
+        super(gettersK,routerStrategy);
         this.askProcessHandler = askProcessHandler;
+        this.ec = ec;
     }
 
 
     @Override
-    public Object handleMsg(Message message, TransferType transferType) {
-        List<ActorRef> actorRefs = getGetters(transferType);
-        if (actorRefs == null) {
-            return null;
-        }
+    public Object handleMsg(Message message) {
         CutParam cutParam = new CutParam(message);
         FiniteDuration finiteDuration = Duration.create(time, TimeUnit.MILLISECONDS);
         final Timeout timeout = new Timeout(finiteDuration);
-        final ExecutionContext ec = getSystem().dispatcher();
         final ArrayList<Future<Object>> futures = new ArrayList<Future<Object>>();
 
-        actorRefs.forEach(getter -> {
+        getGetters().forEach(getter -> {
             final Future future = Patterns.ask(getter, askProcessHandler.cut(cutParam), timeout);
             future.onFailure(new OnFailure() {
                 @Override
@@ -75,14 +75,15 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
         final Future<Iterable<Object>> aggregate = Futures.sequence(futures,
                 ec);
 
-        Future<R> back = aggregate.map(
+        //Future<R> back =
+                aggregate.map(
                 new Mapper<Iterable<Object>, R>() {
                     public R apply(Iterable<Object> coll) {
                         return askProcessHandler.getReturn(coll.iterator());
                     }
                 }
                 , ec);
-        Patterns.pipe(back, ec).to(getSender());
+       // Patterns.pipe(back, ec).to(getSender());
         return null;
     }
 

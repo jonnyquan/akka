@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterActor;
+import akka.enums.RouterStrategy;
 import akka.params.AskProcessHandler;
 import akka.params.DefaultAskProcessHandler;
 import akka.params.RegisterBean;
@@ -16,15 +17,11 @@ import org.slf4j.LoggerFactory;
  * <p>
  * Created by ruancl@xkeshi.com on 16/10/9.
  */
-public class AkkaSystem {
+public class AkkaSystem implements Akka {
 
     private static final Logger logger = LoggerFactory.getLogger(AkkaSystem.class);
+
     private final ActorSystem system;
-
-    private AddressContextImpl addressContextImpl;
-
-
-    private ActorRef clusterActor;
 
 
     /**
@@ -33,22 +30,12 @@ public class AkkaSystem {
      */
     public AkkaSystem(ActorSystem system, Boolean withCluster) {
         this.system = system;
-        this.addressContextImpl = new AddressContextImpl(this.system);
         if (withCluster) {
-            clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContextImpl));
+             system.actorOf(Props.create(ClusterActor.class,AddressStrategy.getClusterAddress()));
         }
     }
 
 
-    /**
-     * 接收方actor引用预加载
-     *
-     * @param name
-     */
-    public void prepareLoadAdd(String name) {
-        //地址预加载
-        addressContextImpl.prepareLoadAdd(name);
-    }
 
     /**
      * actor 注册
@@ -70,11 +57,12 @@ public class AkkaSystem {
      * @param name
      * @return
      */
-    public AbstractSenderWrapper createTellMsgWrapper(final String name) {
+    public Sender createTellMsgWrapper(final String name,final RouterStrategy routerStrategy) {
+        //地址预加载
+        AddressStrategy.prepareLoadAdd(this.system,name,routerStrategy);
         return new TellSenderWrapper(
                 name,
-                addressContextImpl,
-                system);
+                routerStrategy);
     }
 
 
@@ -87,12 +75,14 @@ public class AkkaSystem {
      * @param askProcessHandler
      * @return
      */
-    public AbstractSenderWrapper createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler) {
+    public Sender createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler,final RouterStrategy routerStrategy) {
+        //地址预加载
+        AddressStrategy.prepareLoadAdd(this.system,name,routerStrategy);
         return new AskSenderWrapper<>(
                 name,
-                addressContextImpl,
-                system,
-                askProcessHandler);
+                system.dispatcher(),
+                askProcessHandler,
+                routerStrategy);
     }
 
 
@@ -100,21 +90,29 @@ public class AkkaSystem {
         return system;
     }
 
-    /**
-     * @param name 该路径与接收消息短的 @actor name保持一致
-     */
-    public MsgSender createMsgGun(String name) {
-        return createMsgGun(name, new DefaultAskProcessHandler());
+
+    @Override
+    public Sender createAskSender(String name, RouterStrategy routerStrategy) {
+        return createAskMsgWrapper(name,new DefaultAskProcessHandler(),routerStrategy);
     }
 
-    /**
-     * @param name
-     * @param askProcessHandler 自定义ask模式下的 对于请求的各种情况处理
-     * @return
-     */
-    public MsgSender createMsgGun(String name, AskProcessHandler<?, ?> askProcessHandler) {
-        this.prepareLoadAdd(name);
-        return new MsgSenderImpl(name, this, askProcessHandler);
+    @Override
+    public Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterStrategy routerStrategy) {
+        return createAskMsgWrapper(name,askProcessHandler,routerStrategy);
     }
 
+    @Override
+    public Sender createTellSender(String name, RouterStrategy routerStrategy) {
+        return createTellMsgWrapper(name,routerStrategy);
+    }
+
+    @Override
+    public Sender createAskSender(String name) {
+        return createAskSender(name,new DefaultAskProcessHandler(),RouterStrategy.RANDOM);
+    }
+
+    @Override
+    public Sender createTellSender(String name) {
+        return createTellSender(name,RouterStrategy.RANDOM);
+    }
 }

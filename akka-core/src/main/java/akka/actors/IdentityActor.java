@@ -2,11 +2,11 @@ package akka.actors;
 
 import akka.actor.*;
 import akka.core.ActorRefMap;
-import akka.core.AddressContextImpl;
-import akka.msg.Message;
+import akka.params.ActorAddress;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by ruancl@xkeshi.com on 16/9/30.
@@ -16,38 +16,28 @@ import java.util.List;
  * 从集群地址里面获取到所有集群地址 加上actorName  使用actorSelection方法获取到actorRef并放入AddressContex
  */
 public class IdentityActor extends UntypedActor {
-
-    private List<ActorRefMap> actorRefs;
-
+    private Map<String, List<ActorRefMap>> map;
 
 
-    public IdentityActor(AddressContextImpl addressContextImpl, String path) {
-        this.actorRefs = addressContextImpl.getActorRefs(path);
-        if (actorRefs == null) {
-            actorRefs = new ArrayList<>();
-            addressContextImpl.addMap(path, actorRefs);
-            List<Address> addresses = addressContextImpl.getAddresses();
-            if (addresses.size() == 0) {
-                throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
-            }
-            addresses.forEach(addr ->
-                    getContext().actorSelection(String.format("%s/user/%s", addr.toString(), path)).tell(new Identify(addr), getSelf())
-            );
-        }
+
+    public IdentityActor(Map<String, List<ActorRefMap>> map) {
+        this.map = map;
     }
 
 
     @Override
     public void onReceive(Object o) throws Throwable {
-        if (o instanceof Message) {
-
-        } else if (o instanceof ActorIdentity) {
+        if (o instanceof ActorIdentity) {
             ActorIdentity identity = (ActorIdentity) o;
-            if (identity.correlationId() instanceof Address) {
-                Address address = (Address) identity.correlationId();
+            if (identity.correlationId() instanceof ActorAddress) {
+                ActorAddress address = (ActorAddress) identity.correlationId();
                 ActorRef actorRef = identity.getRef();
                 if (actorRef != null) {
-                    actorRefs.add(new ActorRefMap(address, actorRef));
+                    List<ActorRefMap> refs = map.get(address.getActorName());
+                    if(refs == null){
+                        refs = new ArrayList<>();
+                    }
+                    refs.add(new ActorRefMap(address.getAddress(), actorRef));
                 }
             }
         } else {

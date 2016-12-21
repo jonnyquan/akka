@@ -1,9 +1,10 @@
-package akka.routerstrategy;
+package akka.addrstrategy;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
+import akka.enums.RouterStrategy;
 import akka.msg.Constant;
 import akka.routing.Group;
 
@@ -14,7 +15,7 @@ import java.util.Map;
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
-public class Routees {
+public class RouteesAddress {
 
     private final int MAX_THREAD_COUNT = 100;
 
@@ -25,20 +26,21 @@ public class Routees {
     private Map<String, ActorRef> routActor = new HashMap<>();
 
 
-    /**
-     * 路由策略 默认随机 可修改
-     */
-    private akka.enums.RouterStrategy routerStrategy = akka.enums.RouterStrategy.RANDOM;
-
 
     private void addRoutAdd(String path, ActorRef actorRef) {
         routActor.put(path, actorRef);
     }
 
-    public void existActor(ActorSystem system,String path) {
+    public void existActor(ActorSystem system, String path, RouterStrategy routerStrategy) {
         ActorRef actorRef = this.routActor.get(path);
         if (actorRef == null) {
-            actorRef = getRouterActor(system,Arrays.asList(String.format("/user/%s", path)));
+            Iterable routeesPaths = Arrays.asList(String.format("/user/%s", path));
+            Group local = routerStrategy.getGroup(routeesPaths);
+
+            ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
+                    new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
+                            false, Constant.ROLE_NAME));
+            actorRef = system.actorOf(clusterRouterGroup.props());
             addRoutAdd(path, actorRef);
         }
     }
@@ -48,14 +50,5 @@ public class Routees {
     }
 
 
-    private ActorRef getRouterActor(ActorSystem system,Iterable<String> routeesPaths) {
-
-        Group local = routerStrategy.getGroup(routeesPaths);
-
-        ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
-                new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
-                        false, Constant.ROLE_NAME));
-        return system.actorOf(clusterRouterGroup.props());
-    }
 
 }

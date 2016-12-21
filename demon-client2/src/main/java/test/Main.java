@@ -9,6 +9,6 @@ import akka.main.AkkaMain;
 public class Main {
 
     public static void main(String[] args) {
-        AkkaMain.InitAkkaSystem();
+        AkkaMain.InitAkka();
     }
 }

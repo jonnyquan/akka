@@ -1,6 +1,7 @@
 package akka.core;
 
 import akka.enums.RequestType;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
@@ -18,9 +19,9 @@ public class MsgSenderImpl implements MsgSender {
     private Sender tellWrapper;
 
 
-    public MsgSenderImpl(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler) {
-        this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler);
-        this.tellWrapper = akkaSystem.createTellMsgWrapper(name);
+    public MsgSenderImpl(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler, RouterStrategy routerStrategy) {
+        this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler,routerStrategy);
+        this.tellWrapper = akkaSystem.createTellMsgWrapper(name,routerStrategy);
     }
 
     /**
@@ -28,7 +29,7 @@ public class MsgSenderImpl implements MsgSender {
      * @return
      */
     @Override
-    public Object sendMsg(Message message, RequestType requestType, TransferType transferType) {
+    public Object sendMsg(Message message, RequestType requestType) {
         Sender sender;
         switch (requestType){
             case TELL:
@@ -40,6 +41,6 @@ public class MsgSenderImpl implements MsgSender {
             default:
                 throw new IllegalArgumentException("未知的发送类型");
         }
-        return sender.sendMsg(message,transferType);
+        return sender.sendMsg(message);
     }
 }

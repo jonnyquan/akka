@@ -1,6 +1,8 @@
 package akka.core;
 
 import akka.actor.ActorSystem;
+import akka.actor.Nobody;
+import akka.enums.RouterStrategy;
 import akka.enums.TransferType;
 import akka.msg.Message;
 
@@ -13,13 +15,13 @@ import akka.msg.Message;
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name, AddressContextImpl addressContextImpl, ActorSystem system) {
-        super(name, addressContextImpl, system);
+    public TellSenderWrapper(String name,RouterStrategy routerStrategy) {
+        super(name,routerStrategy);
     }
 
     @Override
-    public Object handleMsg(Message message, TransferType ifCluster) {
-        getGetters(ifCluster).forEach(o -> o.tell(message, getSender()));
+    public Object handleMsg(Message message) {
+        getGetters().forEach(o -> o.tell(message, null));
         return null;
     }
 }

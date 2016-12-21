@@ -1,10 +1,8 @@
 package test;
 
-import akka.core.AkkaSystem;
+import akka.core.Akka;
+import akka.core.Sender;
 import akka.main.AkkaMain;
-import akka.core.MsgSender;
-import akka.enums.RequestType;
-import akka.enums.TransferType;
 import akka.msg.Message;
 
 /**
@@ -14,16 +12,12 @@ import akka.msg.Message;
 public class Main {
 
     public static void main(String[] args) {
-        AkkaSystem akkaSystem = AkkaMain.InitAkkaSystem();
-        MsgSender sender = akkaSystem.createMsgGun("test2");
+        Akka akka = AkkaMain.InitAkka();
+        Sender sender = akka.createTellSender("test2");
+
         for (int i = 0; i < 10; i++) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
             System.out.println("发送消息" + i);
-            sender.sendMsg(new Message("tell 路由"), RequestType.TELL, TransferType.ROUTER);
+            sender.sendMsg(new Message("tell 路由"));
         }
     }
 }
