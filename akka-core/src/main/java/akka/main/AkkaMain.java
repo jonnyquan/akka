@@ -36,7 +36,12 @@ public class AkkaMain {
         this.akkaSystem = createSystem(Constant.SYSTEM_NAME, true);
     }
 
-    public static Akka InitAkka(){
+
+    /**
+     * 启动方法入口
+     * @return
+     */
+    public static Akka initAkka(){
         return new AkkaMain().init().getAkkaSystem();
     }
 
@@ -77,6 +82,7 @@ public class AkkaMain {
     }
 
     private final String ROOT_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+
     private final String EXT = ".class";
 
     protected Optional<List<RegisterBean>> scanPackage() {

@@ -1,8 +1,7 @@
 package akka.core;
 
 import akka.enums.RequestType;
-import akka.enums.RouterStrategy;
-import akka.enums.TransferType;
+import akka.enums.RouterGroup;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
 
@@ -19,9 +18,9 @@ public class MsgSenderImpl implements MsgSender {
     private Sender tellWrapper;
 
 
-    public MsgSenderImpl(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler, RouterStrategy routerStrategy) {
-        this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler,routerStrategy);
-        this.tellWrapper = akkaSystem.createTellMsgWrapper(name,routerStrategy);
+    public MsgSenderImpl(String name, AkkaSystem akkaSystem, AskProcessHandler askProcessHandler, RouterGroup routerGroup) {
+        this.askWrapper = akkaSystem.createAskMsgWrapper(name, askProcessHandler, routerGroup);
+        this.tellWrapper = akkaSystem.createTellMsgWrapper(name, routerGroup);
     }
 
     /**

@@ -4,7 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterActor;
-import akka.enums.RouterStrategy;
+import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
 import akka.params.DefaultAskProcessHandler;
 import akka.params.RegisterBean;
@@ -57,12 +57,12 @@ public class AkkaSystem implements Akka {
      * @param name
      * @return
      */
-    public Sender createTellMsgWrapper(final String name,final RouterStrategy routerStrategy) {
+    public Sender createTellMsgWrapper(final String name,final RouterGroup routerGroup) {
         //地址预加载
-        AddressStrategy.prepareLoadAdd(this.system,name,routerStrategy);
+        AddressStrategy.prepareLoadAdd(this.system,name, routerGroup);
         return new TellSenderWrapper(
                 name,
-                routerStrategy);
+                routerGroup);
     }
 
 
@@ -75,14 +75,14 @@ public class AkkaSystem implements Akka {
      * @param askProcessHandler
      * @return
      */
-    public Sender createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler,final RouterStrategy routerStrategy) {
+    public Sender createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler,final RouterGroup routerGroup) {
         //地址预加载
-        AddressStrategy.prepareLoadAdd(this.system,name,routerStrategy);
+        AddressStrategy.prepareLoadAdd(this.system,name, routerGroup);
         return new AskSenderWrapper<>(
                 name,
                 system.dispatcher(),
                 askProcessHandler,
-                routerStrategy);
+                routerGroup);
     }
 
 
@@ -92,27 +92,27 @@ public class AkkaSystem implements Akka {
 
 
     @Override
-    public Sender createAskSender(String name, RouterStrategy routerStrategy) {
-        return createAskMsgWrapper(name,new DefaultAskProcessHandler(),routerStrategy);
+    public Sender createAskSender(String name, RouterGroup routerGroup) {
+        return createAskMsgWrapper(name,new DefaultAskProcessHandler(), routerGroup);
     }
 
     @Override
-    public Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterStrategy routerStrategy) {
-        return createAskMsgWrapper(name,askProcessHandler,routerStrategy);
+    public Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup) {
+        return createAskMsgWrapper(name,askProcessHandler, routerGroup);
     }
 
     @Override
-    public Sender createTellSender(String name, RouterStrategy routerStrategy) {
-        return createTellMsgWrapper(name,routerStrategy);
+    public Sender createTellSender(String name, RouterGroup routerGroup) {
+        return createTellMsgWrapper(name, routerGroup);
     }
 
     @Override
     public Sender createAskSender(String name) {
-        return createAskSender(name,new DefaultAskProcessHandler(),RouterStrategy.RANDOM);
+        return createAskSender(name,new DefaultAskProcessHandler(), RouterGroup.RANDOM);
     }
 
     @Override
     public Sender createTellSender(String name) {
-        return createTellSender(name,RouterStrategy.RANDOM);
+        return createTellSender(name, RouterGroup.RANDOM);
     }
 }

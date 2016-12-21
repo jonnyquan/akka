@@ -3,6 +3,7 @@ package akka;
 import akka.annotations.ActorRef;
 import akka.core.Akka;
 import akka.core.Sender;
+import akka.main.AkkaMain;
 import akka.params.AskProcessHandler;
 import akka.params.DefaultAskProcessHandler;
 import org.springframework.beans.BeansException;
@@ -20,7 +21,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
     private Akka akka;
 
     public AkkaProcessHandler() {
-        this.akka = AkkaInit.InitAkka();
+        this.akka = AkkaMain.initAkka();
     }
 
     @Override
@@ -40,7 +41,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
 
     private void autoWireActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
-            if(field.getDeclaringClass()!=Sender.class){
+            if(field.getType()!=Sender.class){
                 throw new IllegalAccessError("对象类型错误 必须是sender接口");
             }
             field.setAccessible(true);

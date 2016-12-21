@@ -1,9 +1,6 @@
 package akka.core;
 
-import akka.actor.ActorSystem;
-import akka.actor.Nobody;
-import akka.enums.RouterStrategy;
-import akka.enums.TransferType;
+import akka.enums.RouterGroup;
 import akka.msg.Message;
 
 
@@ -15,8 +12,8 @@ import akka.msg.Message;
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name,RouterStrategy routerStrategy) {
-        super(name,routerStrategy);
+    public TellSenderWrapper(String name,RouterGroup routerGroup) {
+        super(name, routerGroup);
     }
 
     @Override

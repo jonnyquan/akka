@@ -11,5 +11,6 @@ public class MainWithSpring {
     public static void main(String[] args) {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
+
     }
 }

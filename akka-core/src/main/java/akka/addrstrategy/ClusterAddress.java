@@ -3,6 +3,7 @@ package akka.addrstrategy;
 import akka.actor.*;
 import akka.actors.IdentityActor;
 import akka.core.ActorRefMap;
+import akka.enums.RouterGroup;
 import akka.params.ActorAddress;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.stream.Collectors;
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
-public class ClusterAddress {
+public class ClusterAddress implements AddressContext{
 
     /**
      * 集群中所有存活的地址
@@ -35,7 +36,8 @@ public class ClusterAddress {
 
 
 
-    public void initReceivers(ActorSystem system,String path) {
+    @Override
+    public void initReceivers(ActorSystem system, String path, RouterGroup routerGroup) {
 
         if (senderActor == null) {
             senderActor = system.actorOf(Props.create(IdentityActor.class, this.map));
@@ -95,6 +97,8 @@ public class ClusterAddress {
             map.put(key, actorRefMaps);
         }
     }
+
+
 
     public List<ActorRef> getReceivers(String name){
         List<ActorRefMap> maps = getActorRefs(name);

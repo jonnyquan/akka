@@ -1,10 +1,7 @@
 package akka.core;
 
-import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 import akka.dispatch.*;
-import akka.enums.RouterStrategy;
-import akka.enums.TransferType;
+import akka.enums.RouterGroup;
 import akka.msg.Message;
 import akka.params.AskProcessHandler;
 import akka.params.CutParam;
@@ -16,7 +13,6 @@ import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
@@ -35,8 +31,8 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
     private final ExecutionContext ec;
 
 
-    public AskSenderWrapper(String gettersK,  ExecutionContext ec, AskProcessHandler<S, R> askProcessHandler, RouterStrategy routerStrategy) {
-        super(gettersK,routerStrategy);
+    public AskSenderWrapper(String gettersK,  ExecutionContext ec, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup) {
+        super(gettersK, routerGroup);
         this.askProcessHandler = askProcessHandler;
         this.ec = ec;
     }

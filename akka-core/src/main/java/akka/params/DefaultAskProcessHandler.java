@@ -23,7 +23,7 @@ public class DefaultAskProcessHandler implements AskProcessHandler<Message, Mess
 
     @Override
     public void onSuccess(ActorRef actorRef, Object o) {
-        System.out.println(actorRef.path() + ":success:-----------object:" + o);
+        System.out.println(actorRef.path() + ":success:-----------object:" + ((Message)o).getContent());
     }
 
     @Override

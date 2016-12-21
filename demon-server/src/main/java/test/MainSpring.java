@@ -11,16 +11,19 @@ public class MainSpring {
     public static void main(String[] args) {
 
         ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
-        TestService testService = context.getBean(TestService.class);
+
+
+
+        GreetService greetService = context.getBean(GreetService.class);
 
         for (int i = 0; i < 10; i++) {
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println("发送消息" + i);
-            testService.testMsg();
+            greetService.sayHello();
         }
 
     }

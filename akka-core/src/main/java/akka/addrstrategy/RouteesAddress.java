@@ -4,18 +4,20 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.enums.RouterStrategy;
+import akka.enums.RouterGroup;
 import akka.msg.Constant;
 import akka.routing.Group;
+import akka.routing.RoundRobinGroup;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
-public class RouteesAddress {
+public class RouteesAddress implements AddressContext{
 
     private final int MAX_THREAD_COUNT = 100;
 
@@ -31,22 +33,24 @@ public class RouteesAddress {
         routActor.put(path, actorRef);
     }
 
-    public void existActor(ActorSystem system, String path, RouterStrategy routerStrategy) {
+    @Override
+    public void initReceivers(ActorSystem system, String path, RouterGroup routerGroup) {
         ActorRef actorRef = this.routActor.get(path);
         if (actorRef == null) {
             Iterable routeesPaths = Arrays.asList(String.format("/user/%s", path));
-            Group local = routerStrategy.getGroup(routeesPaths);
+            Group local = routerGroup.getGroup(routeesPaths);
 
             ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
                     new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
-                            false, Constant.ROLE_NAME));
+                            true, Constant.ROLE_NAME));
             actorRef = system.actorOf(clusterRouterGroup.props());
             addRoutAdd(path, actorRef);
         }
     }
 
-    public ActorRef getReceiver(String path){
-        return this.routActor.get(path);
+
+    public List<ActorRef> getReceivers(String path){
+        return Arrays.asList(this.routActor.get(path));
     }
 
 

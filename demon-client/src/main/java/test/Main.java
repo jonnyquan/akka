@@ -1,5 +1,6 @@
 package test;
 
+
 import akka.main.AkkaMain;
 
 /**
@@ -8,6 +9,6 @@ import akka.main.AkkaMain;
 public class Main {
 
     public static void main(String[] args) {
-        AkkaMain.InitAkka();
+        AkkaMain.initAkka();
     }
 }

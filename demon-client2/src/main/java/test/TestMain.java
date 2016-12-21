@@ -15,7 +15,7 @@ public class TestMain {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }*/
-        AkkaMain.InitAkkaSystem();
+        AkkaMain.initAkka();
     }
 
 

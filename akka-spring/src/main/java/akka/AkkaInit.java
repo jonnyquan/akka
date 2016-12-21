@@ -3,7 +3,6 @@ package akka;
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
 import akka.main.AkkaMain;
-import akka.msg.Constant;
 import akka.params.RegisterBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +21,7 @@ import java.util.Optional;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/15.
+ * akka 直接static启动的话 就会无效
  */
 public class AkkaInit extends AkkaMain {
 

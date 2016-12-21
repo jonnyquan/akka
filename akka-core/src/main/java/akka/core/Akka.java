@@ -1,7 +1,6 @@
 package akka.core;
 
-import akka.core.Sender;
-import akka.enums.RouterStrategy;
+import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
 
 /**
@@ -14,16 +13,16 @@ public interface Akka {
      * 全双工-----------------------------
      */
 
-    Sender createAskSender(String name, RouterStrategy routerStrategy);
+    Sender createAskSender(String name, RouterGroup routerGroup);
 
     /**
      *
      * @param name
      * @param askProcessHandler  ask模式下面自定义处理器
-     * @param routerStrategy   路由模式
+     * @param routerGroup   路由模式
      * @return
      */
-    Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterStrategy routerStrategy);
+    Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup);
 
     Sender createAskSender(String name);
 
@@ -31,7 +30,7 @@ public interface Akka {
      * 单工
      */
 
-    Sender createTellSender(String name,RouterStrategy routerStrategy);
+    Sender createTellSender(String name,RouterGroup routerGroup);
 
 
     Sender createTellSender(String name);

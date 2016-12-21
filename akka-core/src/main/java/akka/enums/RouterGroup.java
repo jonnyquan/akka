@@ -12,27 +12,11 @@ import java.util.Collections;
  * Pool表示消息接收方 执行方的actor(线程)策略
  * Group表示消息发送时候  选择路由的模式
  */
-public enum RouterStrategy {
+public enum RouterGroup {
 
 
     ROBIN, RANDOM, BROADCAST, BALANCE, CONSISTENTHASH;
 
-
-    public Pool getPool(int num) {
-        switch (this) {
-            case ROBIN:
-                return new RoundRobinPool(num);
-            case RANDOM:
-                return new RandomPool(num);
-            case BALANCE:
-                return new BalancingPool(num);
-            case BROADCAST:
-                return new BroadcastPool(num);
-            case CONSISTENTHASH:
-                return new ConsistentHashingPool(num);
-        }
-        return new RoundRobinPool(1);
-    }
 
     public Group getGroup(Iterable<String> routeesPaths){
         switch (this){

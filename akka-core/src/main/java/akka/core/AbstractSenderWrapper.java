@@ -1,12 +1,8 @@
 package akka.core;
 
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
-import akka.enums.RouterStrategy;
-import akka.enums.TransferType;
+import akka.enums.RouterGroup;
 import akka.msg.Message;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -18,12 +14,12 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     private String gettersKey;
 
-    private RouterStrategy routerStrategy;
+    private RouterGroup routerGroup;
 
 
-    protected AbstractSenderWrapper(String gettersKey,RouterStrategy routerStrategy) {
+    protected AbstractSenderWrapper(String gettersKey,RouterGroup routerGroup) {
         this.gettersKey = gettersKey;
-        this.routerStrategy = routerStrategy;
+        this.routerGroup = routerGroup;
     }
 
 
@@ -32,7 +28,7 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     protected List<ActorRef> getGetters() {
-        return AddressStrategy.getReceivers(this.gettersKey,routerStrategy);
+        return AddressStrategy.getReceivers(this.gettersKey, routerGroup);
     }
 
 
