@@ -7,9 +7,7 @@ import akka.msg.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
@@ -25,14 +23,14 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     private ActorSystem system;
 
-    private AddressContext addressContext;
+    private AddressContextImpl addressContextImpl;
 
 
-    protected AbstractSenderWrapper(String gettersKey, AddressContext addressContext, ActorSystem system) {
-        this.sender = addressContext.getSender(system, gettersKey);
+    protected AbstractSenderWrapper(String gettersKey, AddressContextImpl addressContextImpl, ActorSystem system) {
+        this.sender = addressContextImpl.getSender(system, gettersKey);
         this.gettersKey = gettersKey;
         this.system = system;
-        this.addressContext = addressContext;
+        this.addressContextImpl = addressContextImpl;
     }
 
 
@@ -46,16 +44,7 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     protected List<ActorRef> getGetters(TransferType transferType) {
-        if (transferType == TransferType.ROUTER) {
-            return Arrays.asList(addressContext.getRoutActor(system, gettersKey));
-        }
-        List<ActorRefMap> maps = addressContext.getActorRefs(gettersKey);
-        if (maps==null || maps.size()==0) {
-            System.out.println("暂无可用客户端接收消息");
-            logger.info("暂无可用客户端接收消息");
-            return null;
-        }
-        return maps.stream().map(ActorRefMap::getV).collect(Collectors.toList());
+        return addressContextImpl.getReceivers(transferType,this.gettersKey,system);
     }
 
     protected ActorSystem getSystem() {

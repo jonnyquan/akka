@@ -2,7 +2,7 @@ package akka.actors;
 
 import akka.actor.*;
 import akka.core.ActorRefMap;
-import akka.core.AddressContext;
+import akka.core.AddressContextImpl;
 import akka.msg.Message;
 
 import java.util.ArrayList;
@@ -21,12 +21,12 @@ public class DefaultSenderActor extends UntypedActor {
 
 
 
-    public DefaultSenderActor(AddressContext addressContext, String path) {
-        this.actorRefs = addressContext.getActorRefs(path);
+    public DefaultSenderActor(AddressContextImpl addressContextImpl, String path) {
+        this.actorRefs = addressContextImpl.getActorRefs(path);
         if (actorRefs == null) {
             actorRefs = new ArrayList<>();
-            addressContext.addMap(path, actorRefs);
-            List<Address> addresses = addressContext.getAddresses();
+            addressContextImpl.addMap(path, actorRefs);
+            List<Address> addresses = addressContextImpl.getAddresses();
             if (addresses.size() == 0) {
                 throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
             }

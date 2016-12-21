@@ -31,8 +31,8 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
     private AskProcessHandler<S, R> askProcessHandler;
 
 
-    public AskSenderWrapper(String gettersK, AddressContext addressContext, ActorSystem system, AskProcessHandler<S, R> askProcessHandler) {
-        super(gettersK, addressContext, system);
+    public AskSenderWrapper(String gettersK, AddressContextImpl addressContextImpl, ActorSystem system, AskProcessHandler<S, R> askProcessHandler) {
+        super(gettersK, addressContextImpl, system);
         this.askProcessHandler = askProcessHandler;
     }
 

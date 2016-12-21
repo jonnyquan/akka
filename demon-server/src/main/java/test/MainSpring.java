@@ -15,7 +15,7 @@ public class MainSpring {
 
         for (int i = 0; i < 10; i++) {
             try {
-                Thread.sleep(1000);
+                Thread.sleep(10000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

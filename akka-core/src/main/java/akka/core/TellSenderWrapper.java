@@ -13,8 +13,8 @@ import akka.msg.Message;
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name, AddressContext addressContext, ActorSystem system) {
-        super(name, addressContext, system);
+    public TellSenderWrapper(String name, AddressContextImpl addressContextImpl, ActorSystem system) {
+        super(name, addressContextImpl, system);
     }
 
     @Override

@@ -18,7 +18,7 @@ public @interface Actor {
      * rout模式下的路由策略
      * @return
      */
-    RouterStrategy pool() default RouterStrategy.ROUBIN;
+    RouterStrategy pool() default RouterStrategy.ROBIN;
 
     /**
      * 对第二个参数的补充数量

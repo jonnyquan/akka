@@ -8,7 +8,7 @@ import akka.msg.Message;
 /**
  * Created by ruancl@xkeshi.com on 16/11/16.
  */
-@Actor(name = "test2", pool = RouterStrategy.ROUBIN, number = 5)
+@Actor(name = "test2", pool = RouterStrategy.ROBIN, number = 5)
 public class TestActor extends AbstractActor {
 
     @Override

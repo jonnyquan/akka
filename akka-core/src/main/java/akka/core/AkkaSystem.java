@@ -21,7 +21,7 @@ public class AkkaSystem {
     private static final Logger logger = LoggerFactory.getLogger(AkkaSystem.class);
     private final ActorSystem system;
 
-    private AddressContext addressContext;
+    private AddressContextImpl addressContextImpl;
 
 
     private ActorRef clusterActor;
@@ -33,9 +33,9 @@ public class AkkaSystem {
      */
     public AkkaSystem(ActorSystem system, Boolean withCluster) {
         this.system = system;
-        this.addressContext = new AddressContext();
+        this.addressContextImpl = new AddressContextImpl(this.system);
         if (withCluster) {
-            clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContext));
+            clusterActor = system.actorOf(Props.create(ClusterActor.class, addressContextImpl));
         }
     }
 
@@ -47,7 +47,7 @@ public class AkkaSystem {
      */
     public void prepareLoadAdd(String name) {
         //地址预加载
-        addressContext.prepareLoadAdd(system, name);
+        addressContextImpl.prepareLoadAdd(name);
     }
 
     /**
@@ -73,7 +73,7 @@ public class AkkaSystem {
     public AbstractSenderWrapper createTellMsgWrapper(final String name) {
         return new TellSenderWrapper(
                 name,
-                addressContext,
+                addressContextImpl,
                 system);
     }
 
@@ -90,7 +90,7 @@ public class AkkaSystem {
     public AbstractSenderWrapper createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler) {
         return new AskSenderWrapper<>(
                 name,
-                addressContext,
+                addressContextImpl,
                 system,
                 askProcessHandler);
     }
