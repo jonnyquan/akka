@@ -1,6 +1,7 @@
 package akka.routerstrategy;
 
 import akka.actor.ActorRef;
+import akka.actor.ActorSystem;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.msg.Constant;
@@ -34,17 +35,20 @@ public class Routees {
         routActor.put(path, actorRef);
     }
 
-    public ActorRef existActor(String path) {
+    public void existActor(ActorSystem system,String path) {
         ActorRef actorRef = this.routActor.get(path);
         if (actorRef == null) {
-            actorRef = getRouterActor( Arrays.asList(String.format("/user/%s", path)));
+            actorRef = getRouterActor(system,Arrays.asList(String.format("/user/%s", path)));
             addRoutAdd(path, actorRef);
         }
-        return actorRef;
+    }
+
+    public ActorRef getReceiver(String path){
+        return this.routActor.get(path);
     }
 
 
-    private ActorRef getRouterActor( Iterable<String> routeesPaths) {
+    private ActorRef getRouterActor(ActorSystem system,Iterable<String> routeesPaths) {
 
         Group local = routerStrategy.getGroup(routeesPaths);
 

@@ -15,13 +15,13 @@ import java.util.List;
  * 在初始化时候 addressContex.getActorRefs(path)为空  为集群模式初始化接收端actorRef
  * 从集群地址里面获取到所有集群地址 加上actorName  使用actorSelection方法获取到actorRef并放入AddressContex
  */
-public class DefaultSenderActor extends UntypedActor {
+public class IdentityActor extends UntypedActor {
 
     private List<ActorRefMap> actorRefs;
 
 
 
-    public DefaultSenderActor(AddressContextImpl addressContextImpl, String path) {
+    public IdentityActor(AddressContextImpl addressContextImpl, String path) {
         this.actorRefs = addressContextImpl.getActorRefs(path);
         if (actorRefs == null) {
             actorRefs = new ArrayList<>();

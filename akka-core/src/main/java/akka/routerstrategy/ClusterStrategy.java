@@ -1,9 +1,7 @@
 package akka.routerstrategy;
 
-import akka.actor.ActorRef;
-import akka.actor.Address;
-import akka.actor.Props;
-import akka.actors.DefaultSenderActor;
+import akka.actor.*;
+import akka.actors.IdentityActor;
 import akka.core.ActorRefMap;
 
 import java.util.ArrayList;
@@ -32,16 +30,29 @@ public class ClusterStrategy {
     /**
      * 集群模式下消息初始化actor 用作初始化接收方actorRef   key为actorName 不重复生成
      */
-    private Map<String, ActorRef> sender = new HashMap<>();
+    private ActorRef senderActor;
 
 
 
-    public void existActor(String path) {
-        ActorRef senderActor = sender.get(path);
+    public void initReceivers(ActorSystem system,String path) {
+
         if (senderActor == null) {
-            senderActor = system.actorOf(Props.create(DefaultSenderActor.class, this, path));
-            sender.put(path, senderActor);
+            senderActor = system.actorOf(Props.create(IdentityActor.class, this.map));
         }
+        List<ActorRefMap> actorRefs = getActorRefs(path);
+        if (actorRefs != null) {
+            return;
+        }
+        actorRefs = new ArrayList<>();
+        addMap(path, actorRefs);
+        if (this.addresses.size() == 0) {
+            throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
+        }
+
+        this.addresses.forEach(addr ->
+                system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).tell(new Identify(new ActorAddress(addr,path)), senderActor)
+        );
+
     }
 
     public void addAddress(Address address) {

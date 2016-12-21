@@ -36,9 +36,9 @@ public class AddressContextImpl{
 
     public void prepareLoadAdd( String path) {
         //路由地址预加载
-        routees.existActor(path);
+        routees.existActor(this.system,path);
         //集群地址列表预加载
-        clusterStrategy.existActor(path);
+        clusterStrategy.initReceivers(this.system,path);
     }
 
 
