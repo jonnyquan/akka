@@ -2,9 +2,13 @@ package akka.addrstrategy;
 
 import akka.actor.*;
 import akka.actors.IdentityActor;
+import akka.cluster.Cluster;
+import akka.cluster.Member;
 import akka.core.ActorRefMap;
 import akka.enums.RouterGroup;
 import akka.params.ActorAddress;
+import scala.collection.Iterator;
+import scala.collection.SortedSet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,12 +21,9 @@ import java.util.stream.Collectors;
  */
 public class ClusterAddress implements AddressContext{
 
-    /**
-     * 集群中所有存活的地址
-     */
-    private List<Address> addresses = new ArrayList<>();
 
 
+    private final ActorSystem system;
     /**
      * 集群的actor地址维护  k: actorName  v:集群中actor引用
      */
@@ -35,9 +36,12 @@ public class ClusterAddress implements AddressContext{
     private ActorRef senderActor;
 
 
+    public ClusterAddress(ActorSystem system) {
+        this.system = system;
+    }
 
     @Override
-    public void initReceivers(ActorSystem system, String path, RouterGroup routerGroup) {
+    public void initReceivers(String path, RouterGroup routerGroup) {
 
         if (senderActor == null) {
             senderActor = system.actorOf(Props.create(IdentityActor.class, this.map));
@@ -48,31 +52,25 @@ public class ClusterAddress implements AddressContext{
         }
         actorRefs = new ArrayList<>();
         addMap(path, actorRefs);
-        if (this.addresses.size() == 0) {
+        SortedSet<Member> memberSortedSet = Cluster.get(system).readView().members();
+        if (memberSortedSet.size() == 0) {
             throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
         }
-
-        this.addresses.forEach(addr ->
-                system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).tell(new Identify(new ActorAddress(addr,path)), senderActor)
-        );
-
-    }
-
-    public void addAddress(Address address) {
-        synchronized (addresses) {
-            addresses.add(address);
+        Iterator<Member> iterator = memberSortedSet.iterator();
+        while(iterator.hasNext()){
+            Member member = iterator.next();
+            Address addr = member.address();
+            system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).tell(new Identify(new ActorAddress(addr,path)), senderActor);
         }
     }
 
+
     /**
-     * 移除断线的机器
+     * 移除断线机器里面的actorRef
      * @param address
      */
     public void deleteAddress(Address address) {
-        synchronized (addresses) {
-            addresses.remove(address);
             deleteActorRef(address);
-        }
     }
 
 

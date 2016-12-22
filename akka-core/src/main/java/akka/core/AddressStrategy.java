@@ -16,16 +16,21 @@ import java.util.*;
  */
 public class AddressStrategy {
 
-    private static ClusterAddress clusterAddress = new ClusterAddress();
+    private  Optional<ClusterAddress> clusterAddress;
 
-    private static RouteesAddress routees = new RouteesAddress();
+    private  Optional<RouteesAddress> routees;
 
 
-    public static void prepareLoadAdd(ActorSystem system,String path, RouterGroup routerGroup) {
+    public AddressStrategy(Optional<ClusterAddress> clusterAddress, Optional<RouteesAddress> routees) {
+        this.clusterAddress = clusterAddress;
+        this.routees = routees;
+    }
+
+    public  void prepareLoadAdd(String path, RouterGroup routerGroup) {
         //路由地址预加载
-        routees.initReceivers(system,path, routerGroup);
+        routees.ifPresent(o->o.initReceivers(path, routerGroup));
         //集群地址列表预加载
-        clusterAddress.initReceivers(system,path,null);
+        clusterAddress.ifPresent(o->o.initReceivers(path,null));
     }
 
 
@@ -35,14 +40,11 @@ public class AddressStrategy {
      * @param routerGroup
      * @return
      */
-    public static List<ActorRef> getReceivers(String name,RouterGroup routerGroup) {
+    public  List<ActorRef> getReceivers(String name,RouterGroup routerGroup) {
         if (routerGroup != RouterGroup.BROADCAST) {
-            return routees.getReceivers(name);
+            return routees.orElseThrow(NullPointerException::new).getReceivers(name);
         }
-       return clusterAddress.getReceivers(name);
+       return clusterAddress.orElseThrow(NullPointerException::new).getReceivers(name);
     }
 
-    public static ClusterAddress getClusterAddress() {
-        return clusterAddress;
-    }
 }

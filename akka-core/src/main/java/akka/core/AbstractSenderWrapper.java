@@ -16,10 +16,13 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     private RouterGroup routerGroup;
 
+    private AbstractAkkaSystem akkaSystem;
 
-    protected AbstractSenderWrapper(String gettersKey,RouterGroup routerGroup) {
+
+    protected AbstractSenderWrapper(String gettersKey,RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
         this.gettersKey = gettersKey;
         this.routerGroup = routerGroup;
+        this.akkaSystem = akkaSystem;
     }
 
 
@@ -28,7 +31,7 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     protected List<ActorRef> getGetters() {
-        return AddressStrategy.getReceivers(this.gettersKey, routerGroup);
+        return akkaSystem.getAddressStrategy().getReceivers(this.gettersKey, routerGroup);
     }
 
 

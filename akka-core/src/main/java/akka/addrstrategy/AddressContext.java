@@ -13,11 +13,10 @@ public interface AddressContext {
 
     /**
      *
-     * @param system
      * @param path
      * @param routerGroup 可选参数 路由模式必选
      */
-    void initReceivers(ActorSystem system,String path,RouterGroup routerGroup);
+    void initReceivers(String path,RouterGroup routerGroup);
 
     List<ActorRef> getReceivers(String path);
 }

@@ -37,17 +37,13 @@ public class ClusterActor extends UntypedActor {
         if (o instanceof ClusterEvent.MemberUp) {
             ClusterEvent.MemberUp memberUp = (ClusterEvent.MemberUp) o;
             Member member = memberUp.member();
-            Address address = member.address();
             System.out.println("member up :" + member);
-            clusterAddress.addAddress(address);
-            System.out.println("roles:" + memberUp.member().getRoles() + " || " + member.roles());
         } else if (o instanceof ClusterEvent.MemberRemoved) {
             System.out.println("member removed :" + ((ClusterEvent.MemberRemoved) o).member());
         } else if (o instanceof ClusterEvent.UnreachableMember) {
             ClusterEvent.UnreachableMember unreachableMember = (ClusterEvent.UnreachableMember) o;
             Address address = unreachableMember.member().address();
             clusterAddress.deleteAddress(address);
-            // addressesMap.deleteAddress(address);
             System.out.println("member unreachable :" + ((ClusterEvent.UnreachableMember) o).member());
         } else if (o instanceof ClusterEvent.MemberEvent) {
             // ignore

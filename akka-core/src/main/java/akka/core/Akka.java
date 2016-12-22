@@ -2,12 +2,19 @@ package akka.core;
 
 import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
+import akka.params.RegisterBean;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
 public interface Akka {
 
+    /**
+     * actor注册
+     * @param registerBean
+     * @return
+     */
+    Akka register(RegisterBean registerBean);
 
     /**
      * 全双工-----------------------------

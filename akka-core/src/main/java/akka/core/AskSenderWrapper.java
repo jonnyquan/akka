@@ -31,10 +31,10 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
     private final ExecutionContext ec;
 
 
-    public AskSenderWrapper(String gettersK,  ExecutionContext ec, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup) {
-        super(gettersK, routerGroup);
+    public AskSenderWrapper(String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
+        super(gettersK, routerGroup,akkaSystem);
         this.askProcessHandler = askProcessHandler;
-        this.ec = ec;
+        this.ec = akkaSystem.getSystem().dispatcher();
     }
 
 

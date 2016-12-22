@@ -1,15 +1,11 @@
 package akka.main;
 
-import akka.actor.ActorSystem;
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
-import akka.cluster.Cluster;
 import akka.core.Akka;
 import akka.core.AkkaSystem;
 import akka.msg.Constant;
 import akka.params.RegisterBean;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +13,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/19.
@@ -29,23 +24,21 @@ public class AkkaMain {
 
     private static final Logger logger = LoggerFactory.getLogger(AkkaMain.class);
 
-    final private AkkaSystem akkaSystem;
-
+    private final Akka akkaSystem;
 
     protected AkkaMain() {
-        this.akkaSystem = createSystem(Constant.SYSTEM_NAME, true);
+        this.akkaSystem = createSystem(Constant.SYSTEM_NAME);
     }
-
 
     /**
      * 启动方法入口
      * @return
      */
     public static Akka initAkka(){
-        return new AkkaMain().init().getAkkaSystem();
+        return new AkkaMain().init().getAkka();
     }
 
-    public AkkaSystem getAkkaSystem() {
+    private Akka getAkka() {
         return akkaSystem;
     }
 
@@ -56,6 +49,7 @@ public class AkkaMain {
                     this.akkaSystem.register(bean);
                     logger.info("注册actor:{}成功", bean.getName());
                 }));
+
         return this;
     }
     private void scanFile(File file,List<RegisterBean> classes){
@@ -92,27 +86,8 @@ public class AkkaMain {
        return Optional.ofNullable(classes);
     }
 
-    private AkkaSystem createSystem(String systemName) {
-        return createSystem(systemName, true);
-    }
-
-    private AkkaSystem createSystem(String systemName, Boolean withCluster) {
-        Config config = ConfigFactory.load();
-        ActorSystem system = ActorSystem.create(systemName, config);
-        AkkaSystem akkaSystem = new AkkaSystem(system, withCluster);
-        CountDownLatch countDownLatch = new CountDownLatch(1);
-        //在节点监听还未成功建立前阻塞消息
-        Cluster.get(system).registerOnMemberUp(() ->
-                countDownLatch.countDown()
-        );
-        if (countDownLatch.getCount() == 1) {
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        logger.info("actor system创建完毕");
+    private Akka createSystem(String systemName) {
+        Akka akkaSystem = new AkkaSystem(systemName);
         return akkaSystem;
     }
 
