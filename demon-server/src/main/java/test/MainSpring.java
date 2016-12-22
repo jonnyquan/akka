@@ -14,7 +14,7 @@ public class MainSpring {
 
 
 
-      /*  GreetService greetService = context.getBean(GreetService.class);
+        HelloService greetService = context.getBean(HelloService.class);
 
         for (int i = 0; i < 10; i++) {
             try {
@@ -24,7 +24,7 @@ public class MainSpring {
             }
             System.out.println("发送消息" + i);
             greetService.sayHello();
-        }*/
+        }
 
     }
 }

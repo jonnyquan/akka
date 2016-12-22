@@ -15,24 +15,35 @@ import java.util.Collections;
 public enum RouterGroup {
 
 
-    ROBIN, RANDOM, BROADCAST, BALANCE, CONSISTENTHASH;
-
-
-    public Group getGroup(Iterable<String> routeesPaths){
-        switch (this){
-            case RANDOM:
-                return new RandomGroup(routeesPaths);
-            case ROBIN:
-                return new RoundRobinGroup(routeesPaths);
-            case BALANCE:
-                return new AdaptiveLoadBalancingGroup(HeapMetricsSelector.getInstance(),
-                        Collections.emptyList());
-            case BROADCAST:
-                return new BroadcastGroup(routeesPaths);
-            case CONSISTENTHASH:
-                return new ConsistentHashingGroup(routeesPaths);
-            default:
-                return new RandomGroup(routeesPaths);
+    ROBIN{
+        @Override
+        Group getGroup(Iterable<String> routeesPaths) {
+            return new RandomGroup(routeesPaths);
         }
-    }
+    }, RANDOM{
+        @Override
+        Group getGroup(Iterable<String> routeesPaths) {
+            return new RoundRobinGroup(routeesPaths);
+        }
+    }, BROADCAST{
+        @Override
+        Group getGroup(Iterable<String> routeesPaths) {
+            return new BroadcastGroup(routeesPaths);
+        }
+    }, BALANCE{
+        @Override
+        Group getGroup(Iterable<String> routeesPaths) {
+            return new AdaptiveLoadBalancingGroup(HeapMetricsSelector.getInstance(),
+                    Collections.emptyList());
+        }
+    }, CONSISTENTHASH{
+        @Override
+        Group getGroup(Iterable<String> routeesPaths) {
+            return new ConsistentHashingGroup(routeesPaths);
+        }
+    };
+
+     abstract Group getGroup(Iterable<String> routeesPaths);
+
+
 }

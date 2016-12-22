@@ -12,6 +12,6 @@ public class Constant {
 
     public final static Boolean WITH_CLUSTER = true;
 
-    public final static Boolean WITH_ROUTER = true;
+    public final static Boolean WITH_ROUTER = false;
 
 }

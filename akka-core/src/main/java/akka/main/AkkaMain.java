@@ -87,8 +87,7 @@ public class AkkaMain {
     }
 
     private Akka createSystem(String systemName) {
-        Akka akkaSystem = new AkkaSystem(systemName);
-        return akkaSystem;
+        return new AkkaSystem(systemName);
     }
 
 

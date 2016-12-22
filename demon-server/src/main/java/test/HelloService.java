@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
  * Created by ruancl@xkeshi.com on 16/11/17.
  */
 @Component
-public class GreetService {
+public class HelloService {
 
     @ActorRef(name = "test", request_type = RequestType.ASK,routerStrategy = RouterGroup.BROADCAST,askHandle = DefaultAskProcessHandler.class)
     private Sender sender1;
 
-    @ActorRef(name = "test",request_type = RequestType.ASK,routerStrategy = RouterGroup.BROADCAST)
+    @ActorRef(name = "test",request_type = RequestType.ASK,routerStrategy = RouterGroup.RANDOM)
     private Sender sender;
 
 

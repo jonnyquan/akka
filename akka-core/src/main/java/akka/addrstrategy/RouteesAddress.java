@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
  */
-public class RouteesAddress implements AddressContext{
+public class RouteesAddress {
 
     private final int MAX_THREAD_COUNT = 100;
 
@@ -25,16 +25,22 @@ public class RouteesAddress implements AddressContext{
      * 路由地址
      * k path : v getter
      */
-    private Map<String, ActorRef> routActor = new HashMap<>();
+    private Map<String, ActorRef> routActor;
 
+    private final ActorSystem system;
 
+    private static final String PATCH = "//$";
 
-    private void addRoutAdd(String path, ActorRef actorRef) {
-        routActor.put(path, actorRef);
+    public RouteesAddress(ActorSystem system) {
+        this.system = system;
+        this.routActor = new HashMap<>();
     }
 
-    @Override
-    public void initReceivers(ActorSystem system, String path, RouterGroup routerGroup) {
+    private void addRoutAdd(String path,RouterGroup routerGroup, ActorRef actorRef) {
+        routActor.put(String.format("%s%s%s",path,PATCH,routerGroup.toString()), actorRef);
+    }
+
+    public void initReceivers(String path, RouterGroup routerGroup) {
         ActorRef actorRef = this.routActor.get(path);
         if (actorRef == null) {
             Iterable routeesPaths = Arrays.asList(String.format("/user/%s", path));
@@ -44,13 +50,13 @@ public class RouteesAddress implements AddressContext{
                     new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
                             true, Constant.ROLE_NAME));
             actorRef = system.actorOf(clusterRouterGroup.props());
-            addRoutAdd(path, actorRef);
+            addRoutAdd(path,routerGroup, actorRef);
         }
     }
 
 
-    public List<ActorRef> getReceivers(String path){
-        return Arrays.asList(this.routActor.get(path));
+    public List<ActorRef> getReceivers(String path,RouterGroup routerGroup){
+        return Arrays.asList(this.routActor.get(String.format("%s%s%s",path,PATCH,routerGroup.toString())));
     }
 
 

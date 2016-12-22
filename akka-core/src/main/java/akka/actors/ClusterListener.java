@@ -11,14 +11,15 @@ import akka.core.AddressStrategy;
 /**
  * Created by ruancl@xkeshi.com on 16/9/29.
  */
-public class ClusterActor extends UntypedActor {
+public class ClusterListener extends UntypedActor {
 
-    Cluster cluster = Cluster.get(getContext().system());
+    Cluster cluster;
 
     private ClusterAddress clusterAddress;
 
-    public ClusterActor(ClusterAddress clusterAddress) {
+    public ClusterListener(ClusterAddress clusterAddress) {
         this.clusterAddress = clusterAddress;
+        this.cluster = Cluster.get(getContext().system());
     }
 
     @Override
@@ -37,6 +38,7 @@ public class ClusterActor extends UntypedActor {
         if (o instanceof ClusterEvent.MemberUp) {
             ClusterEvent.MemberUp memberUp = (ClusterEvent.MemberUp) o;
             Member member = memberUp.member();
+            clusterAddress.addressUp(member.address());
             System.out.println("member up :" + member);
         } else if (o instanceof ClusterEvent.MemberRemoved) {
             System.out.println("member removed :" + ((ClusterEvent.MemberRemoved) o).member());

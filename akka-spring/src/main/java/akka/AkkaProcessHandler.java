@@ -21,7 +21,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
     private Akka akka;
 
     public AkkaProcessHandler() {
-        this.akka = AkkaMain.initAkka();
+        this.akka = AkkaInit.initAkka();
     }
 
     @Override

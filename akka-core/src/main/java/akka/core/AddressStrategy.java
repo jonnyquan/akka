@@ -41,10 +41,10 @@ public class AddressStrategy {
      * @return
      */
     public  List<ActorRef> getReceivers(String name,RouterGroup routerGroup) {
-        if (routerGroup != RouterGroup.BROADCAST) {
-            return routees.orElseThrow(NullPointerException::new).getReceivers(name);
+        if (routerGroup != RouterGroup.BROADCAST && routees.isPresent()) {
+            return routees.get().getReceivers(name,routerGroup);
         }
-       return clusterAddress.orElseThrow(NullPointerException::new).getReceivers(name);
+       return clusterAddress.orElseThrow(NullPointerException::new).getReceivers(name,routerGroup);
     }
 
 }

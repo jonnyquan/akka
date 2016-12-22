@@ -15,22 +15,27 @@ import java.util.Collections;
 public enum RouterPool {
 
 
-    ROBIN, RANDOM, BALANCE, CONSISTENTHASH;
-
-
-    public Pool getPool(int num) {
-        switch (this) {
-            case ROBIN:
-                return new RoundRobinPool(num);
-            case RANDOM:
-                return new RandomPool(num);
-            case BALANCE:
-                return new BalancingPool(num);
-            case CONSISTENTHASH:
-                return new ConsistentHashingPool(num);
+    ROBIN{
+        @Override
+        Pool getPool(int num) {
+            return new RoundRobinPool(num);
         }
-        return new RoundRobinPool(1);
-    }
+    }, RANDOM{
+        @Override
+        Pool getPool(int num) {
+            return new RandomPool(num);
+        }
+    }, BALANCE{
+        @Override
+        Pool getPool(int num) {
+            return new BalancingPool(num);
+        }
+    }, CONSISTENTHASH{
+        @Override
+        Pool getPool(int num) {
+            return new ConsistentHashingPool(num);
+        }
+    };
 
-
+    abstract Pool getPool(int num);
 }

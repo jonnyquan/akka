@@ -2,7 +2,7 @@ package akka.core;
 
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actors.ClusterActor;
+import akka.actors.ClusterListener;
 import akka.addrstrategy.ClusterAddress;
 import akka.addrstrategy.RouteesAddress;
 import akka.cluster.Cluster;
@@ -48,10 +48,11 @@ public abstract class AbstractAkkaSystem implements Akka {
         ClusterAddress clusterAddress = null;
         RouteesAddress routeesAddress = null;
         if (Constant.WITH_CLUSTER) {
-            system.actorOf(Props.create(ClusterActor.class,new ClusterAddress(system)));
+            clusterAddress = new ClusterAddress(system);
+            system.actorOf(Props.create(ClusterListener.class,clusterAddress));
         }
         if (Constant.WITH_ROUTER){
-            routeesAddress = new RouteesAddress();
+            routeesAddress = new RouteesAddress(system);
         }
         addressStrategy = new AddressStrategy(Optional.ofNullable(clusterAddress),Optional.ofNullable(routeesAddress));
         logger.info("actor system 扩展功能启动完毕");

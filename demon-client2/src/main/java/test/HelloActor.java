@@ -16,6 +16,6 @@ public class HelloActor extends AbstractActor {
     @Override
     public void handleMsg(Message message) {
         System.out.println(message.getContent()+"  : " + Thread.currentThread());
-        feedBack(new Message("你好"));
+        reply(new Message("你好"));
     }
 }

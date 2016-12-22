@@ -1,24 +1,13 @@
 package akka.core;
 
 import akka.actor.ActorRef;
-import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.actors.ClusterActor;
-import akka.addrstrategy.ClusterAddress;
-import akka.addrstrategy.RouteesAddress;
-import akka.cluster.Cluster;
 import akka.enums.RouterGroup;
-import akka.msg.Constant;
 import akka.params.AskProcessHandler;
 import akka.params.DefaultAskProcessHandler;
 import akka.params.RegisterBean;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * 对akka的system简单包装 绑定了集群地址管理器AddressContext   已经集群检测actor

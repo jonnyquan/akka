@@ -24,8 +24,8 @@ public abstract class AbstractActor extends UntypedActor {
      *
      * @param message
      */
-    protected void feedBack(Message message) {
-        sender().tell(message, getSelf());
+    protected void reply(Message message) {
+        getSender().tell(message, getSelf());
     }
 
     protected abstract void handleMsg(Message message);
