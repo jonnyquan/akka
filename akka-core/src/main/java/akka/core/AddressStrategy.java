@@ -2,6 +2,8 @@ package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import akka.actor.Address;
+import akka.balancestrategy.LoadBalanceStrategy;
 import akka.enums.RouterGroup;
 import akka.addrstrategy.ClusterAddress;
 import akka.addrstrategy.RouteesAddress;
@@ -16,35 +18,30 @@ import java.util.*;
  */
 public class AddressStrategy {
 
-    private  Optional<ClusterAddress> clusterAddress;
-
-    private  Optional<RouteesAddress> routees;
+    private  ClusterAddress clusterAddress;
 
 
-    public AddressStrategy(Optional<ClusterAddress> clusterAddress, Optional<RouteesAddress> routees) {
+
+    public AddressStrategy(ClusterAddress clusterAddress) {
         this.clusterAddress = clusterAddress;
-        this.routees = routees;
     }
 
-    public  void prepareLoadAdd(String path, RouterGroup routerGroup) {
-        //路由地址预加载
-        routees.ifPresent(o->o.initReceivers(path, routerGroup));
+    public  Map<Address,ActorRef> prepareLoadAdd(String path, RouterGroup routerGroup) {
         //集群地址列表预加载
-        clusterAddress.ifPresent(o->o.initReceivers(path,null));
+       return clusterAddress.initReceivers(path,null);
     }
 
 
     /**
      * 路由模式下广播 ask回调不支持
      * @param name
-     * @param routerGroup
      * @return
      */
-    public  List<ActorRef> getReceivers(String name,RouterGroup routerGroup) {
-        if (routerGroup != RouterGroup.BROADCAST && routees.isPresent()) {
-            return routees.get().getReceivers(name,routerGroup);
-        }
-       return clusterAddress.orElseThrow(NullPointerException::new).getReceivers(name,routerGroup);
+    public  Map<Address,ActorRef> getReceivers(String name) {
+       return clusterAddress.getReceivers(name);
     }
 
+    public void addSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
+        clusterAddress.addSubcribe(loadBalanceStrategy);
+    }
 }

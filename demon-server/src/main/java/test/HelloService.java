@@ -17,7 +17,7 @@ public class HelloService {
     @ActorRef(name = "test", request_type = RequestType.ASK,routerStrategy = RouterGroup.BROADCAST,askHandle = DefaultAskProcessHandler.class)
     private Sender sender1;
 
-    @ActorRef(name = "test",request_type = RequestType.ASK,routerStrategy = RouterGroup.RANDOM)
+    @ActorRef(name = "test",request_type = RequestType.ASK,routerStrategy = RouterGroup.BALANCE)
     private Sender sender;
 
 

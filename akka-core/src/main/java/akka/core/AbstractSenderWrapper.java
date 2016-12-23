@@ -1,10 +1,15 @@
 package akka.core;
 
 import akka.actor.ActorRef;
+import akka.actor.Address;
+import akka.balancestrategy.LoadBalanceStrategy;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
@@ -18,11 +23,18 @@ public abstract class AbstractSenderWrapper implements Sender{
 
     private AbstractAkkaSystem akkaSystem;
 
+    private LoadBalanceStrategy loadBalanceStrategy;
+
 
     protected AbstractSenderWrapper(String gettersKey,RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
         this.gettersKey = gettersKey;
         this.routerGroup = routerGroup;
         this.akkaSystem = akkaSystem;
+        final AddressStrategy addressStrategy = akkaSystem.getAddressStrategy();
+        //地址预加载
+        loadBalanceStrategy = new LoadBalanceStrategy(addressStrategy.prepareLoadAdd(gettersKey, routerGroup));
+        //为策略加入监听
+        addressStrategy.addSubcribe(loadBalanceStrategy);
     }
 
 
@@ -31,7 +43,11 @@ public abstract class AbstractSenderWrapper implements Sender{
      * @return
      */
     protected List<ActorRef> getGetters() {
-        return akkaSystem.getAddressStrategy().getReceivers(this.gettersKey, routerGroup);
+        Map<Address,ActorRef> refs = akkaSystem.getAddressStrategy().getReceivers(this.gettersKey);
+        if(routerGroup == RouterGroup.BROADCAST){
+            return refs.values().stream().collect(Collectors.toList());
+        }
+        return Arrays.asList(loadBalanceStrategy.router(refs,routerGroup));
     }
 
 

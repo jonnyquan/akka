@@ -46,15 +46,16 @@ public abstract class AbstractAkkaSystem implements Akka {
         }
         logger.info("actor system创建完毕");
         ClusterAddress clusterAddress = null;
-        RouteesAddress routeesAddress = null;
+       // RouteesAddress routeesAddress = null;
         if (Constant.WITH_CLUSTER) {
             clusterAddress = new ClusterAddress(system);
             system.actorOf(Props.create(ClusterListener.class,clusterAddress));
         }
-        if (Constant.WITH_ROUTER){
+       /* if (Constant.WITH_ROUTER){
             routeesAddress = new RouteesAddress(system);
-        }
-        addressStrategy = new AddressStrategy(Optional.ofNullable(clusterAddress),Optional.ofNullable(routeesAddress));
+        }*/
+       //集群地址策略管理初始化
+        addressStrategy = new AddressStrategy(clusterAddress);
         logger.info("actor system 扩展功能启动完毕");
     }
 

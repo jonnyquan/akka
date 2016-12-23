@@ -8,10 +8,18 @@ import akka.cluster.ClusterEvent;
 import akka.cluster.Member;
 import akka.core.AddressStrategy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ruancl@xkeshi.com on 16/9/29.
+ *
+ * clusterAddress需要监听集群的变动
  */
 public class ClusterListener extends UntypedActor {
+
+    //防止启动时候up操作 判断下该地址是否已经有存在
+    private List<Address> addresses;
 
     Cluster cluster;
 
@@ -20,6 +28,7 @@ public class ClusterListener extends UntypedActor {
     public ClusterListener(ClusterAddress clusterAddress) {
         this.clusterAddress = clusterAddress;
         this.cluster = Cluster.get(getContext().system());
+        this.addresses = new ArrayList<>();
     }
 
     @Override
@@ -38,7 +47,12 @@ public class ClusterListener extends UntypedActor {
         if (o instanceof ClusterEvent.MemberUp) {
             ClusterEvent.MemberUp memberUp = (ClusterEvent.MemberUp) o;
             Member member = memberUp.member();
-            clusterAddress.addressUp(member.address());
+            Address address = member.address();
+            if(!addresses.contains(address)) {
+                addresses.add(address);
+            }else{
+                clusterAddress.addressUp(member.address());
+            }
             System.out.println("member up :" + member);
         } else if (o instanceof ClusterEvent.MemberRemoved) {
             System.out.println("member removed :" + ((ClusterEvent.MemberRemoved) o).member());

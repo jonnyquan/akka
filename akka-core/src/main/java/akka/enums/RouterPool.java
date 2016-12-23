@@ -17,25 +17,25 @@ public enum RouterPool {
 
     ROBIN{
         @Override
-        Pool getPool(int num) {
+        public Pool getPool(int num) {
             return new RoundRobinPool(num);
         }
     }, RANDOM{
         @Override
-        Pool getPool(int num) {
+        public Pool getPool(int num) {
             return new RandomPool(num);
         }
     }, BALANCE{
         @Override
-        Pool getPool(int num) {
+        public Pool getPool(int num) {
             return new BalancingPool(num);
         }
     }, CONSISTENTHASH{
         @Override
-        Pool getPool(int num) {
+       public Pool getPool(int num) {
             return new ConsistentHashingPool(num);
         }
     };
 
-    abstract Pool getPool(int num);
+    public abstract Pool getPool(int num);
 }

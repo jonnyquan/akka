@@ -1,12 +1,10 @@
 package akka.addrstrategy;
 
 import akka.actor.*;
+import akka.balancestrategy.LoadBalance;
+import akka.balancestrategy.LoadBalanceStrategy;
 import akka.cluster.Cluster;
 import akka.cluster.Member;
-import akka.core.AbstractAkkaSystem;
-import akka.core.ActorRefMap;
-import akka.dispatch.Futures;
-import akka.dispatch.Mapper;
 import akka.dispatch.OnFailure;
 import akka.dispatch.OnSuccess;
 import akka.enums.RouterGroup;
@@ -20,15 +18,14 @@ import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
+ *
+ *
  */
 public class ClusterAddress {
 
@@ -45,21 +42,52 @@ public class ClusterAddress {
 
     private final FiniteDuration finiteDuration;
 
+    private  List<LoadBalance> loadBalances;
+
 
     public ClusterAddress(ActorSystem system) {
         this.system = system;
         this.map = new HashMap<>(0);
         this.finiteDuration = Duration.create(TIME, TimeUnit.MILLISECONDS);
+        this.loadBalances = new ArrayList<>();
     }
 
-    public void initReceivers(String path, RouterGroup routerGroup) {
+    private void selectActor(Address addr,String path,final CountDownLatch countDownLatch){
+        final ExecutionContextExecutor executionContextExecutor = system.dispatcher();
+        Future<ActorRef> future = system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).resolveOne(finiteDuration);
+        future.onSuccess(new OnSuccess<ActorRef>() {
+            @Override
+            public void onSuccess(ActorRef actorRef) throws Throwable {
+                logger.info(addr+":"+path+"地址被发现"+System.currentTimeMillis());
+                if(countDownLatch!=null){
+                    countDownLatch.countDown();
+                }
+                Map<Address,ActorRef> refs = map.get(path);
+                refs.put(addr, actorRef);
+            }
+        },executionContextExecutor);
+        future.onFailure(new OnFailure() {
+            @Override
+            public void onFailure(Throwable throwable) throws Throwable {
+                if(countDownLatch!=null){
+                    countDownLatch.countDown();
+                }
+            }
+        },executionContextExecutor);
+    }
 
-        List<ActorRefMap> actorRefs = getActorRefs(path);
+    /**
+     * 发射初始化地址时候  吧需要监听的负载均衡类加入list
+     * @param path
+     * @param routerGroup
+     */
+    public Map<Address,ActorRef> initReceivers(String path, RouterGroup routerGroup) {
+
+        Map<Address,ActorRef> actorRefs = map.get(path);
         if (actorRefs != null) {
-            return;
+            return actorRefs;
         }
-        actorRefs = new ArrayList<>();
-        final List<ActorRefMap> refs = actorRefs;
+        actorRefs = new HashMap<>();
         addMap(path, actorRefs);
         SortedSet<Member> memberSortedSet = Cluster.get(system).readView().members();
         if (memberSortedSet.size() == 0) {
@@ -67,27 +95,10 @@ public class ClusterAddress {
         }
         final CountDownLatch countDownLatch = new CountDownLatch(memberSortedSet.size());
         Iterator<Member> iterator = memberSortedSet.iterator();
-        final ExecutionContextExecutor executionContextExecutor = system.dispatcher();
         while(iterator.hasNext()){
             Member member = iterator.next();
             Address addr = member.address();
-            Future<ActorRef> future = system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).resolveOne(finiteDuration);
-                    future.onSuccess(new OnSuccess<ActorRef>() {
-                @Override
-                public void onSuccess(ActorRef actorRef) throws Throwable {
-                    logger.info(addr+":"+path+"地址被发现"+System.currentTimeMillis());
-                    countDownLatch.countDown();
-                    synchronized (refs) {
-                        refs.add(new ActorRefMap(addr, actorRef));
-                    }
-                }
-            },executionContextExecutor);
-            future.onFailure(new OnFailure() {
-                @Override
-                public void onFailure(Throwable throwable) throws Throwable {
-                    countDownLatch.countDown();
-                }
-            },executionContextExecutor);
+            selectActor(addr,path,countDownLatch);
         }
         if(countDownLatch.getCount()>0){
             try {
@@ -97,15 +108,49 @@ public class ClusterAddress {
             }
         }
         logger.info(path+":接收地址初始化成功cluster");
+        return map.get(path);
     }
 
+
+
+    public  void addMap(String key, Map<Address,ActorRef> actorRefMaps) {
+        if (map.containsKey(key)) {
+            throw new IllegalArgumentException("请勿重复生成消息任务");
+        }
+            map.put(key, actorRefMaps);
+    }
+
+
+
+    public Map<Address,ActorRef> getReceivers(String name){
+        Map<Address,ActorRef> refs = map.get(name);
+        if (refs==null || refs.size()==0) {
+            System.out.println("暂无可用客户端接收消息 客户端已下线 或者 未启用集群监听功能");
+            return null;
+        }
+        return refs;
+    }
+
+
+    /**
+     * 部分路由策略类需要监听 actorRef的变动
+     */
+    private void nodifyListener(Map<Address,ActorRef> actorRefMap){
+        loadBalances.stream().filter(o->o.needListen()).forEach(o->o.update(actorRefMap));
+    }
+
+    public void addSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
+        loadBalances.addAll(loadBalanceStrategy.getLoadBalances());
+    }
     /**
      * 当机子上线时候  先剔除原先该机子的actor  并重新讲actorRef放入
      * @param address
      */
     public void addressUp(Address address){
+        logger.info(address+"上线,actor重载");
         for(String key : map.keySet()){
-
+            selectActor(address,key,null);
+            nodifyListener(map.get(key));
         }
     }
 
@@ -115,35 +160,17 @@ public class ClusterAddress {
      * @param address
      */
     public void deleteAddress(Address address) {
-            deleteActorRef(address);
+
+        logger.info(address+"掉线,actor移除");
+        deleteActorRef(address);
     }
 
 
     private void deleteActorRef(Address address) {
-            for (String key : map.keySet()) {
-                map.get(key).remove(address);
-            }
-    }
-
-
-    public synchronized void addMap(String key, List<ActorRefMap> actorRefMaps) {
-        if (map.containsKey(key)) {
-            throw new IllegalArgumentException("请勿重复生成消息任务");
-        }
-        synchronized (map) {
-            map.put(key, actorRefMaps);
+        for (String key : map.keySet()) {
+            map.get(key).remove(address);
         }
     }
 
 
-
-    public List<ActorRef> getReceivers(String name,RouterGroup routerGroup){
-        Map<Address,ActorRef> refs = map.get(name);
-        if (refs==null || refs.size()==0) {
-            System.out.println("暂无可用客户端接收消息 客户端已下线 或者 未启用集群监听功能");
-            return null;
-        }
-        Collector.of(refs.values());
-        return Arrays.asList(refs.values());
-    }
 }

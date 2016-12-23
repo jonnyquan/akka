@@ -49,8 +49,6 @@ public class AkkaSystem extends AbstractAkkaSystem {
      * @return
      */
     private Sender createTellMsgWrapper(final String name,final RouterGroup routerGroup) {
-        //地址预加载
-        getAddressStrategy().prepareLoadAdd(name, routerGroup);
         return new TellSenderWrapper(
                 name,
                 routerGroup,
@@ -68,8 +66,6 @@ public class AkkaSystem extends AbstractAkkaSystem {
      * @return
      */
     private Sender createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler,final RouterGroup routerGroup) {
-        //地址预加载
-        getAddressStrategy().prepareLoadAdd(name, routerGroup);
         return new AskSenderWrapper<>(
                 name,
                 askProcessHandler,
