@@ -27,7 +27,7 @@ public abstract class AbstractLoadBalance implements LoadBalance {
 
     @Override
     public ActorRef router(Map<Address,ActorRef> actorRefs) {
-        if(!needListen()){
+        if(!needListenAddr()){
             return notNeedListenStrategy(actorRefs);
         }else{
             return needListenStrategy();

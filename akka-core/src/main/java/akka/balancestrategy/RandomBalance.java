@@ -3,12 +3,12 @@ package akka.balancestrategy;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
+import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -23,12 +23,22 @@ public class RandomBalance extends AbstractLoadBalance {
     }
 
     @Override
-    public boolean needListen() {
+    public boolean needListenAddr() {
         return false;
     }
 
     @Override
-    public void update(Map<Address, ActorRef> map) {
+    public boolean needListenStatus() {
+        return false;
+    }
+
+    @Override
+    public void updateAddr(Map<Address, ActorRef> map) {
+
+    }
+
+    @Override
+    public void updateServerStatu(Iterable<NodeMetrics> nodeMetrics) {
 
     }
 

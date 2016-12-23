@@ -4,6 +4,7 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Address;
 import akka.balancestrategy.LoadBalanceStrategy;
+import akka.balancestrategy.ServerStatus;
 import akka.enums.RouterGroup;
 import akka.addrstrategy.ClusterAddress;
 import akka.addrstrategy.RouteesAddress;
@@ -20,10 +21,12 @@ public class AddressStrategy {
 
     private  ClusterAddress clusterAddress;
 
+    private ServerStatus serverStatus;
 
 
-    public AddressStrategy(ClusterAddress clusterAddress) {
+    public AddressStrategy(ClusterAddress clusterAddress, ServerStatus serverStatus) {
         this.clusterAddress = clusterAddress;
+        this.serverStatus = serverStatus;
     }
 
     public  Map<Address,ActorRef> prepareLoadAdd(String path, RouterGroup routerGroup) {
@@ -41,7 +44,11 @@ public class AddressStrategy {
        return clusterAddress.getReceivers(name);
     }
 
-    public void addSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
+    public void onAddressSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
         clusterAddress.addSubcribe(loadBalanceStrategy);
+    }
+
+    public void onServerSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
+        serverStatus.onServerSubcribe(loadBalanceStrategy);
     }
 }

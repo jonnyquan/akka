@@ -16,7 +16,7 @@ public class MainSpring {
 
         HelloService greetService = context.getBean(HelloService.class);
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

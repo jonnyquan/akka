@@ -136,11 +136,11 @@ public class ClusterAddress {
      * 部分路由策略类需要监听 actorRef的变动
      */
     private void nodifyListener(Map<Address,ActorRef> actorRefMap){
-        loadBalances.stream().filter(o->o.needListen()).forEach(o->o.update(actorRefMap));
+        loadBalances.forEach(o->o.updateAddr(actorRefMap));
     }
 
     public void addSubcribe(LoadBalanceStrategy loadBalanceStrategy) {
-        loadBalances.addAll(loadBalanceStrategy.getLoadBalances());
+        loadBalances.addAll(loadBalanceStrategy.getLoadBalances().stream().filter(o->o.needListenAddr()).collect(Collectors.toList()));
     }
     /**
      * 当机子上线时候  先剔除原先该机子的actor  并重新讲actorRef放入

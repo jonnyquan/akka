@@ -4,7 +4,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterListener;
 import akka.addrstrategy.ClusterAddress;
-import akka.addrstrategy.RouteesAddress;
+import akka.balancestrategy.ServerStatus;
 import akka.cluster.Cluster;
 import akka.msg.Constant;
 import com.typesafe.config.Config;
@@ -12,7 +12,6 @@ import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -46,16 +45,17 @@ public abstract class AbstractAkkaSystem implements Akka {
         }
         logger.info("actor system创建完毕");
         ClusterAddress clusterAddress = null;
+        ServerStatus serverStatus = null;
        // RouteesAddress routeesAddress = null;
         if (Constant.WITH_CLUSTER) {
             clusterAddress = new ClusterAddress(system);
-            system.actorOf(Props.create(ClusterListener.class,clusterAddress));
+            serverStatus = new ServerStatus();
+            system.actorOf(Props.create(ClusterListener.class,clusterAddress,serverStatus));
         }
        /* if (Constant.WITH_ROUTER){
             routeesAddress = new RouteesAddress(system);
         }*/
-       //集群地址策略管理初始化
-        addressStrategy = new AddressStrategy(clusterAddress);
+        addressStrategy = new AddressStrategy(clusterAddress,serverStatus);
         logger.info("actor system 扩展功能启动完毕");
     }
 

@@ -2,10 +2,10 @@ package akka.balancestrategy;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
+import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,16 +27,26 @@ public class RoundRobinBalance extends AbstractLoadBalance {
     }
 
     @Override
-    public boolean needListen() {
+    public boolean needListenAddr() {
         return true;
     }
 
     @Override
-    public void update(Map<Address, ActorRef> map) {
+    public boolean needListenStatus() {
+        return false;
+    }
+
+    @Override
+    public void updateAddr(Map<Address, ActorRef> map) {
         synchronized (actorRefs){
             actorRefs.clear();
             map.values().forEach(o->actorRefs.push(o));
         }
+    }
+
+    @Override
+    public void updateServerStatu(Iterable<NodeMetrics> nodeMetrics) {
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package akka.balancestrategy;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
+import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
 import java.util.Map;
@@ -15,15 +16,23 @@ public interface LoadBalance {
 
     /**
      *
-     * @return ture 需要监听(必须实现update)  false不监听
+     * @return ture 需要监听地址(必须实现update)  false不监听
      */
-   boolean needListen();
+   boolean needListenAddr();
+
+    /**
+     * 监听服务器状态
+     * @return
+     */
+    boolean needListenStatus();
 
     /**
      * needListen true需要实现
      * @param map
      */
-    void update(Map<Address,ActorRef> map);
+    void updateAddr(Map<Address,ActorRef> map);
+
+    void updateServerStatu(Iterable<NodeMetrics> nodeMetrics);
 
     /**
      *

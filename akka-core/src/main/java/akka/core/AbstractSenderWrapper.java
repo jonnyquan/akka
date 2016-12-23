@@ -2,6 +2,7 @@ package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
+import akka.balancestrategy.LoadBalance;
 import akka.balancestrategy.LoadBalanceStrategy;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
@@ -33,8 +34,9 @@ public abstract class AbstractSenderWrapper implements Sender{
         final AddressStrategy addressStrategy = akkaSystem.getAddressStrategy();
         //地址预加载
         loadBalanceStrategy = new LoadBalanceStrategy(addressStrategy.prepareLoadAdd(gettersKey, routerGroup));
-        //为策略加入监听
-        addressStrategy.addSubcribe(loadBalanceStrategy);
+        //为地址管理加入观察者 服务器观察者 观察地址状态变换 服务器状态变换
+        addressStrategy.onAddressSubcribe(loadBalanceStrategy);
+        addressStrategy.onServerSubcribe(loadBalanceStrategy);
     }
 
 
