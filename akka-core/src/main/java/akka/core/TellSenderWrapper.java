@@ -6,14 +6,14 @@ import akka.msg.Message;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
- *
- *   tell模式消息发送
+ * <p>
+ * tell模式消息发送
  */
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name,RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
-        super(name, routerGroup,akkaSystem);
+    public TellSenderWrapper(String name, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        super(name, routerGroup, akkaSystem);
     }
 
     @Override

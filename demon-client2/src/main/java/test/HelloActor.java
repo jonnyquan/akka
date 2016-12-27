@@ -2,7 +2,6 @@ package test;
 
 import akka.actors.AbstractActor;
 import akka.anntations.Actor;
-import akka.enums.RouterGroup;
 import akka.enums.RouterPool;
 import akka.msg.Message;
 
@@ -15,7 +14,7 @@ public class HelloActor extends AbstractActor {
 
     @Override
     public void handleMsg(Message message) {
-        System.out.println(message.getContent()+"  : " + Thread.currentThread());
+        System.out.println(message.getContent() + "  : " + Thread.currentThread());
         reply(new Message("你好"));
     }
 }

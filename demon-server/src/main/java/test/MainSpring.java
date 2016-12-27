@@ -13,7 +13,6 @@ public class MainSpring {
         ApplicationContext context = new ClassPathXmlApplicationContext("application.xml");
 
 
-
         HelloService greetService = context.getBean(HelloService.class);
 
         for (int i = 0; i < 100; i++) {

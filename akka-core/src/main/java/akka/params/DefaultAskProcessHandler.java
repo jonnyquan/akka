@@ -2,6 +2,8 @@ package akka.params;
 
 import akka.actor.ActorRef;
 import akka.msg.Message;
+import akka.params.AskProcessHandler;
+import akka.params.CutParam;
 import akka.pattern.AskTimeoutException;
 
 import java.util.Iterator;
@@ -23,7 +25,7 @@ public class DefaultAskProcessHandler implements AskProcessHandler<Message, Mess
 
     @Override
     public void onSuccess(ActorRef actorRef, Object o) {
-        System.out.println(actorRef.path() + ":success:-----------object:" + ((Message)o).getContent());
+        System.out.println(actorRef.path() + ":success:-----------object:" + ((Message) o).getContent());
     }
 
     @Override

@@ -1,10 +1,6 @@
 package akka.enums;
 
-import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
-import akka.cluster.metrics.HeapMetricsSelector;
 import akka.routing.*;
-
-import java.util.Collections;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/20.
@@ -15,24 +11,24 @@ import java.util.Collections;
 public enum RouterPool {
 
 
-    ROBIN{
+    ROBIN {
         @Override
         public Pool getPool(int num) {
             return new RoundRobinPool(num);
         }
-    }, RANDOM{
+    }, RANDOM {
         @Override
         public Pool getPool(int num) {
             return new RandomPool(num);
         }
-    }, BALANCE{
+    }, BALANCE {
         @Override
         public Pool getPool(int num) {
             return new BalancingPool(num);
         }
-    }, CONSISTENTHASH{
+    }, CONSISTENTHASH {
         @Override
-       public Pool getPool(int num) {
+        public Pool getPool(int num) {
             return new ConsistentHashingPool(num);
         }
     };

@@ -1,11 +1,10 @@
 package akka;
 
 import akka.annotations.ActorRef;
+import akka.params.DefaultAskProcessHandler;
 import akka.core.Akka;
 import akka.core.Sender;
-import akka.main.AkkaMain;
 import akka.params.AskProcessHandler;
-import akka.params.DefaultAskProcessHandler;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessorAdapter;
 
@@ -13,7 +12,7 @@ import java.lang.reflect.Field;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/10.
- *
+ * <p>
  * 将该对象配置入spring容器 akka随spring启动
  */
 public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapter {
@@ -41,7 +40,7 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
 
     private void autoWireActorRef(Object bean, Field field, ActorRef actorRef) {
         try {
-            if(field.getType()!=Sender.class){
+            if (field.getType() != Sender.class) {
                 throw new IllegalAccessError("对象类型错误 必须是sender接口");
             }
             field.setAccessible(true);
@@ -53,15 +52,15 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
                 handle = (AskProcessHandler) handleClazz.newInstance();
             }
             Sender sender;
-            switch (actorRef.request_type()){
+            switch (actorRef.request_type()) {
                 case TELL:
-                    sender = akka.createTellSender(actorRef.name(),actorRef.routerStrategy());
+                    sender = akka.createTellSender(actorRef.name(), actorRef.routerStrategy());
                     break;
                 case ASK:
-                    sender = akka.createAskSender(actorRef.name(),handle,actorRef.routerStrategy());
+                    sender = akka.createAskSender(actorRef.name(), handle, actorRef.routerStrategy());
                     break;
                 default:
-                    sender = akka.createTellSender(actorRef.name(),actorRef.routerStrategy());
+                    sender = akka.createTellSender(actorRef.name(), actorRef.routerStrategy());
                     break;
             }
             field.set(bean, sender);

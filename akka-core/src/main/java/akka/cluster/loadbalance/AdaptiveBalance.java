@@ -1,4 +1,4 @@
-package akka.balancestrategy;
+package akka.cluster.loadbalance;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
@@ -22,7 +22,7 @@ public class AdaptiveBalance extends AbstractLoadBalance {
 
     private Random random = new Random();
 
-    private ConcurrentHashMap<Address,Integer> addrScore = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<Address, Integer> addrScore = new ConcurrentHashMap<>();
 
     @Override
     public boolean matchRouterGroup(RouterGroup routerGroup) {
@@ -47,21 +47,21 @@ public class AdaptiveBalance extends AbstractLoadBalance {
 
     @Override
     public void updateServerStatu(Iterable<NodeMetrics> nodeMetrics) {
-        Map<Address,Long> useHeap = new HashMap<>();
+        Map<Address, Long> useHeap = new HashMap<>();
         Long totalHeap = 0l;
-        for(NodeMetrics nodeMetric : nodeMetrics){
+        for (NodeMetrics nodeMetric : nodeMetrics) {
             Address address = nodeMetric.address();
             //根据内存占用率进行分配
             StandardMetrics.HeapMemory heap = StandardMetrics.extractHeapMemory(nodeMetric);
             Long usedHeap = heap.used();
-            useHeap.put(address,usedHeap);
+            useHeap.put(address, usedHeap);
             totalHeap += usedHeap;
         }
         //打分 // TODO: 2016/12/23 分数打反了  均衡算法需要调整
-        for(Address addr : useHeap.keySet()){
+        for (Address addr : useHeap.keySet()) {
             long heap = useHeap.get(addr);
-            int sc = (int)(heap*100/totalHeap);
-            addrScore.put(addr,sc);
+            int sc = (int) (heap * 100 / totalHeap);
+            addrScore.put(addr, sc);
         }
     }
 
@@ -71,16 +71,16 @@ public class AdaptiveBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef notNeedListenStrategy(Map<Address,ActorRef> actorRefs) {
-        List<Map.Entry<Address,ActorRef>> entryList = actorRefs.entrySet().stream().collect(Collectors.toList());
-        List<Map.Entry<Address,Integer>> entryListScore = addrScore.entrySet().stream().collect(Collectors.toList());
+    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
+        List<Map.Entry<Address, ActorRef>> entryList = actorRefs.entrySet().stream().collect(Collectors.toList());
+        List<Map.Entry<Address, Integer>> entryListScore = addrScore.entrySet().stream().collect(Collectors.toList());
         int size = entryListScore.size();
         int trueSize = entryList.size();
 
         /**
          * 服务器状态还未初始化  或者 实际有服务器掉线,状态还未更新  都直接返回第一台服务器
          */
-        if(size==0){
+        if (size == 0) {
             return entryList.get(0).getValue();
         }
 
@@ -89,7 +89,7 @@ public class AdaptiveBalance extends AbstractLoadBalance {
 
         //获取服务器状态
         //*********************************
-        for(int i=0 ;i<size;i++){
+        for (int i = 0; i < size; i++) {
             int score = entryListScore.get(i).getValue();
             scores[i] = score;
             coreCount += scores[i];
@@ -98,16 +98,16 @@ public class AdaptiveBalance extends AbstractLoadBalance {
         int[] randomScore = new int[size];
 
         int randomInt = random.nextInt(coreCount);
-        for(int i=0 ;i<size;i++){
+        for (int i = 0; i < size; i++) {
             int s;
             int last = 0;
-            if(i > 0){
-                last = randomScore[i-1];
+            if (i > 0) {
+                last = randomScore[i - 1];
             }
             s = scores[i] + last;
 
-            if(randomInt<s && randomInt>=last){
-                if(i>=trueSize){
+            if (randomInt < s && randomInt >= last) {
+                if (i >= trueSize) {
                     return entryList.get(0).getValue();
                 }
                 return entryList.get(i).getValue();

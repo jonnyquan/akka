@@ -2,7 +2,7 @@ package akka.params;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/9.
- *  多消息ask 集中处理时候 入参格式
+ * 多消息ask 集中处理时候 入参格式
  */
 public class CutParam<T> {
 

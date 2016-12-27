@@ -25,10 +25,8 @@ import java.util.Optional;
  */
 public class AkkaInit extends AkkaMain {
 
-    private static final Logger logger = LoggerFactory.getLogger(AkkaInit.class);
-
     public final static String SCAN_PATH_PATTEN = "classpath:*/**/*.class";
-
+    private static final Logger logger = LoggerFactory.getLogger(AkkaInit.class);
 
     @Override
     protected Optional<List<RegisterBean>> scanPackage() {

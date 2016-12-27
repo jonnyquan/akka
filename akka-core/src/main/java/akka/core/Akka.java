@@ -11,6 +11,7 @@ public interface Akka {
 
     /**
      * actor注册
+     *
      * @param registerBean
      * @return
      */
@@ -23,10 +24,9 @@ public interface Akka {
     Sender createAskSender(String name, RouterGroup routerGroup);
 
     /**
-     *
      * @param name
-     * @param askProcessHandler  ask模式下面自定义处理器
-     * @param routerGroup   路由模式
+     * @param askProcessHandler ask模式下面自定义处理器
+     * @param routerGroup       路由模式
      * @return
      */
     Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup);
@@ -37,7 +37,7 @@ public interface Akka {
      * 单工
      */
 
-    Sender createTellSender(String name,RouterGroup routerGroup);
+    Sender createTellSender(String name, RouterGroup routerGroup);
 
 
     Sender createTellSender(String name);

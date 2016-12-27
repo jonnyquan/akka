@@ -1,9 +1,9 @@
-package akka.balancestrategy;
+package akka.cluster.loadbalance;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
+import akka.cluster.LoadBalance;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,24 +12,23 @@ import java.util.Map;
 public abstract class AbstractLoadBalance implements LoadBalance {
 
 
-
     /**
-     * @needListen true 实现该接口
      * @return
+     * @needListen true 实现该接口
      */
     protected abstract ActorRef needListenStrategy();
 
     /**
-     * @needListen false 实现该接口
      * @return
+     * @needListen false 实现该接口
      */
-    protected abstract ActorRef notNeedListenStrategy(Map<Address,ActorRef> actorRefs);
+    protected abstract ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs);
 
     @Override
-    public ActorRef router(Map<Address,ActorRef> actorRefs) {
-        if(!needListenAddr()){
+    public ActorRef router(Map<Address, ActorRef> actorRefs) {
+        if (!needListenAddr()) {
             return notNeedListenStrategy(actorRefs);
-        }else{
+        } else {
             return needListenStrategy();
         }
     }

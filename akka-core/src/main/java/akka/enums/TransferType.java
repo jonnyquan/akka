@@ -5,5 +5,5 @@ package akka.enums;
  * 路由转发  集群广播
  */
 public enum TransferType {
-    ROUTER,BROADCAST
+    ROUTER, BROADCAST
 }

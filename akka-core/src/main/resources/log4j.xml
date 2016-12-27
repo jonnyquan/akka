@@ -25,7 +25,7 @@
 
     <appender name="file-error" class="org.apache.log4j.DailyRollingFileAppender">
         <param name="File" value="/home/www/logs/akka-common/akka-common-error.log"/>
-        <param name="Threshold" value="error" />
+        <param name="Threshold" value="error"/>
         <param name="DatePattern" value="'.'yyyy-MM-dd"/>
         <param name="ImmediateFlush" value="true"/>
         <param name="Append" value="true"/>

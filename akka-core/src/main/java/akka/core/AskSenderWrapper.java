@@ -18,21 +18,19 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
- *
+ * <p>
  * ask 方式的消息发送
  */
 public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
     private final Long time = 5000l;
-
+    private final ExecutionContext ec;
     private AskProcessHandler<S, R> askProcessHandler;
 
-    private final ExecutionContext ec;
 
-
-    public AskSenderWrapper(String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
-        super(gettersK, routerGroup,akkaSystem);
+    public AskSenderWrapper(String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        super(gettersK, routerGroup, akkaSystem);
         this.askProcessHandler = askProcessHandler;
         this.ec = akkaSystem.getSystem().dispatcher();
     }
@@ -72,14 +70,14 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
                 ec);
 
         //Future<R> back =
-                aggregate.map(
+        aggregate.map(
                 new Mapper<Iterable<Object>, R>() {
                     public R apply(Iterable<Object> coll) {
                         return askProcessHandler.getReturn(coll.iterator());
                     }
                 }
                 , ec);
-       // Patterns.pipe(back, ec).to(getSender());
+        // Patterns.pipe(back, ec).to(getSender());
         return null;
     }
 

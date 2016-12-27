@@ -1,4 +1,4 @@
-package akka.balancestrategy;
+package akka.cluster.loadbalance;
 
 
 import akka.actor.ActorRef;
@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 public class RandomBalance extends AbstractLoadBalance {
 
     private Random random = new Random();
+
     @Override
     public boolean matchRouterGroup(RouterGroup routerGroup) {
         return routerGroup == RouterGroup.RANDOM;
@@ -49,7 +50,7 @@ public class RandomBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef notNeedListenStrategy(Map<Address,ActorRef> actorRefs) {
+    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
         int randomNum = random.nextInt(actorRefs.size());
         List<ActorRef> list = actorRefs.values().stream().collect(Collectors.toList());
         return list.get(randomNum);

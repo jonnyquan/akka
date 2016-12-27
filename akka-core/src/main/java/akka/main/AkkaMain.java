@@ -25,6 +25,8 @@ public class AkkaMain {
     private static final Logger logger = LoggerFactory.getLogger(AkkaMain.class);
 
     private final Akka akkaSystem;
+    private final String ROOT_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
+    private final String EXT = ".class";
 
     protected AkkaMain() {
         this.akkaSystem = createSystem(Constant.SYSTEM_NAME);
@@ -32,16 +34,16 @@ public class AkkaMain {
 
     /**
      * 启动方法入口
+     *
      * @return
      */
-    public static Akka initAkka(){
+    public static Akka initAkka() {
         return new AkkaMain().init().getAkka();
     }
 
     private Akka getAkka() {
         return akkaSystem;
     }
-
 
     private AkkaMain init() {
         scanPackage().ifPresent(list ->
@@ -52,16 +54,17 @@ public class AkkaMain {
 
         return this;
     }
-    private void scanFile(File file,List<RegisterBean> classes){
-        if(file.isDirectory()){
-            for(File ff : file.listFiles(f->f.getName().endsWith(EXT) || f.isDirectory())){
-                scanFile(ff,classes);
+
+    private void scanFile(File file, List<RegisterBean> classes) {
+        if (file.isDirectory()) {
+            for (File ff : file.listFiles(f -> f.getName().endsWith(EXT) || f.isDirectory())) {
+                scanFile(ff, classes);
             }
-        }else{
+        } else {
             try {
-                Class clazz = Class.forName(file.getAbsolutePath().replace(ROOT_PATH,"").replace(EXT,"").replace("/","."));
+                Class clazz = Class.forName(file.getAbsolutePath().replace(ROOT_PATH, "").replace(EXT, "").replace("/", "."));
                 Actor actor = (Actor) clazz.getAnnotation(Actor.class);
-                if(actor == null){
+                if (actor == null) {
                     return;
                 }
                 if (clazz.getSuperclass() != AbstractActor.class) {
@@ -75,21 +78,16 @@ public class AkkaMain {
         }
     }
 
-    private final String ROOT_PATH = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-
-    private final String EXT = ".class";
-
     protected Optional<List<RegisterBean>> scanPackage() {
         List<RegisterBean> classes = new ArrayList();
         File file = new File(ROOT_PATH);
-        scanFile(file,classes);
-       return Optional.ofNullable(classes);
+        scanFile(file, classes);
+        return Optional.ofNullable(classes);
     }
 
     private Akka createSystem(String systemName) {
         return new AkkaSystem(systemName);
     }
-
 
 
 }

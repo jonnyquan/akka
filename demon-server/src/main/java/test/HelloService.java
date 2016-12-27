@@ -1,11 +1,11 @@
 package test;
 
 import akka.annotations.ActorRef;
+import akka.params.DefaultAskProcessHandler;
 import akka.core.Sender;
 import akka.enums.RequestType;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
-import akka.params.DefaultAskProcessHandler;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class HelloService {
 
-    @ActorRef(name = "test", request_type = RequestType.ASK,routerStrategy = RouterGroup.BROADCAST,askHandle = DefaultAskProcessHandler.class)
+    @ActorRef(name = "test", request_type = RequestType.ASK, routerStrategy = RouterGroup.BROADCAST, askHandle = DefaultAskProcessHandler.class)
     private Sender sender1;
 
-    @ActorRef(name = "test",request_type = RequestType.ASK,routerStrategy = RouterGroup.BALANCE)
+    @ActorRef(name = "test", request_type = RequestType.ASK, routerStrategy = RouterGroup.BALANCE)
     private Sender sender;
 
 

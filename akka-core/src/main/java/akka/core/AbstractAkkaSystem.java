@@ -3,15 +3,17 @@ package akka.core;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterListener;
-import akka.addrstrategy.ClusterAddress;
-import akka.balancestrategy.ServerStatus;
 import akka.cluster.Cluster;
+import akka.cluster.ClusterInterface;
+import akka.cluster.addrs.ClusterAddress;
 import akka.msg.Constant;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -23,7 +25,7 @@ public abstract class AbstractAkkaSystem implements Akka {
 
     private final ActorSystem system;
 
-    private AddressStrategy addressStrategy;
+    private ClusterInterface clusterInterface;
 
     private String systemName;
 
@@ -32,7 +34,7 @@ public abstract class AbstractAkkaSystem implements Akka {
     public AbstractAkkaSystem(String systemName) {
         this.systemName = systemName;
         Config config = ConfigFactory.load();
-        this.system  = ActorSystem.create(systemName, config);
+        this.system = ActorSystem.create(systemName, config);
         CountDownLatch countDownLatch = new CountDownLatch(1);
         //在节点监听还未成功建立前阻塞消息
         Cluster.get(system).registerOnMemberUp(() -> countDownLatch.countDown());
@@ -44,23 +46,26 @@ public abstract class AbstractAkkaSystem implements Akka {
             }
         }
         logger.info("actor system创建完毕");
-        ClusterAddress clusterAddress = null;
-        ServerStatus serverStatus = null;
-       // RouteesAddress routeesAddress = null;
-        if (Constant.WITH_CLUSTER) {
-            clusterAddress = new ClusterAddress(system);
-            serverStatus = new ServerStatus();
-            system.actorOf(Props.create(ClusterListener.class,clusterAddress,serverStatus));
+        try {
+            Constructor constructor = Constant.CLUSTER_STRATEGY.getConstructor(ActorSystem.class);
+            clusterInterface = (ClusterInterface) constructor.newInstance(system);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
-       /* if (Constant.WITH_ROUTER){
-            routeesAddress = new RouteesAddress(system);
-        }*/
-        addressStrategy = new AddressStrategy(clusterAddress,serverStatus);
+        if (Constant.CLUSTER_STRATEGY == ClusterAddress.class) {
+            system.actorOf(Props.create(ClusterListener.class, (ClusterAddress) clusterInterface));
+        }
         logger.info("actor system 扩展功能启动完毕");
     }
 
-    protected AddressStrategy getAddressStrategy() {
-        return addressStrategy;
+    protected ClusterInterface getClusterInterface() {
+        return clusterInterface;
     }
 
     protected String getSystemName() {
@@ -70,7 +75,6 @@ public abstract class AbstractAkkaSystem implements Akka {
     protected ActorSystem getSystem() {
         return system;
     }
-
 
 
 }

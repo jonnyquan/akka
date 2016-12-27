@@ -1,57 +1,43 @@
 package akka.core;
 
 import akka.actor.ActorRef;
-import akka.actor.Address;
-import akka.balancestrategy.LoadBalance;
-import akka.balancestrategy.LoadBalanceStrategy;
+import akka.cluster.ClusterInterface;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
  * 抽象(集群 与路由)发消息类
  */
-public abstract class AbstractSenderWrapper implements Sender{
+public abstract class AbstractSenderWrapper implements Sender {
 
-    private String gettersKey;
-
+    private final String gettersKey;
+    private ClusterInterface clusterInterface;
     private RouterGroup routerGroup;
 
-    private AbstractAkkaSystem akkaSystem;
 
-    private LoadBalanceStrategy loadBalanceStrategy;
-
-
-    protected AbstractSenderWrapper(String gettersKey,RouterGroup routerGroup,AbstractAkkaSystem akkaSystem) {
-        this.gettersKey = gettersKey;
+    protected AbstractSenderWrapper(String gettersKey, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        this.clusterInterface = akkaSystem.getClusterInterface();
         this.routerGroup = routerGroup;
-        this.akkaSystem = akkaSystem;
-        final AddressStrategy addressStrategy = akkaSystem.getAddressStrategy();
-        //地址预加载
-        loadBalanceStrategy = new LoadBalanceStrategy(addressStrategy.prepareLoadAdd(gettersKey, routerGroup));
-        //为地址管理加入观察者 服务器观察者 观察地址状态变换 服务器状态变换
-        addressStrategy.onAddressSubcribe(loadBalanceStrategy);
-        addressStrategy.onServerSubcribe(loadBalanceStrategy);
+        this.gettersKey = gettersKey;
+        // TODO: 2016/12/27 loadBanlance放枚举类里面处理是错误的 
+        if (clusterInterface.useIdentifyLoadBalance()) {
+            routerGroup.createAndSetLoadBalance();
+        }
+        this.clusterInterface.initReceiversAndBalance(gettersKey, routerGroup);
     }
 
 
     /**
      * 每次消息发送 都会去addressContext获取相应的接收方 actorRef
+     *
      * @return
      */
     protected List<ActorRef> getGetters() {
-        Map<Address,ActorRef> refs = akkaSystem.getAddressStrategy().getReceivers(this.gettersKey);
-        if(routerGroup == RouterGroup.BROADCAST){
-            return refs.values().stream().collect(Collectors.toList());
-        }
-        return Arrays.asList(loadBalanceStrategy.router(refs,routerGroup));
+        return clusterInterface.getReceivers(this.gettersKey, routerGroup);
     }
-
 
 
     /**

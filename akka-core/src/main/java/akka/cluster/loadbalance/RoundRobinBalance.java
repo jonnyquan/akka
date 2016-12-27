@@ -1,4 +1,4 @@
-package akka.balancestrategy;
+package akka.cluster.loadbalance;
 
 import akka.actor.ActorRef;
 import akka.actor.Address;
@@ -14,12 +14,8 @@ import java.util.Map;
 public class RoundRobinBalance extends AbstractLoadBalance {
 
 
-    private LinkedList<ActorRef> actorRefs;
+    private LinkedList<ActorRef> actorRefs = new LinkedList<>();
 
-    public RoundRobinBalance(Map<Address,ActorRef> map) {
-        this.actorRefs = new LinkedList<>();
-        map.values().forEach(o->actorRefs.push(o));
-    }
 
     @Override
     public boolean matchRouterGroup(RouterGroup routerGroup) {
@@ -38,9 +34,9 @@ public class RoundRobinBalance extends AbstractLoadBalance {
 
     @Override
     public void updateAddr(Map<Address, ActorRef> map) {
-        synchronized (actorRefs){
+        synchronized (actorRefs) {
             actorRefs.clear();
-            map.values().forEach(o->actorRefs.push(o));
+            map.values().forEach(o -> actorRefs.push(o));
         }
     }
 
@@ -60,7 +56,7 @@ public class RoundRobinBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef notNeedListenStrategy(Map<Address,ActorRef> actorRefs) {
+    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
         return null;
     }
 }
