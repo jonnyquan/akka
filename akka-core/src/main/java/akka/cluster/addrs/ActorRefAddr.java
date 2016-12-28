@@ -9,6 +9,7 @@ import akka.cluster.Member;
 import akka.dispatch.OnFailure;
 import akka.dispatch.OnSuccess;
 import akka.enums.RouterGroup;
+import akka.params.ActorMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.collection.Iterator;
@@ -38,15 +39,21 @@ public class ActorRefAddr extends ClusterAddress {
     /**
      * 集群的actor地址维护  k: actorName  v:集群中actor引用(思考有没有并发问题)
      */
-    private Map<String, Map<Address, ActorRef>> map;
+    private Map<String, Map<Address, ActorMap>> map;
+
+    /**
+     * 服务器掉线后 先放入offline  等服务器上线时候 从offLine里面捡回来
+     */
+    private Map<String,Map<Address,ActorMap>> offLine;
 
     public ActorRefAddr(ActorSystem system) {
         this.system = system;
         this.map = new HashMap<>(0);
+        this.offLine = new HashMap<>();
         this.finiteDuration = Duration.create(TIME, TimeUnit.MILLISECONDS);
     }
 
-    private void selectActor(Address addr, String path, final CountDownLatch countDownLatch) {
+    private void selectActor(Address addr, String path, final CountDownLatch countDownLatch,final RouterGroup routerGroup) {
         final ExecutionContextExecutor executionContextExecutor = system.dispatcher();
         Future<ActorRef> future = system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).resolveOne(finiteDuration);
         future.onSuccess(new OnSuccess<ActorRef>() {
@@ -56,8 +63,11 @@ public class ActorRefAddr extends ClusterAddress {
                 if (countDownLatch != null) {
                     countDownLatch.countDown();
                 }
-                Map<Address, ActorRef> refs = map.get(path);
-                refs.put(addr, actorRef);
+                Map<Address, ActorMap> refs = map.get(path);
+                LoadBalance loadBalance = routerGroup.createAndGetLoadBalance();
+                //注册监听
+                onSubcribe(loadBalance);
+                refs.put(addr, new ActorMap(addr,actorRef,loadBalance));
             }
         }, executionContextExecutor);
         future.onFailure(new OnFailure() {
@@ -77,7 +87,7 @@ public class ActorRefAddr extends ClusterAddress {
      */
     @Override
     public void initReceiversAndBalance(String path, RouterGroup routerGroup) {
-        Map<Address, ActorRef> actorRefs = map.get(path);
+        Map<Address, ActorMap> actorRefs = map.get(path);
         if (actorRefs != null) {
             return;
         }
@@ -92,7 +102,7 @@ public class ActorRefAddr extends ClusterAddress {
         while (iterator.hasNext()) {
             Member member = iterator.next();
             Address addr = member.address();
-            selectActor(addr, path, countDownLatch);
+            selectActor(addr, path, countDownLatch,routerGroup);
         }
         if (countDownLatch.getCount() > 0) {
             try {
@@ -102,13 +112,9 @@ public class ActorRefAddr extends ClusterAddress {
             }
         }
         logger.info(path + ":接收地址初始化成功cluster");
-        LoadBalance loadBalance = routerGroup.getLoadBalance();
-        loadBalance.updateAddr(map.get(path));
-        //监听地址和服务器状态
-        onSubcribe(loadBalance);
     }
 
-    private void addMap(String key, Map<Address, ActorRef> actorRefMaps) {
+    private void addMap(String key, Map<Address, ActorMap> actorRefMaps) {
         if (map.containsKey(key)) {
             throw new IllegalArgumentException("请勿重复生成消息任务");
         }
@@ -117,12 +123,12 @@ public class ActorRefAddr extends ClusterAddress {
 
     @Override
     public List<ActorRef> getReceivers(String name, RouterGroup routerGroup) {
-        Map<Address, ActorRef> refs = map.get(name);
+        Map<Address, ActorMap> refs = map.get(name);
         if (refs == null || refs.size() == 0) {
             System.out.println("暂无可用客户端接收消息 客户端已下线 或者 未启用集群监听功能");
             return null;
         }
-        LoadBalance loadBalance = routerGroup.getLoadBalance();
+        LoadBalance loadBalance = refs.get(name).getLoadBalance();
         if (loadBalance == null) {
             return refs.values().stream().collect(Collectors.toList());
         }
@@ -138,7 +144,9 @@ public class ActorRefAddr extends ClusterAddress {
     public void addressUp(Address address) {
         logger.info(address + "上线,actor重载");
         for (String key : map.keySet()) {
-            selectActor(address, key, null);
+            //selectActor(address, key, null);
+            //从垃圾桶中恢复
+            map.get(key).put(address,offLine.get(key).get(address));
             nodifyAddrListener(map.get(key));
         }
     }
@@ -152,7 +160,13 @@ public class ActorRefAddr extends ClusterAddress {
     public void addressDown(Address address) {
         logger.info(address + "掉线,actor移除");
         for (String key : map.keySet()) {
-            map.get(key).remove(address);
+            Map<Address,ActorMap> leave = map.get(key);
+            Map<Address,ActorMap> off =  offLine.get(key);
+            if(off == null){
+                off = new HashMap<>();
+            }
+            off.put(address,leave.get(address));
+            leave.remove(address);
             nodifyAddrListener(map.get(key));
         }
     }

@@ -22,10 +22,6 @@ public abstract class AbstractSenderWrapper implements Sender {
         this.clusterInterface = akkaSystem.getClusterInterface();
         this.routerGroup = routerGroup;
         this.gettersKey = gettersKey;
-        // TODO: 2016/12/27 loadBanlance放枚举类里面处理是错误的 
-        if (clusterInterface.useIdentifyLoadBalance()) {
-            routerGroup.createAndSetLoadBalance();
-        }
         this.clusterInterface.initReceiversAndBalance(gettersKey, routerGroup);
     }
 

@@ -61,10 +61,5 @@ public class RouteesAddress implements ClusterInterface {
     }
 
 
-    @Override
-    public Boolean useIdentifyLoadBalance() {
-        return false;
-    }
-
 
 }

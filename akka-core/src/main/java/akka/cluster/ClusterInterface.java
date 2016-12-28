@@ -30,12 +30,5 @@ public interface ClusterInterface {
      */
     List<ActorRef> getReceivers(String gettersKey, RouterGroup routerGroup);
 
-    /**
-     * 是否需要启用自定义路由策略  LoadBalance接口
-     *
-     * @return
-     */
-    Boolean useIdentifyLoadBalance();
-
 
 }

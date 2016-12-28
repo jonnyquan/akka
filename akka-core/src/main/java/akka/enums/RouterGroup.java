@@ -29,7 +29,7 @@ public enum RouterGroup {
         }
 
         @Override
-        public LoadBalance createAndSetLoadBalance() {
+        public LoadBalance createAndGetLoadBalance() {
             return new RoundRobinBalance();
         }
     }, RANDOM{
@@ -39,7 +39,7 @@ public enum RouterGroup {
         }
 
         @Override
-        public LoadBalance createAndSetLoadBalance() {
+        public LoadBalance createAndGetLoadBalance() {
             return new RandomBalance();
         }
     }, BROADCAST{
@@ -49,7 +49,7 @@ public enum RouterGroup {
         }
 
         @Override
-        public LoadBalance createAndSetLoadBalance() {
+        public LoadBalance createAndGetLoadBalance() {
             return null;
         }
     }, BALANCE{
@@ -60,7 +60,7 @@ public enum RouterGroup {
         }
 
         @Override
-        public LoadBalance createAndSetLoadBalance() {
+        public LoadBalance createAndGetLoadBalance() {
             return new AdaptiveBalance();
         }
     }
@@ -74,5 +74,5 @@ public enum RouterGroup {
 
     public abstract Group getGroup(Iterable<String> routeesPaths);
 
-    public abstract LoadBalance createAndSetLoadBalance();
+    public abstract LoadBalance createAndGetLoadBalance();
 }
