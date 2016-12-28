@@ -6,6 +6,7 @@ import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/22.
@@ -30,15 +31,15 @@ public interface LoadBalance {
     /**
      * needListen true需要实现
      *
-     * @param map
+     * @param actorRefMap
      */
-    void updateAddr(Map<Address, ActorRef> map);
+    void updateAddr(Set<Address> actorRefMap);
 
     void updateServerStatu(Iterable<NodeMetrics> nodeMetrics);
 
     /**
-     * @param actorRefs 根据策略可以传null
+     * @param actorRefMap 根据策略可以传null
      * @return
      */
-    ActorRef router(Map<Address, ActorRef> actorRefs);
+    Address router(Set<Address> actorRefMap);
 }

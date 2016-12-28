@@ -4,6 +4,8 @@ import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.LoadBalance;
 
+import java.util.HashSet;
+
 /**
  * Created by ruancl@xkeshi.com on 2016/12/28.
  */
@@ -13,12 +15,19 @@ public class ActorMap {
 
     private ActorRef actorRef;
 
-    private LoadBalance loadBalance;
+    private HashSet<LoadBalance> loadBalances;
 
     public ActorMap(Address address, ActorRef actorRef, LoadBalance loadBalance) {
         this.address = address;
         this.actorRef = actorRef;
-        this.loadBalance = loadBalance;
+        this.loadBalances = new HashSet<>();
+        addBalance(loadBalance);
+    }
+
+    public void addBalance(LoadBalance loadBalance){
+        if(loadBalance!=null){
+            loadBalances.add(loadBalance);
+        }
     }
 
     public Address getAddress() {
@@ -29,8 +38,9 @@ public class ActorMap {
         return actorRef;
     }
 
-    public LoadBalance getLoadBalance() {
-        return loadBalance;
+
+    public HashSet<LoadBalance> getLoadBalances() {
+        return loadBalances;
     }
 
     @Override

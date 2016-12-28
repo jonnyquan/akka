@@ -1,6 +1,5 @@
 package akka.cluster.addrs;
 
-import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.ClusterEvent;
 import akka.cluster.ClusterInterface;
@@ -13,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/21.
@@ -34,15 +33,11 @@ public abstract class ClusterAddress implements ClusterInterface {
         this.addresses = new ArrayList<>();
     }
 
-    @Override
-    public Boolean useIdentifyLoadBalance() {
-        return true;
-    }
-
     /**
      * 部分路由策略类需要监听 actorRef的变动
+     * @param actorRefMap
      */
-    protected void nodifyAddrListener(Map<Address, ActorRef> actorRefMap) {
+    protected void nodifyAddrListener(Set<Address> actorRefMap) {
         addrLoadBalance.forEach(o -> o.updateAddr(actorRefMap));
     }
 

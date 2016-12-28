@@ -9,6 +9,7 @@ import akka.enums.RouterGroup;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,7 +35,7 @@ public class RandomBalance extends AbstractLoadBalance {
     }
 
     @Override
-    public void updateAddr(Map<Address, ActorRef> map) {
+    public void updateAddr(Set<Address> actorRefMap) {
 
     }
 
@@ -45,14 +46,13 @@ public class RandomBalance extends AbstractLoadBalance {
 
 
     @Override
-    protected ActorRef needListenStrategy() {
+    protected Address needListenStrategy() {
         return null;
     }
 
     @Override
-    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
-        int randomNum = random.nextInt(actorRefs.size());
-        List<ActorRef> list = actorRefs.values().stream().collect(Collectors.toList());
-        return list.get(randomNum);
+    protected Address notNeedListenStrategy(Set<Address> actorRefMap) {
+        int randomNum = random.nextInt(actorRefMap.size());
+        return actorRefMap.stream().collect(Collectors.toList()).get(randomNum);
     }
 }

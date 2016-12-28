@@ -7,6 +7,7 @@ import akka.enums.RouterGroup;
 
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/23.
@@ -14,7 +15,7 @@ import java.util.Map;
 public class RoundRobinBalance extends AbstractLoadBalance {
 
 
-    private LinkedList<ActorRef> actorRefs = new LinkedList<>();
+    private LinkedList<Address> actorRefs = new LinkedList<>();
 
 
     @Override
@@ -33,10 +34,10 @@ public class RoundRobinBalance extends AbstractLoadBalance {
     }
 
     @Override
-    public void updateAddr(Map<Address, ActorRef> map) {
+    public void updateAddr(Set<Address> actorRefMap) {
         synchronized (actorRefs) {
             actorRefs.clear();
-            map.values().forEach(o -> actorRefs.push(o));
+            actorRefMap.forEach(o -> actorRefs.push(o));
         }
     }
 
@@ -46,8 +47,8 @@ public class RoundRobinBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef needListenStrategy() {
-        ActorRef back;
+    protected Address needListenStrategy() {
+        Address back;
         synchronized (actorRefs) {
             back = actorRefs.pollLast();
             actorRefs.push(back);
@@ -56,7 +57,7 @@ public class RoundRobinBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
+    protected Address notNeedListenStrategy(Set<Address> actorRefMap) {
         return null;
     }
 }

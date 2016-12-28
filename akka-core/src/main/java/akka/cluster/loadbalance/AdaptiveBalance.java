@@ -6,10 +6,7 @@ import akka.cluster.metrics.NodeMetrics;
 import akka.cluster.metrics.StandardMetrics;
 import akka.enums.RouterGroup;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -31,7 +28,7 @@ public class AdaptiveBalance extends AbstractLoadBalance {
 
     @Override
     public boolean needListenAddr() {
-        return false;
+        return true;
     }
 
     @Override
@@ -40,8 +37,17 @@ public class AdaptiveBalance extends AbstractLoadBalance {
     }
 
     @Override
-    public void updateAddr(Map<Address, ActorRef> map) {
-
+    public void updateAddr(Set<Address> actorRefMap) {
+        Iterator<Address> iterator = actorRefMap.iterator();
+        while(iterator.hasNext()){
+            Address address = iterator.next();
+            if(!addrScore.contains(address)){
+                addrScore.put(address,1);
+            }
+        }
+        if(actorRefMap.size() != addrScore.size()){
+            addrScore.keySet().stream().filter(o->actorRefMap.contains(o));
+        }
     }
 
 
@@ -66,23 +72,13 @@ public class AdaptiveBalance extends AbstractLoadBalance {
     }
 
     @Override
-    protected ActorRef needListenStrategy() {
-        return null;
-    }
-
-    @Override
-    protected ActorRef notNeedListenStrategy(Map<Address, ActorRef> actorRefs) {
-        List<Map.Entry<Address, ActorRef>> entryList = actorRefs.entrySet().stream().collect(Collectors.toList());
+    protected Address needListenStrategy() {
         List<Map.Entry<Address, Integer>> entryListScore = addrScore.entrySet().stream().collect(Collectors.toList());
         int size = entryListScore.size();
-        int trueSize = entryList.size();
 
         /**
          * 服务器状态还未初始化  或者 实际有服务器掉线,状态还未更新  都直接返回第一台服务器
          */
-        if (size == 0) {
-            return entryList.get(0).getValue();
-        }
 
         int[] scores = new int[size];
         int coreCount = 0;
@@ -107,14 +103,16 @@ public class AdaptiveBalance extends AbstractLoadBalance {
             s = scores[i] + last;
 
             if (randomInt < s && randomInt >= last) {
-                if (i >= trueSize) {
-                    return entryList.get(0).getValue();
-                }
-                return entryList.get(i).getValue();
+                return entryListScore.get(i).getKey();
             }
             randomScore[i] = s;
         }
 
         throw new IllegalAccessError("系统异常");
+    }
+
+    @Override
+    protected Address notNeedListenStrategy(Set<Address> actorRefMap) {
+       return null;
     }
 }
