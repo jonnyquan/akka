@@ -14,6 +14,6 @@ public class TestActor extends AbstractActor {
     @Override
     public void handleMsg(Message message) {
         System.out.println("test2消息来了---client2" + Thread.currentThread());
-        feedBack(new Message("i got it---client2"));
+        reply(new Message("i got it---client2"));
     }
 }

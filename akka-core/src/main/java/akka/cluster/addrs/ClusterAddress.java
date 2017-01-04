@@ -2,7 +2,7 @@ package akka.cluster.addrs;
 
 import akka.actor.Address;
 import akka.cluster.ClusterEvent;
-import akka.cluster.ClusterInterface;
+import akka.cluster.ClusterContext;
 import akka.cluster.LoadBalance;
 import akka.cluster.Member;
 import akka.cluster.metrics.NodeMetrics;
@@ -20,7 +20,7 @@ import java.util.Set;
  * 此集群策略 将启用自定义负载均衡器  监听集群地址 监听服务器状态
  * 由子类实现 对actorRef的维护
  */
-public abstract class ClusterAddress implements ClusterInterface {
+public abstract class ClusterAddress implements ClusterContext {
     private static final Logger logger = LoggerFactory.getLogger(ClusterAddress.class);
     private List<LoadBalance> addrLoadBalance;
     private List<LoadBalance> serverLoadBalance;

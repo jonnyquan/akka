@@ -1,5 +1,7 @@
 package akka.core;
 
+import akka.actor.ActorRef;
+import akka.cluster.routing.ClusterRouterGroup;
 import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
 import akka.params.RegisterBean;
@@ -17,6 +19,10 @@ public interface Akka {
      */
     Akka register(RegisterBean registerBean);
 
+    ActorRef registerRouterActor(ClusterRouterGroup clusterRouterGroup);
+
+    ActorRef registerActor(RegisterBean registerBean);
+
     /**
      * 全双工-----------------------------
      */
@@ -27,6 +33,7 @@ public interface Akka {
      * @param name
      * @param askProcessHandler ask模式下面自定义处理器
      * @param routerGroup       路由模式
+     *                          默认使用 DefaultAskProcessHandler 以及 RouterGroup.RANDOM 负载均衡
      * @return
      */
     Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup);
@@ -35,10 +42,12 @@ public interface Akka {
 
     /**
      * 单工
+     * 默认使用  RouterGroup.RANDOM 负载均衡
      */
 
     Sender createTellSender(String name, RouterGroup routerGroup);
 
 
     Sender createTellSender(String name);
+
 }

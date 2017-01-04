@@ -23,6 +23,10 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
         this.akka = AkkaInit.initAkka();
     }
 
+    public Akka getAkka() {
+        return akka;
+    }
+
     @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
         Class clazz = bean.getClass();

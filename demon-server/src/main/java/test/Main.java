@@ -2,6 +2,7 @@ package test;
 
 import akka.core.Akka;
 import akka.core.Sender;
+import akka.enums.RouterGroup;
 import akka.main.AkkaMain;
 import akka.msg.Message;
 
@@ -13,11 +14,13 @@ public class Main {
 
     public static void main(String[] args) {
         Akka akka = AkkaMain.initAkka();
-        Sender sender = akka.createTellSender("test2");
-
+        //单工消息
+        Sender tell = akka.createTellSender("test2");
+        //双攻
+        Sender ask = akka.createAskSender("test",new CustomAskProcessHandler(), RouterGroup.RANDOM);
         for (int i = 0; i < 10; i++) {
             System.out.println("发送消息" + i);
-            sender.sendMsg(new Message("tell 路由"));
+            ask.sendMsg(new Message("hello__ask"));
         }
     }
 }

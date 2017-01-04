@@ -29,15 +29,20 @@ public interface LoadBalance {
     boolean needListenStatus();
 
     /**
-     * needListen true需要实现
+     * needListenAddr true需要实现  集群地址变更通知
      *
      * @param actorRefMap
      */
     void updateAddr(Set<Address> actorRefMap);
 
+    /**
+     * needListenStatus true   服务器状态变更通知
+     * @param nodeMetrics
+     */
     void updateServerStatu(Iterable<NodeMetrics> nodeMetrics);
 
     /**
+     *
      * @param actorRefMap 根据策略可以传null
      * @return
      */

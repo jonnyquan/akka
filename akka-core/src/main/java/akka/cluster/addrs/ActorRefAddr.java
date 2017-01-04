@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/27.
+ * 把actor可用的引用 和地址 actor的name维护到本地内存
  */
 public class ActorRefAddr extends ClusterAddress {
 
@@ -50,23 +51,13 @@ public class ActorRefAddr extends ClusterAddress {
 
         public void addActorRef(Address address,ActorRef actorRef){
             this.actorRefMap.put(address,actorRef);
+            loadBalances.stream().filter(o->o.needListenAddr()).forEach(o->o.updateAddr(this.actorRefMap.keySet()));
         }
 
         public void addLoadBalance(LoadBalance loadBalance){
             synchronized (loadBalances){
                 if(loadBalance!=null && this.loadBalances.add(loadBalance)){
                     onSubcribe(loadBalance);
-                    if(loadBalance.needListenAddr()){
-                        SortedSet<Member> memberSortedSet = getLivedMemers();
-                        Iterator<Member> iterator = memberSortedSet.iterator();
-                        Set<Address> addrs = new HashSet<>();
-                        while (iterator.hasNext()) {
-                            Member member = iterator.next();
-                            Address addr = member.address();
-                            addrs.add(addr);
-                        }
-                        loadBalance.updateAddr(addrs);
-                    }
                 }
             }
         }
@@ -112,7 +103,7 @@ public class ActorRefAddr extends ClusterAddress {
         future.onSuccess(new OnSuccess<ActorRef>() {
             @Override
             public void onSuccess(ActorRef actorRef) throws Throwable {
-                logger.info(addr + ":" + path + "地址被发现" + System.currentTimeMillis());
+                logger.info(addr + ":" + path + "地址被发现" );
                 if (countDownLatch != null) {
                     countDownLatch.countDown();
                 }

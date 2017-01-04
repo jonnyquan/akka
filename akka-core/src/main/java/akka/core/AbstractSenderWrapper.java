@@ -1,7 +1,7 @@
 package akka.core;
 
 import akka.actor.ActorRef;
-import akka.cluster.ClusterInterface;
+import akka.cluster.ClusterContext;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
 
@@ -14,15 +14,15 @@ import java.util.List;
 public abstract class AbstractSenderWrapper implements Sender {
 
     private final String gettersKey;
-    private ClusterInterface clusterInterface;
+    private ClusterContext clusterContext;
     private RouterGroup routerGroup;
 
 
     protected AbstractSenderWrapper(String gettersKey, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
-        this.clusterInterface = akkaSystem.getClusterInterface();
+        this.clusterContext = akkaSystem.getClusterContext();
         this.routerGroup = routerGroup;
         this.gettersKey = gettersKey;
-        this.clusterInterface.initReceiversAndBalance(gettersKey, routerGroup);
+        this.clusterContext.initReceiversAndBalance(gettersKey, routerGroup);
     }
 
 
@@ -32,7 +32,7 @@ public abstract class AbstractSenderWrapper implements Sender {
      * @return
      */
     protected List<ActorRef> getGetters() {
-        return clusterInterface.getReceivers(this.gettersKey, routerGroup);
+        return clusterContext.getReceivers(this.gettersKey, routerGroup);
     }
 
 

@@ -2,7 +2,7 @@ package akka.cluster.addrs;
 
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
-import akka.cluster.ClusterInterface;
+import akka.cluster.ClusterContext;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.enums.RouterGroup;
@@ -20,7 +20,7 @@ import java.util.Map;
  * 缺点:1、ask模式 只能接收到广播的第一条信息
  * 2、他无法识别某一台机器是否存在所需要的actor  无差别发送
  */
-public class RouteesAddress implements ClusterInterface {
+public class RouteesAddress implements ClusterContext {
 
     private static final String PATCH = "//$";
     private final int MAX_THREAD_COUNT = 100;

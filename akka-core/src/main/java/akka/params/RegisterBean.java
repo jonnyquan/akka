@@ -16,16 +16,23 @@ public class RegisterBean<T extends AbstractActor> {
 
     private Pool pool = new RoundRobinPool(1);
 
+    private Object[] params;
 
-    public RegisterBean(Class<T> tClass, String name) {
+
+    public RegisterBean(Class<T> tClass, String name,Object... objects) {
         this.tClass = tClass;
         this.name = name;
+        this.params = objects;
     }
 
     public RegisterBean(Class<T> tClass, String name, Pool pool) {
         this.tClass = tClass;
         this.name = name;
         this.pool = pool;
+    }
+
+    public Object[] getParams() {
+        return params;
     }
 
     public Class<T> gettClass() {

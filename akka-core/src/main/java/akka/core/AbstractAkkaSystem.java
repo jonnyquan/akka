@@ -4,7 +4,7 @@ import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actors.ClusterListener;
 import akka.cluster.Cluster;
-import akka.cluster.ClusterInterface;
+import akka.cluster.ClusterContext;
 import akka.cluster.addrs.ClusterAddress;
 import akka.msg.Constant;
 import com.typesafe.config.Config;
@@ -18,6 +18,7 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/22.
+ *
  */
 public abstract class AbstractAkkaSystem implements Akka {
 
@@ -25,7 +26,7 @@ public abstract class AbstractAkkaSystem implements Akka {
 
     private final ActorSystem system;
 
-    private ClusterInterface clusterInterface;
+    private ClusterContext clusterContext;
 
     private String systemName;
 
@@ -48,7 +49,7 @@ public abstract class AbstractAkkaSystem implements Akka {
         logger.info("actor system创建完毕");
         try {
             Constructor constructor = Constant.CLUSTER_STRATEGY.getConstructor(ActorSystem.class);
-            clusterInterface = (ClusterInterface) constructor.newInstance(system);
+            clusterContext = (ClusterContext) constructor.newInstance(system);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
@@ -59,13 +60,13 @@ public abstract class AbstractAkkaSystem implements Akka {
             e.printStackTrace();
         }
         if (Constant.CLUSTER_STRATEGY == ClusterAddress.class) {
-            system.actorOf(Props.create(ClusterListener.class, (ClusterAddress) clusterInterface));
+            system.actorOf(Props.create(ClusterListener.class, (ClusterAddress) clusterContext));
         }
         logger.info("actor system 扩展功能启动完毕");
     }
 
-    protected ClusterInterface getClusterInterface() {
-        return clusterInterface;
+    protected ClusterContext getClusterContext() {
+        return clusterContext;
     }
 
     protected String getSystemName() {

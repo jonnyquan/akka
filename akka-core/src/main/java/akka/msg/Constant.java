@@ -1,6 +1,6 @@
 package akka.msg;
 
-import akka.cluster.ClusterInterface;
+import akka.cluster.ClusterContext;
 import akka.cluster.addrs.ActorRefAddr;
 
 /**
@@ -13,6 +13,6 @@ public class Constant {
 
     public final static String SYSTEM_NAME = "EsbSystem";
 
-    public final static Class<? extends ClusterInterface> CLUSTER_STRATEGY = ActorRefAddr.class;
+    public final static Class<? extends ClusterContext> CLUSTER_STRATEGY = ActorRefAddr.class;
 
 }

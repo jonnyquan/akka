@@ -2,6 +2,7 @@ package akka.core;
 
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import akka.cluster.routing.ClusterRouterGroup;
 import akka.params.DefaultAskProcessHandler;
 import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
@@ -10,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 对akka的system简单包装 绑定了集群地址管理器AddressContext   已经集群检测actor
- * 系统初始化时候   生成MsgSenderWrapper之前必须要先进行 @prepareLoadAdd (集群状态初始化等待 以及路由模式地址生成后的某种等待。。暂时找不到原因)
+ * 提供顶级接口的实现
  * <p>
  * Created by ruancl@xkeshi.com on 16/10/9.
  */
@@ -35,11 +35,30 @@ public class AkkaSystem extends AbstractAkkaSystem {
      */
     @Override
     public Akka register(RegisterBean registerBean) {
-        ActorRef ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass())), registerBean.getName());
-        logger.info("register actor:{}", ref.path());
-        System.out.println("注册actor:" + ref.path() + "成功========================");
+        registerActor(registerBean);
         return this;
     }
+
+    @Override
+    public ActorRef registerActor(RegisterBean registerBean) {
+        ActorRef ref;
+        Object[] params = registerBean.getParams();
+        if(params != null){
+            ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass(),registerBean.getParams())), registerBean.getName());
+        }else{
+            ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass())), registerBean.getName());
+        }
+
+        logger.info("register actor:{}", ref.path());
+        System.out.println("注册actor:" + ref.path() + "成功========================");
+        return ref;
+    }
+
+    @Override
+    public ActorRef registerRouterActor(ClusterRouterGroup clusterRouterGroup) {
+        return getSystem().actorOf(clusterRouterGroup.props());
+    }
+
 
 
     /**
@@ -98,4 +117,6 @@ public class AkkaSystem extends AbstractAkkaSystem {
     public Sender createTellSender(String name) {
         return createTellSender(name, RouterGroup.RANDOM);
     }
+
+
 }
