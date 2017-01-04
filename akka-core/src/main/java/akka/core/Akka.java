@@ -31,7 +31,7 @@ public interface Akka {
 
     /**
      * @param name
-     * @param askProcessHandler ask模式下面自定义处理器
+     * @param askProcessHandler ask模式下面自定义处理器(建议继承AskProcessHandlerAdapt,也可自己实现接口)
      * @param routerGroup       路由模式
      *                          默认使用 DefaultAskProcessHandler 以及 RouterGroup.RANDOM 负载均衡
      * @return

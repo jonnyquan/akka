@@ -12,16 +12,7 @@ import java.util.Iterator;
  * Created by ruancl@xkeshi.com on 16/11/9.
  * 默认的ask模式  消息过程处理handler
  */
-public class DefaultAskProcessHandler implements AskProcessHandler<Message, Message> {
-    @Override
-    public Message getReturn(Iterator<Object> it) {
-        return (Message) it.next();
-    }
-
-    @Override
-    public Message cut(CutParam<Message> cutParam) {
-        return cutParam.getMsg();
-    }
+public class DefaultAskProcessHandler<S,R> extends AskProcessHandlerAdapt<S,R> {
 
     @Override
     public void onSuccess(ActorRef actorRef, Object o) {
@@ -29,7 +20,7 @@ public class DefaultAskProcessHandler implements AskProcessHandler<Message, Mess
     }
 
     @Override
-    public void onFailure(ActorRef actorRef, Throwable throwable, AskProcessHandler<Message, Message> askProcessHandler, CutParam cutParam) {
+    public void onFailure(ActorRef actorRef, Throwable throwable, AskProcessHandler<S, R> askProcessHandler, CutParam cutParam) {
         System.out.println("failure------------------" + throwable);
         if (throwable instanceof AskTimeoutException) {
             System.out.println(actorRef.path() + ":链接超时 ");
