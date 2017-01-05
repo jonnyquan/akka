@@ -14,8 +14,6 @@ import java.util.concurrent.CountDownLatch;
 public class ServerActor extends AbstractActor {
 
 
-
-
     int num;
 
     List<ActorRef> actors;
@@ -33,26 +31,26 @@ public class ServerActor extends AbstractActor {
 
     @Override
     protected void handleMsg(Message message) {
-        if(message.getContent().equals("rollback")){
+        if (message.getContent().equals("rollback")) {
             actors.add(getSender());
             //已有list统一发送 rollback
-            actors.forEach(o->o.tell(new Message("rollBack"),getSelf()));
-            if(actors.size() == num){
+            actors.forEach(o -> o.tell(new Message("rollBack"), getSelf()));
+            if (actors.size() == num) {
                 transaction.rollback();
                 countDownLatch.countDown();
             }
-            getContext().become(o->{
-                getSender().tell(new Message("rollBack"),getSelf());
-                if(actors.size() == num){
+            getContext().become(o -> {
+                getSender().tell(new Message("rollBack"), getSelf());
+                if (actors.size() == num) {
                     transaction.rollback();
                     countDownLatch.countDown();
                 }
             });
-        }else{
+        } else {
             actors.add(getSender());
-            if(actors.size() == num){
+            if (actors.size() == num) {
                 //统一发送over
-                actors.forEach(o->o.tell(new Message("over"),getSelf()));
+                actors.forEach(o -> o.tell(new Message("over"), getSelf()));
                 transaction.commit();
                 countDownLatch.countDown();
             }

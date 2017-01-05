@@ -22,7 +22,7 @@ public class Main {
         //单工消息
         Sender tell = akka.createTellSender("test2");
         //双攻
-        Sender ask = akka.createAskSender("test", new AskProcessHandlerAdapt<Message,Message>() {
+        Sender ask = akka.createAskSender("test", new AskProcessHandlerAdapt<Message, Message>() {
             @Override
             public void onSuccess(ActorRef actorRef, Object o) {
                 System.out.println(actorRef.path() + ":成功接收:-----------object:" + ((Message) o).getContent());

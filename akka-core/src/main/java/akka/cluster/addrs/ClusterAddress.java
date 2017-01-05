@@ -1,8 +1,8 @@
 package akka.cluster.addrs;
 
 import akka.actor.Address;
-import akka.cluster.ClusterEvent;
 import akka.cluster.ClusterContext;
+import akka.cluster.ClusterEvent;
 import akka.cluster.LoadBalance;
 import akka.cluster.Member;
 import akka.cluster.metrics.NodeMetrics;
@@ -35,6 +35,7 @@ public abstract class ClusterAddress implements ClusterContext {
 
     /**
      * 部分路由策略类需要监听 actorRef的变动
+     *
      * @param actorRefMap
      */
     protected void nodifyAddrListener(Set<Address> actorRefMap) {

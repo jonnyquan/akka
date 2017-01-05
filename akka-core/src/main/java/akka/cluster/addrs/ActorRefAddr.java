@@ -37,50 +37,10 @@ public class ActorRefAddr extends ClusterAddress {
      * 集群的actor地址维护  k: actorName  actorRef(思考有没有并发问题)
      */
     private Map<String, TopicContent> map;
-
-    class TopicContent{
-        private String name;
-        private HashSet<LoadBalance> loadBalances;
-        private Map<Address,ActorRef> actorRefMap;
-
-        public TopicContent(String name) {
-            this.name = name;
-            this.loadBalances = new HashSet<>();
-            this.actorRefMap = new HashMap<>();
-        }
-
-        public void addActorRef(Address address,ActorRef actorRef){
-            this.actorRefMap.put(address,actorRef);
-            loadBalances.stream().filter(o->o.needListenAddr()).forEach(o->o.updateAddr(this.actorRefMap.keySet()));
-        }
-
-        public void addLoadBalance(LoadBalance loadBalance){
-            synchronized (loadBalances){
-                if(loadBalance!=null && this.loadBalances.add(loadBalance)){
-                    onSubcribe(loadBalance);
-                }
-            }
-        }
-
-        public LoadBalance getLoadBalance(RouterGroup routerGroup){
-            return loadBalances.stream().filter(o->o.matchRouterGroup(routerGroup)).findFirst().get();
-        }
-
-        public Map<Address, ActorRef> getActorRefMap() {
-            return actorRefMap;
-        }
-
-        public ActorRef pull(Address address){
-            ActorRef actorRef = actorRefMap.get(address);
-            actorRefMap.remove(address);
-            return actorRef;
-        }
-    }
-
     /**
      * 服务器掉线后 先放入offline  等服务器上线时候 从offLine里面捡回来
      */
-    private Map<String,Map<Address,ActorRef>> offLine;
+    private Map<String, Map<Address, ActorRef>> offLine;
 
     public ActorRefAddr(ActorSystem system) {
         this.system = system;
@@ -89,7 +49,7 @@ public class ActorRefAddr extends ClusterAddress {
         this.finiteDuration = Duration.create(TIME, TimeUnit.MILLISECONDS);
     }
 
-    private SortedSet<Member> getLivedMemers(){
+    private SortedSet<Member> getLivedMemers() {
         SortedSet<Member> memberSortedSet = Cluster.get(system).readView().members();
         if (memberSortedSet.size() == 0) {
             throw new NullPointerException("集群中没有可用地址,集群离线 or 未开启集群监听");
@@ -97,18 +57,18 @@ public class ActorRefAddr extends ClusterAddress {
         return memberSortedSet;
     }
 
-    private void selectActor(Address addr, String path, final CountDownLatch countDownLatch,final RouterGroup routerGroup,TopicContent topicContent) {
+    private void selectActor(Address addr, String path, final CountDownLatch countDownLatch, final RouterGroup routerGroup, TopicContent topicContent) {
         final ExecutionContextExecutor executionContextExecutor = system.dispatcher();
         Future<ActorRef> future = system.actorSelection(String.format("%s/user/%s", addr.toString(), path)).resolveOne(finiteDuration);
         future.onSuccess(new OnSuccess<ActorRef>() {
             @Override
             public void onSuccess(ActorRef actorRef) throws Throwable {
-                logger.info(addr + ":" + path + "地址被发现" );
+                logger.info(addr + ":" + path + "地址被发现");
                 if (countDownLatch != null) {
                     countDownLatch.countDown();
                 }
                 topicContent.addLoadBalance(routerGroup.createAndGetLoadBalance());
-                topicContent.addActorRef(addr,actorRef);
+                topicContent.addActorRef(addr, actorRef);
             }
         }, executionContextExecutor);
         future.onFailure(new OnFailure() {
@@ -141,7 +101,7 @@ public class ActorRefAddr extends ClusterAddress {
         while (iterator.hasNext()) {
             Member member = iterator.next();
             Address addr = member.address();
-            selectActor(addr, path, countDownLatch,routerGroup,topicContent);
+            selectActor(addr, path, countDownLatch, routerGroup, topicContent);
         }
         if (countDownLatch.getCount() > 0) {
             try {
@@ -152,8 +112,6 @@ public class ActorRefAddr extends ClusterAddress {
         }
         logger.info(path + ":接收地址初始化成功cluster");
     }
-
-
 
     @Override
     public List<ActorRef> getReceivers(String name, RouterGroup routerGroup) {
@@ -180,7 +138,7 @@ public class ActorRefAddr extends ClusterAddress {
         logger.info(address + "上线,actor重载");
         for (String key : map.keySet()) {
             //从垃圾桶中恢复
-            map.get(key).addActorRef(address,offLine.get(key).get(address));
+            map.get(key).addActorRef(address, offLine.get(key).get(address));
             nodifyAddrListener(map.get(key).getActorRefMap().keySet());
         }
     }
@@ -195,12 +153,51 @@ public class ActorRefAddr extends ClusterAddress {
         logger.info(address + "掉线,actor移除");
         for (String key : map.keySet()) {
             TopicContent topicContent = map.get(key);
-            Map<Address,ActorRef> off =  offLine.get(key);
-            if(off == null){
+            Map<Address, ActorRef> off = offLine.get(key);
+            if (off == null) {
                 off = new HashMap<>();
             }
-            off.put(address,topicContent.pull(address));
+            off.put(address, topicContent.pull(address));
             nodifyAddrListener(map.get(key).getActorRefMap().keySet());
+        }
+    }
+
+    class TopicContent {
+        private String name;
+        private HashSet<LoadBalance> loadBalances;
+        private Map<Address, ActorRef> actorRefMap;
+
+        public TopicContent(String name) {
+            this.name = name;
+            this.loadBalances = new HashSet<>();
+            this.actorRefMap = new HashMap<>();
+        }
+
+        public void addActorRef(Address address, ActorRef actorRef) {
+            this.actorRefMap.put(address, actorRef);
+            loadBalances.stream().filter(o -> o.needListenAddr()).forEach(o -> o.updateAddr(this.actorRefMap.keySet()));
+        }
+
+        public void addLoadBalance(LoadBalance loadBalance) {
+            synchronized (loadBalances) {
+                if (loadBalance != null && this.loadBalances.add(loadBalance)) {
+                    onSubcribe(loadBalance);
+                }
+            }
+        }
+
+        public LoadBalance getLoadBalance(RouterGroup routerGroup) {
+            return loadBalances.stream().filter(o -> o.matchRouterGroup(routerGroup)).findFirst().get();
+        }
+
+        public Map<Address, ActorRef> getActorRefMap() {
+            return actorRefMap;
+        }
+
+        public ActorRef pull(Address address) {
+            ActorRef actorRef = actorRefMap.get(address);
+            actorRefMap.remove(address);
+            return actorRef;
         }
     }
 

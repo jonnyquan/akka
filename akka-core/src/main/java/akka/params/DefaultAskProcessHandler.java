@@ -2,17 +2,13 @@ package akka.params;
 
 import akka.actor.ActorRef;
 import akka.msg.Message;
-import akka.params.AskProcessHandler;
-import akka.params.CutParam;
 import akka.pattern.AskTimeoutException;
-
-import java.util.Iterator;
 
 /**
  * Created by ruancl@xkeshi.com on 16/11/9.
  * 默认的ask模式  消息过程处理handler
  */
-public class DefaultAskProcessHandler<S,R> extends AskProcessHandlerAdapt<S,R> {
+public class DefaultAskProcessHandler<S, R> extends AskProcessHandlerAdapt<S, R> {
 
     @Override
     public void onSuccess(ActorRef actorRef, Object o) {

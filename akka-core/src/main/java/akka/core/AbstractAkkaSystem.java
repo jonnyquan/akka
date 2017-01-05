@@ -18,7 +18,6 @@ import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/22.
- *
  */
 public abstract class AbstractAkkaSystem implements Akka {
 

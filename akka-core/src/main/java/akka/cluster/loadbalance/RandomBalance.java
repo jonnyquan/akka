@@ -1,13 +1,10 @@
 package akka.cluster.loadbalance;
 
 
-import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;

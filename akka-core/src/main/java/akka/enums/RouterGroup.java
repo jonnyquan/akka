@@ -1,17 +1,17 @@
 package akka.enums;
 
-import akka.actor.ActorRef;
-import akka.actor.Address;
 import akka.cluster.LoadBalance;
 import akka.cluster.loadbalance.AdaptiveBalance;
 import akka.cluster.loadbalance.RandomBalance;
 import akka.cluster.loadbalance.RoundRobinBalance;
 import akka.cluster.metrics.AdaptiveLoadBalancingGroup;
 import akka.cluster.metrics.HeapMetricsSelector;
-import akka.routing.*;
+import akka.routing.BroadcastGroup;
+import akka.routing.Group;
+import akka.routing.RandomGroup;
+import akka.routing.RoundRobinGroup;
 
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/20.
@@ -22,7 +22,7 @@ import java.util.Map;
 public enum RouterGroup {
 
 
-    ROBIN{
+    ROBIN {
         @Override
         public Group getGroup(Iterable<String> routeesPaths) {
             return new RandomGroup(routeesPaths);
@@ -32,7 +32,7 @@ public enum RouterGroup {
         public LoadBalance createAndGetLoadBalance() {
             return new RoundRobinBalance();
         }
-    }, RANDOM{
+    }, RANDOM {
         @Override
         public Group getGroup(Iterable<String> routeesPaths) {
             return new RoundRobinGroup(routeesPaths);
@@ -42,7 +42,7 @@ public enum RouterGroup {
         public LoadBalance createAndGetLoadBalance() {
             return new RandomBalance();
         }
-    }, BROADCAST{
+    }, BROADCAST {
         @Override
         public Group getGroup(Iterable<String> routeesPaths) {
             return new BroadcastGroup(routeesPaths);
@@ -52,7 +52,7 @@ public enum RouterGroup {
         public LoadBalance createAndGetLoadBalance() {
             return null;
         }
-    }, BALANCE{
+    }, BALANCE {
         @Override
         public Group getGroup(Iterable<String> routeesPaths) {
             return new AdaptiveLoadBalancingGroup(HeapMetricsSelector.getInstance(),

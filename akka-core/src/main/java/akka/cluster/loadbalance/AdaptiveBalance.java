@@ -1,6 +1,5 @@
 package akka.cluster.loadbalance;
 
-import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.metrics.NodeMetrics;
 import akka.cluster.metrics.StandardMetrics;
@@ -39,14 +38,14 @@ public class AdaptiveBalance extends AbstractLoadBalance {
     @Override
     public void updateAddr(Set<Address> actorRefMap) {
         Iterator<Address> iterator = actorRefMap.iterator();
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Address address = iterator.next();
-            if(!addrScore.contains(address)){
-                addrScore.put(address,1);
+            if (!addrScore.contains(address)) {
+                addrScore.put(address, 1);
             }
         }
-        if(actorRefMap.size() != addrScore.size()){
-            addrScore.keySet().stream().filter(o->actorRefMap.contains(o));
+        if (actorRefMap.size() != addrScore.size()) {
+            addrScore.keySet().stream().filter(o -> actorRefMap.contains(o));
         }
     }
 
@@ -113,6 +112,6 @@ public class AdaptiveBalance extends AbstractLoadBalance {
 
     @Override
     protected Address notNeedListenStrategy(Set<Address> actorRefMap) {
-       return null;
+        return null;
     }
 }

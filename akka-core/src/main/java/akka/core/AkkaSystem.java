@@ -3,9 +3,9 @@ package akka.core;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.cluster.routing.ClusterRouterGroup;
-import akka.params.DefaultAskProcessHandler;
 import akka.enums.RouterGroup;
 import akka.params.AskProcessHandler;
+import akka.params.DefaultAskProcessHandler;
 import akka.params.RegisterBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,9 +43,9 @@ public class AkkaSystem extends AbstractAkkaSystem {
     public ActorRef registerActor(RegisterBean registerBean) {
         ActorRef ref;
         Object[] params = registerBean.getParams();
-        if(params != null){
-            ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass(),registerBean.getParams())), registerBean.getName());
-        }else{
+        if (params != null) {
+            ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass(), registerBean.getParams())), registerBean.getName());
+        } else {
             ref = getSystem().actorOf(registerBean.getPool().props(Props.create(registerBean.gettClass())), registerBean.getName());
         }
 
@@ -58,7 +58,6 @@ public class AkkaSystem extends AbstractAkkaSystem {
     public ActorRef registerRouterActor(ClusterRouterGroup clusterRouterGroup) {
         return getSystem().actorOf(clusterRouterGroup.props());
     }
-
 
 
     /**

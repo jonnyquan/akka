@@ -1,10 +1,8 @@
 package akka.cluster.loadbalance;
 
-import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.LoadBalance;
 
-import java.util.Map;
 import java.util.Set;
 
 /**

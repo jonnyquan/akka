@@ -1,11 +1,8 @@
 package transaction;
 
 import akka.AkkaProcessHandler;
-import akka.params.RegisterBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/29.
@@ -17,7 +14,7 @@ public class TransactionService {
     @Autowired
     private AkkaProcessHandler akkaProcessHandler;
 
-    public void needDisTransaction(){
+    public void needDisTransaction() {
         //事务开始  生成一个actor 并且生成一个事务唯一id
         int tid = 110;
 

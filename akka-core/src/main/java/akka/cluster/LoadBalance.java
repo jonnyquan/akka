@@ -1,11 +1,9 @@
 package akka.cluster;
 
-import akka.actor.ActorRef;
 import akka.actor.Address;
 import akka.cluster.metrics.NodeMetrics;
 import akka.enums.RouterGroup;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,12 +35,12 @@ public interface LoadBalance {
 
     /**
      * needListenStatus true   服务器状态变更通知
+     *
      * @param nodeMetrics
      */
     void updateServerStatu(Iterable<NodeMetrics> nodeMetrics);
 
     /**
-     *
      * @param actorRefMap 根据策略可以传null
      * @return
      */

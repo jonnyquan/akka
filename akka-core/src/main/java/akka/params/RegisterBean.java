@@ -19,7 +19,7 @@ public class RegisterBean<T extends AbstractActor> {
     private Object[] params;
 
 
-    public RegisterBean(Class<T> tClass, String name,Object... objects) {
+    public RegisterBean(Class<T> tClass, String name, Object... objects) {
         this.tClass = tClass;
         this.name = name;
         this.params = objects;

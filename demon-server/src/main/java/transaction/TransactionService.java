@@ -4,12 +4,8 @@ import akka.AkkaProcessHandler;
 import akka.actor.ActorRef;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
-import akka.core.Akka;
-import akka.core.Sender;
 import akka.msg.Constant;
-import akka.msg.Message;
 import akka.params.RegisterBean;
-import akka.routing.Group;
 import akka.routing.RandomGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,7 +22,7 @@ public class TransactionService {
     @Autowired
     private AkkaProcessHandler akkaProcessHandler;
 
-    public void needDisTransaction(int tid){
+    public void needDisTransaction(int tid) {
         System.out.println("被系统A调用");
         Iterable routeesPaths = Arrays.asList(String.format("/user/F%s", tid));
 
@@ -54,7 +50,7 @@ public class TransactionService {
                 countDownLatch.countDown();
             }
         }));
-        if(countDownLatch.getCount()>0){
+        if (countDownLatch.getCount() > 0) {
             try {
                 countDownLatch.wait();
             } catch (InterruptedException e) {
