@@ -3,7 +3,7 @@ package akka.actors;
 import akka.actor.UntypedActor;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterEvent;
-import akka.cluster.addrs.ClusterAddress;
+import akka.cluster.addrs.AbstractClusterAddress;
 import akka.cluster.metrics.ClusterMetricsChanged;
 import akka.cluster.metrics.ClusterMetricsExtension;
 import org.slf4j.Logger;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by ruancl@xkeshi.com on 16/9/29.
  * <p>
- * clusterAddress需要观察集群的变动  serverStatu需要观察服务器的状态
+ * clusterAddress需要观察集群的变动 以及服务器的状态
  */
 public class ClusterListener extends UntypedActor {
 
@@ -20,13 +20,13 @@ public class ClusterListener extends UntypedActor {
 
     private Cluster cluster;
 
-    private ClusterAddress clusterAddress;
+    private AbstractClusterAddress abstractClusterAddress;
 
     private ClusterMetricsExtension clusterMetricsExtension;
 
 
-    public ClusterListener(ClusterAddress clusterAddress) {
-        this.clusterAddress = clusterAddress;
+    public ClusterListener(AbstractClusterAddress abstractClusterAddress) {
+        this.abstractClusterAddress = abstractClusterAddress;
         this.cluster = Cluster.get(getContext().system());
         this.clusterMetricsExtension = ClusterMetricsExtension.get(getContext().system());
     }
@@ -50,10 +50,10 @@ public class ClusterListener extends UntypedActor {
                 || o instanceof ClusterEvent.MemberRemoved
                 || o instanceof ClusterEvent.UnreachableMember
                 ) {
-            clusterAddress.notifyAddrObserver(o);
+            abstractClusterAddress.notifyAddrObserver(o);
         } else if (o instanceof ClusterMetricsChanged) {
             ClusterMetricsChanged clusterMetrics = (ClusterMetricsChanged) o;
-            clusterAddress.notifyServerObserver(clusterMetrics.getNodeMetrics());
+            abstractClusterAddress.notifyServerObserver(clusterMetrics.getNodeMetrics());
         } else if (o instanceof ClusterEvent.CurrentClusterState) {
             // Ignore.
         } else {
