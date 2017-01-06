@@ -58,13 +58,13 @@ public class AkkaProcessHandler extends InstantiationAwareBeanPostProcessorAdapt
             Sender sender;
             switch (actorRef.request_type()) {
                 case TELL:
-                    sender = akka.createTellSender(actorRef.name(), actorRef.routerStrategy());
+                    sender = akka.createTellSender(actorRef.group(),actorRef.name(), actorRef.routerStrategy());
                     break;
                 case ASK:
-                    sender = akka.createAskSender(actorRef.name(), handle, actorRef.routerStrategy());
+                    sender = akka.createAskSender(actorRef.group(),actorRef.name(), handle, actorRef.routerStrategy());
                     break;
                 default:
-                    sender = akka.createTellSender(actorRef.name(), actorRef.routerStrategy());
+                    sender = akka.createTellSender(actorRef.group(),actorRef.name(), actorRef.routerStrategy());
                     break;
             }
             field.set(bean, sender);

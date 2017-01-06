@@ -18,18 +18,16 @@ import java.util.Map;
  * Created by ruancl@xkeshi.com on 2016/12/21.
  * 该方法为akka 自带路由功能
  * 缺点:1、ask模式 只能接收到广播的第一条信息
- * 2、他无法识别某一台机器是否存在所需要的actor  无差别发送
  */
 public class RouteesAddress implements ClusterContext {
 
-    private static final String PATCH = "//$";
     private final int MAX_THREAD_COUNT = 100;
     private final ActorSystem system;
     /**
      * 路由地址
      * k path : v getter
      */
-    private Map<String, ActorRef> routActor;
+    private Map<String, Map<RouterGroup,ActorRef>> routActor;
 
     public RouteesAddress(ActorSystem system) {
         this.system = system;
@@ -37,19 +35,30 @@ public class RouteesAddress implements ClusterContext {
     }
 
     private void addRoutAdd(String path, RouterGroup routerGroup, ActorRef actorRef) {
-        routActor.put(String.format("%s%s%s", path, PATCH, routerGroup.toString()), actorRef);
+        Map<RouterGroup,ActorRef> map = this.routActor.get(path);
+        if(!map.containsKey(routerGroup)){
+            map.put(routerGroup,actorRef);
+        }
     }
 
     @Override
-    public void initReceiversAndBalance(String path, RouterGroup routerGroup) {
-        ActorRef actorRef = this.routActor.get(path);
+    public void initReceiversAndBalance(String group,String path, RouterGroup routerGroup) {
+        Map<RouterGroup,ActorRef> map = this.routActor.get(path);
+        ActorRef actorRef;
+        if(map == null){
+            map = new HashMap<>();
+            this.routActor.put(path,map);
+            actorRef = null;
+        }else{
+           actorRef = map.get(routerGroup);
+        }
         if (actorRef == null) {
             Iterable routeesPaths = Arrays.asList(String.format("/user/%s", path));
             Group local = routerGroup.getGroup(routeesPaths);
 
             ClusterRouterGroup clusterRouterGroup = new ClusterRouterGroup(local,
                     new ClusterRouterGroupSettings(MAX_THREAD_COUNT, routeesPaths,
-                            true, Constant.ROLE_NAME));
+                            true, group));
             actorRef = system.actorOf(clusterRouterGroup.props());
             addRoutAdd(path, routerGroup, actorRef);
         }
@@ -57,7 +66,7 @@ public class RouteesAddress implements ClusterContext {
 
     @Override
     public List<ActorRef> getReceivers(String path, RouterGroup routerGroup) {
-        return Arrays.asList(this.routActor.get(String.format("%s%s%s", path, PATCH, routerGroup.toString())));
+        return Arrays.asList(this.routActor.get(path).get(routerGroup));
     }
 
 

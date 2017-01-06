@@ -21,7 +21,7 @@ public interface ClusterContext {
      * @param gettersKey
      * @param routerGroup
      */
-    void initReceiversAndBalance(String gettersKey, RouterGroup routerGroup);
+    void initReceiversAndBalance(String group,String gettersKey, RouterGroup routerGroup);
 
     /**
      * 获取接收方actorRef

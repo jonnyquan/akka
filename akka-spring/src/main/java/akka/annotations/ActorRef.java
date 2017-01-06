@@ -16,6 +16,12 @@ import java.lang.annotation.*;
 @Documented
 public @interface ActorRef {
     /**
+     * 所属群组名称
+     * @return
+     */
+    String group();
+
+    /**
      * name 必须对应收消息短的 @actor name()
      *
      * @return

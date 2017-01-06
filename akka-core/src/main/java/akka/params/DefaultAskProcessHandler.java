@@ -1,6 +1,7 @@
 package akka.params;
 
 import akka.actor.ActorRef;
+import akka.core.Sender;
 import akka.msg.Message;
 import akka.pattern.AskTimeoutException;
 
@@ -10,23 +11,21 @@ import akka.pattern.AskTimeoutException;
  */
 public class DefaultAskProcessHandler<S, R> extends AskProcessHandlerAdapt<S, R> {
 
+
     @Override
-    public void onSuccess(ActorRef actorRef, Object o) {
-        System.out.println(actorRef.path() + ":success:-----------object:" + ((Message) o).getContent());
+    protected void handleComplete(Throwable throwable, Message request) {
+
     }
 
     @Override
-    public void onFailure(ActorRef actorRef, Throwable throwable, AskProcessHandler<S, R> askProcessHandler, CutParam cutParam) {
-        System.out.println("failure------------------" + throwable);
-        if (throwable instanceof AskTimeoutException) {
-            System.out.println(actorRef.path() + ":链接超时 ");
-        }
-        //同时记录失败信息  进行重发
+    protected void handleSuccess(Message response) {
+        System.out.println(":success:-----------object:" + response.getContent());
     }
 
     @Override
-    public void onComplete(ActorRef actorRef, Throwable throwable, Object o) {
-        System.out.println("complete");
+    protected Boolean handleFailedAndReturnIfRetry(Throwable throwable) {
+        System.out.println(throwable.getCause());
+        return false;
     }
 
 

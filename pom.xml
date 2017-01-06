@@ -10,11 +10,9 @@
     <version>1.0-SNAPSHOT</version>
     <modules>
         <module>akka-core</module>
-        <module>demon-server</module>
-        <module>demon-client</module>
-        <module>demon-client2</module>
-        <module>default-client</module>
-        <module>default-server</module>
+        <module>demon-server-a</module>
+        <module>demon-server-b</module>
+        <module>demon-server-c</module>
         <module>akka-spring</module>
     </modules>
 

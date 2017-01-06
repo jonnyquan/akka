@@ -1,6 +1,7 @@
 package akka.msg;
 
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/19.
@@ -8,11 +9,16 @@ import java.io.Serializable;
  */
 public class Message implements Serializable {
 
+    private AtomicInteger atomicInteger = new AtomicInteger(0);
 
     private Object content;
 
     public Message(Object content) {
         this.content = content;
+    }
+
+    public int retry(){
+        return atomicInteger.addAndGet(1);
     }
 
     public Object getContent() {

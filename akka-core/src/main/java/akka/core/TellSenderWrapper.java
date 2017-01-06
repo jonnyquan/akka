@@ -12,8 +12,8 @@ import akka.msg.Message;
 public class TellSenderWrapper extends AbstractSenderWrapper {
 
 
-    public TellSenderWrapper(String name, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
-        super(name, routerGroup, akkaSystem);
+    public TellSenderWrapper(String group,String name, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        super(group,name, routerGroup, akkaSystem);
     }
 
     @Override

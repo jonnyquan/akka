@@ -25,9 +25,10 @@ public interface Akka {
 
     /**
      * 全双工-----------------------------
+     * @param group  对应配置文件application.conf里面的roles
      */
 
-    Sender createAskSender(String name, RouterGroup routerGroup);
+    Sender createAskSender(String group,String name, RouterGroup routerGroup);
 
     /**
      * @param name
@@ -36,18 +37,18 @@ public interface Akka {
      *                          默认使用 DefaultAskProcessHandler 以及 RouterGroup.RANDOM 负载均衡
      * @return
      */
-    Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup);
+    Sender createAskSender(String group,String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup);
 
-    Sender createAskSender(String name);
+    Sender createAskSender(String group,String name);
 
     /**
      * 单工
      * 默认使用  RouterGroup.RANDOM 负载均衡
      */
 
-    Sender createTellSender(String name, RouterGroup routerGroup);
+    Sender createTellSender(String group,String name, RouterGroup routerGroup);
 
 
-    Sender createTellSender(String name);
+    Sender createTellSender(String group,String name);
 
 }

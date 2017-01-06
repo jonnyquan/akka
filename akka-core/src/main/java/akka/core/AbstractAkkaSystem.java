@@ -1,11 +1,8 @@
 package akka.core;
 
 import akka.actor.ActorSystem;
-import akka.actor.Props;
-import akka.actors.ClusterListener;
 import akka.cluster.Cluster;
 import akka.cluster.ClusterContext;
-import akka.cluster.addrs.AbstractClusterAddress;
 import akka.msg.Constant;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
@@ -57,9 +54,6 @@ public abstract class AbstractAkkaSystem implements Akka {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
-        }
-        if (Constant.CLUSTER_STRATEGY == AbstractClusterAddress.class) {
-            system.actorOf(Props.create(ClusterListener.class, (AbstractClusterAddress) clusterContext));
         }
         logger.info("actor system 扩展功能启动完毕");
     }

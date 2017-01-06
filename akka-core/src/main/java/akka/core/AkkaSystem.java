@@ -66,8 +66,9 @@ public class AkkaSystem extends AbstractAkkaSystem {
      * @param name
      * @return
      */
-    private Sender createTellMsgWrapper(final String name, final RouterGroup routerGroup) {
+    private Sender createTellMsgWrapper(final String group,final String name, final RouterGroup routerGroup) {
         return new TellSenderWrapper(
+                group,
                 name,
                 routerGroup,
                 this);
@@ -83,8 +84,9 @@ public class AkkaSystem extends AbstractAkkaSystem {
      * @param askProcessHandler
      * @return
      */
-    private Sender createAskMsgWrapper(final String name, AskProcessHandler<?, ?> askProcessHandler, final RouterGroup routerGroup) {
+    private Sender createAskMsgWrapper(final String group,final String name, AskProcessHandler<?, ?> askProcessHandler, final RouterGroup routerGroup) {
         return new AskSenderWrapper<>(
+                group,
                 name,
                 askProcessHandler,
                 routerGroup,
@@ -93,28 +95,28 @@ public class AkkaSystem extends AbstractAkkaSystem {
 
 
     @Override
-    public Sender createAskSender(String name, RouterGroup routerGroup) {
-        return createAskMsgWrapper(name, new DefaultAskProcessHandler(), routerGroup);
+    public Sender createAskSender( String group,String name, RouterGroup routerGroup) {
+        return createAskMsgWrapper(group,name, new DefaultAskProcessHandler(), routerGroup);
     }
 
     @Override
-    public Sender createAskSender(String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup) {
-        return createAskMsgWrapper(name, askProcessHandler, routerGroup);
+    public Sender createAskSender(String group,String name, AskProcessHandler<?, ?> askProcessHandler, RouterGroup routerGroup) {
+        return createAskMsgWrapper(group,name, askProcessHandler, routerGroup);
     }
 
     @Override
-    public Sender createTellSender(String name, RouterGroup routerGroup) {
-        return createTellMsgWrapper(name, routerGroup);
+    public Sender createTellSender(String group,String name, RouterGroup routerGroup) {
+        return createTellMsgWrapper(group,name, routerGroup);
     }
 
     @Override
-    public Sender createAskSender(String name) {
-        return createAskSender(name, new DefaultAskProcessHandler(), RouterGroup.RANDOM);
+    public Sender createAskSender(String group,String name) {
+        return createAskSender(group,name, new DefaultAskProcessHandler(), RouterGroup.RANDOM);
     }
 
     @Override
-    public Sender createTellSender(String name) {
-        return createTellSender(name, RouterGroup.RANDOM);
+    public Sender createTellSender(String group,String name) {
+        return createTellSender(group,name, RouterGroup.RANDOM);
     }
 
 

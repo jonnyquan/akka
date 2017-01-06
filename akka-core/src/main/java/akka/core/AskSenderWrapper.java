@@ -24,13 +24,13 @@ import java.util.concurrent.TimeUnit;
 public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
 
 
-    private final Long time = 5000l;
+    private final Long time = 20000l;
     private final ExecutionContext ec;
     private AskProcessHandler<S, R> askProcessHandler;
 
 
-    public AskSenderWrapper(String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
-        super(gettersK, routerGroup, akkaSystem);
+    public AskSenderWrapper(String group,String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        super(group,gettersK, routerGroup, akkaSystem);
         this.askProcessHandler = askProcessHandler;
         this.ec = akkaSystem.getSystem().dispatcher();
     }
@@ -48,19 +48,19 @@ public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
             future.onFailure(new OnFailure() {
                 @Override
                 public void onFailure(Throwable throwable) throws Throwable {
-                    askProcessHandler.onFailure(getter, throwable, askProcessHandler, cutParam);
+                    askProcessHandler.onFailure(throwable,AskSenderWrapper.this,message);
                 }
             }, ec);
             future.onSuccess(new OnSuccess() {
                 @Override
                 public void onSuccess(Object o) throws Throwable {
-                    askProcessHandler.onSuccess(getter, o);
+                    askProcessHandler.onSuccess(AskSenderWrapper.this,message, (Message) o);
                 }
             }, ec);
             future.onComplete(new OnComplete() {
                 @Override
                 public void onComplete(Throwable throwable, Object o) throws Throwable {
-                    askProcessHandler.onComplete(getter, throwable, o);
+                    askProcessHandler.onComplete(AskSenderWrapper.this, throwable, (Message) o);
                 }
             }, ec);
             futures.add(future);//任务切割 参数2为消息内容  需要与消息处理的地方类型统一

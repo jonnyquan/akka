@@ -1,6 +1,8 @@
 package akka.params;
 
 import akka.actor.ActorRef;
+import akka.core.Sender;
+import akka.msg.Message;
 
 import java.util.Iterator;
 
@@ -31,28 +33,27 @@ public interface AskProcessHandler<S, R> {
     /**
      * 单个任务成功返回
      *
-     * @param actorRef
-     * @param o
+     * @param sender
+     * @param request
+     * @param response
      */
-    void onSuccess(ActorRef actorRef, Object o);
+    void onSuccess(Sender sender,Message request, Message response);
 
     /**
      * 任务异常失败
-     *
-     * @param actorRef
      * @param throwable
-     * @param askProcessHandler
-     * @param cutParam
+     * @param sender
+     * @param request
      */
-    void onFailure(ActorRef actorRef, Throwable throwable, AskProcessHandler<S, R> askProcessHandler, CutParam cutParam);
+    void onFailure(Throwable throwable, Sender sender, Message request);
 
     /**
      * 推送完结
      *
-     * @param actorRef
+     * @param sender
      * @param throwable
-     * @param o
+     * @param request
      */
-    void onComplete(ActorRef actorRef, Throwable throwable, Object o);
+    void onComplete(Sender sender, Throwable throwable, Message request);
 
 }

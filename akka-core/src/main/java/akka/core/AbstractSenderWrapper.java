@@ -16,13 +16,28 @@ public abstract class AbstractSenderWrapper implements Sender {
     private final String gettersKey;
     private ClusterContext clusterContext;
     private RouterGroup routerGroup;
+    private final String groupName;
 
+    @Override
+    public String getGroupName() {
+        return groupName;
+    }
 
-    protected AbstractSenderWrapper(String gettersKey, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+    @Override
+    public String getTopicName() {
+        return gettersKey;
+    }
+    @Override
+    public RouterGroup getRouterGroup() {
+        return routerGroup;
+    }
+
+    protected AbstractSenderWrapper(String group, String gettersKey, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+        this.groupName = group;
         this.clusterContext = akkaSystem.getClusterContext();
         this.routerGroup = routerGroup;
         this.gettersKey = gettersKey;
-        this.clusterContext.initReceiversAndBalance(gettersKey, routerGroup);
+        this.clusterContext.initReceiversAndBalance(group,gettersKey, routerGroup);
     }
 
 

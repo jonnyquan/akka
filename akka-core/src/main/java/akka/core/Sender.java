@@ -1,5 +1,6 @@
 package akka.core;
 
+import akka.enums.RouterGroup;
 import akka.msg.Message;
 
 /**
@@ -14,5 +15,11 @@ public interface Sender {
      * @return
      */
     Object sendMsg(Message message);
+
+    String getGroupName();
+
+    String getTopicName();
+
+    RouterGroup getRouterGroup();
 
 }
