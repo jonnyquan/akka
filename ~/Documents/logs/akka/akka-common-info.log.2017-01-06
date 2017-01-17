@@ -1,0 +1,72 @@
+[2017-01-06 10:50:36][INFO ]StartupInfoLogger.java:48 - Starting ApplicationControll on ruanchenglongdeMacBook-Pro.local with PID 2160 (/Users/huihui/Documents/git-workspace/akka/demon-server-a/target/classes started by huihui in /Users/huihui/Documents/git-workspace/akka)
+[2017-01-06 10:50:36][INFO ]SpringApplication.java:661 - No active profile set, falling back to default profiles: default
+[2017-01-06 10:50:36][INFO ]AbstractApplicationContext.java:582 - Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@6c4906d3: startup date [Fri Jan 06 10:50:36 CST 2017]; root of context hierarchy
+[2017-01-06 10:50:38][INFO ]MBeanExporter.java:431 - Registering beans for JMX exposure on startup
+[2017-01-06 10:50:38][INFO ]StartupInfoLogger.java:57 - Started ApplicationControll in 22.22 seconds (JVM running for 22.945)
+[2017-01-06 10:50:38][INFO ]AbstractApplicationContext.java:987 - Closing org.springframework.context.annotation.AnnotationConfigApplicationContext@6c4906d3: startup date [Fri Jan 06 10:50:36 CST 2017]; root of context hierarchy
+[2017-01-06 10:50:38][INFO ]MBeanExporter.java:449 - Unregistering JMX-exposed beans on shutdown
+[2017-01-06 11:34:40][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:34:40][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:34:40][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:34:40][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:34:42][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:34:42][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:34:42][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:34:42][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:34:42][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/fileToDb
+[2017-01-06 11:34:42][INFO ]AkkaMain.java:52 - 注册actor:fileToDb成功
+[2017-01-06 11:35:34][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:35:34][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:35:34][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile1
+[2017-01-06 11:35:34][INFO ]AkkaMain.java:52 - 注册actor:dbToFile1成功
+[2017-01-06 11:35:34][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:35:34][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:35:34][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/test
+[2017-01-06 11:35:34][INFO ]AkkaMain.java:52 - 注册actor:test成功
+[2017-01-06 11:35:34][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/test2
+[2017-01-06 11:35:34][INFO ]AkkaMain.java:52 - 注册actor:test2成功
+[2017-01-06 11:35:46][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:35:46][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:35:46][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:35:46][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:35:46][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/fileToDb
+[2017-01-06 11:35:46][INFO ]AkkaMain.java:52 - 注册actor:fileToDb成功
+[2017-01-06 11:51:57][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:51:57][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:51:57][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:51:57][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:51:58][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 11:51:58][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 11:51:58][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 11:51:58][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 11:51:58][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/fileToDb
+[2017-01-06 11:51:58][INFO ]AkkaMain.java:52 - 注册actor:fileToDb成功
+[2017-01-06 13:14:17][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 13:14:17][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 13:14:17][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 13:14:17][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 13:14:23][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 13:14:23][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 13:14:23][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 13:14:23][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 13:14:23][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/fileToDb
+[2017-01-06 13:14:23][INFO ]AkkaMain.java:52 - 注册actor:fileToDb成功
+[2017-01-06 13:18:02][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 13:18:02][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 13:18:03][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 13:18:03][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 13:27:08][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-06 13:27:08][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-06 13:27:08][INFO ]AkkaSystem.java:52 - register actor:akka://EsbSystem/user/dbToFile
+[2017-01-06 13:27:08][INFO ]AkkaMain.java:52 - 注册actor:dbToFile成功
+[2017-01-06 16:10:39][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:11:03][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:11:18][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:11:51][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:11:59][INFO ]FtpUtil.java:117 - 上传 /test.xml 到ftpfalse 地址:/Documents/test.xml
+[2017-01-06 16:15:32][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:15:32][INFO ]FtpUtil.java:117 - 上传 /test.xml 到ftpfalse 地址:/Documents/test.xml
+[2017-01-06 16:19:39][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:19:39][INFO ]FtpUtil.java:120 - 上传 /test.xml 到ftpfalse 地址:/Users/huihui/Documents/test.xml
+[2017-01-06 16:19:57][INFO ]FtpUtil.java:36 - FTP连接成功。
+[2017-01-06 16:19:57][INFO ]FtpUtil.java:120 - 上传 /test.xml 到ftptrue 地址:/Users/huihui/Documents/test.xml

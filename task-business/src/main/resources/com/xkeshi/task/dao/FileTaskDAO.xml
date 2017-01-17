@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xkeshi.task.dao.FileTaskDAO">
+
+    <insert id="saveOutputTask" useGeneratedKeys="true" keyProperty="id" parameterType="com.xkeshi.task.entities.ExportTask">
+        INSERT INTO task_out(multi_files_package,package_method,file_ext,params,task_status,service_support)
+                  VALUES (#{multiFilesPackage},#{packageMethod},#{fileExt},#{params},#{taskStatus},#{serviceSupport})
+    </insert>
+    <insert id="saveImportTask" useGeneratedKeys="true" keyProperty="id" parameterType="com.xkeshi.task.entities.ImportTask">
+        INSERT INTO task_in(paths,param,task_status,service_support)
+                  VALUES (#{paths},#{importParam},#{taskStatus},#{serviceSupport})
+    </insert>
+
+    <update id="updateOutputTaskResult">
+        update task_out set result = #{rs},task_status = #{status} where id = #{id}
+    </update>
+    <update id="updateImportTaskResult">
+        update task_in set result = #{rs},task_status = #{status} where id = #{id}
+    </update>
+</mapper>

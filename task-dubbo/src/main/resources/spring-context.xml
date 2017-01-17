@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="locations" >
+            <list>
+                <value>classpath*:props/dubbo.properties</value>
+                <value>classpath*:props/datasource.properties</value>
+            </list>
+        </property>
+    </bean>
+
+
+    <import resource="/mybatis/mybatis-config.xml"/>
+    <import resource="/spring/spring-datasource.xml"/>
+    <import resource="/spring/spring-services.xml"/>
+    <import resource="/dubbo/dubbo-server.xml"/>
+
+
+</beans>

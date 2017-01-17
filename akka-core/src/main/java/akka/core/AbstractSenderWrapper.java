@@ -5,8 +5,6 @@ import akka.cluster.ClusterContext;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
 
-import java.util.List;
-
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
  * 抽象(集群 与路由)发消息类
@@ -32,7 +30,7 @@ public abstract class AbstractSenderWrapper implements Sender {
         return routerGroup;
     }
 
-    protected AbstractSenderWrapper(String group, String gettersKey, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+    protected AbstractSenderWrapper(String group, String gettersKey, RouterGroup routerGroup, AbstractAkkaSystemContext akkaSystem) {
         this.groupName = group;
         this.clusterContext = akkaSystem.getClusterContext();
         this.routerGroup = routerGroup;
@@ -46,8 +44,8 @@ public abstract class AbstractSenderWrapper implements Sender {
      *
      * @return
      */
-    protected List<ActorRef> getGetters() {
-        return clusterContext.getReceivers(this.gettersKey, routerGroup);
+    protected ActorRef getGetters() {
+        return clusterContext.getReceiver(this.gettersKey, routerGroup);
     }
 
 
@@ -56,10 +54,11 @@ public abstract class AbstractSenderWrapper implements Sender {
      * @return
      */
     @Override
-    public Object sendMsg(Message message) {
-        return handleMsg(message);
+    public void sendMsg(Message message) {
+         handleMsg(message);
     }
 
 
-    protected abstract Object handleMsg(Message message);
+
+    protected abstract void handleMsg(Message message);
 }

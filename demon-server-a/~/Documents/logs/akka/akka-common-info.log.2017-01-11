@@ -1,0 +1,170 @@
+[2017-01-11 16:59:46][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 16:59:46][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 16:59:46 CST 2017]; root of context hierarchy
+[2017-01-11 16:59:46][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 16:59:46][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 16:59:46][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7b9088f2: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 16:59:46][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 555 ms
+[2017-01-11 16:59:46][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 16:59:46][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 16:59:46 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 16:59:46][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 16:59:46][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 16:59:50][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 16:59:50][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 16:59:50][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1b30a54e: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@7b9088f2
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 16:59:50][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 16:59:51][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 4229 ms
+[2017-01-11 17:00:19][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:00:19][INFO ]FtpUtil.java:147 - 上传 38ae5580-5b5e-4831-bba6-cf3b18d4c3b9.txt 到ftpfalse 地址:20170111/38ae5580-5b5e-4831-bba6-cf3b18d4c3b9.txt
+[2017-01-11 17:01:53][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 17:01:53][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 17:01:53 CST 2017]; root of context hierarchy
+[2017-01-11 17:01:53][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 17:01:54][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:01:54][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@1dad01fe: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 17:01:55][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 1407 ms
+[2017-01-11 17:01:55][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 17:01:55][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 17:01:55 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 17:01:55][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 17:01:55][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:02:10][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 17:02:10][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 17:02:10][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@7e7743ec: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@1dad01fe
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 17:02:10][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 15661 ms
+[2017-01-11 17:02:25][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:02:25][INFO ]FtpUtil.java:147 - 上传 8a831ff6-809f-431c-904d-dfb9b754721a.txt 到ftpfalse 地址:20170111/8a831ff6-809f-431c-904d-dfb9b754721a.txt
+[2017-01-11 17:03:10][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 17:03:10][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 17:03:10 CST 2017]; root of context hierarchy
+[2017-01-11 17:03:10][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 17:03:11][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:03:11][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@58ae402b: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 17:03:11][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 508 ms
+[2017-01-11 17:03:11][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 17:03:11][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 17:03:11 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 17:03:11][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 17:03:11][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:03:25][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 17:03:25][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 17:03:25][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@19e21f89: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@58ae402b
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 17:03:25][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 17:03:26][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 14713 ms
+[2017-01-11 17:03:38][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:03:38][INFO ]FtpUtil.java:147 - 上传 354b33d9-b08d-402b-ad02-d7f73d04339e.txt 到ftpfalse 地址:20170111/354b33d9-b08d-402b-ad02-d7f73d04339e.txt
+[2017-01-11 17:10:28][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 17:10:28][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 17:10:28 CST 2017]; root of context hierarchy
+[2017-01-11 17:10:28][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 17:10:29][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:10:29][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 17:10:29][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 603 ms
+[2017-01-11 17:10:29][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 17:10:29][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 17:10:29 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 17:10:29][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 17:10:29][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:10:43][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 17:10:43][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 17:10:43][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@31e739bf: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 17:10:43][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 14641 ms
+[2017-01-11 17:13:41][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:13:41][INFO ]FtpUtil.java:147 - 上传 1cc4cb28-e868-4f4c-8ea6-d8e0ff726862.txt 到ftpfalse 地址:20170111/1cc4cb28-e868-4f4c-8ea6-d8e0ff726862.txt
+[2017-01-11 17:18:06][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 17:18:06][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 17:18:06 CST 2017]; root of context hierarchy
+[2017-01-11 17:18:06][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 17:18:07][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:18:07][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 17:18:07][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 589 ms
+[2017-01-11 17:18:07][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 17:18:07][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 17:18:07 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 17:18:07][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 17:18:07][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:18:21][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 17:18:21][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 17:18:21][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@31e739bf: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 17:18:21][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 14481 ms
+[2017-01-11 17:21:03][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:21:03][INFO ]FtpUtil.java:147 - 上传 11c8d1e8-4299-40f9-812d-b407bf968c18.txt 到ftptrue 地址:20170111/11c8d1e8-4299-40f9-812d-b407bf968c18.txt
+[2017-01-11 17:23:01][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:23:01][INFO ]FtpUtil.java:147 - 上传 58181dab-289d-4d26-b6ea-df69ae23a8fa.txt 到ftptrue 地址:20170111/58181dab-289d-4d26-b6ea-df69ae23a8fa.txt
+[2017-01-11 17:26:20][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:26:20][INFO ]FtpUtil.java:147 - 上传 58593622-ce74-4d0f-a5a0-22a322cb574b.txt 到ftptrue 地址:20170111/58593622-ce74-4d0f-a5a0-22a322cb574b.txt
+[2017-01-11 17:34:32][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:34:32][INFO ]FtpUtil.java:147 - 上传 4b24f2f2-bca2-4e5c-beb9-aafcd9672315.txt 到ftptrue 地址:20170111/4b24f2f2-bca2-4e5c-beb9-aafcd9672315.txt
+[2017-01-11 17:39:48][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:39:48][INFO ]FtpUtil.java:147 - 上传 7af0d0f7-73cd-4941-a75e-950f110a1600.txt 到ftptrue 地址:20170111/7af0d0f7-73cd-4941-a75e-950f110a1600.txt
+[2017-01-11 17:46:24][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:46:24][INFO ]FtpUtil.java:147 - 上传 aa5cd05b-d225-4fef-a012-ea5f796bf8d3.txt 到ftptrue 地址:20170111/aa5cd05b-d225-4fef-a012-ea5f796bf8d3.txt
+[2017-01-11 17:47:53][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:47:53][INFO ]FtpUtil.java:147 - 上传 6ce34f97-ea49-481b-a731-42249f774835.txt 到ftptrue 地址:20170111/6ce34f97-ea49-481b-a731-42249f774835.txt
+[2017-01-11 17:49:52][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:49:52][INFO ]FtpUtil.java:147 - 上传 3c0ae5a2-adb4-4800-9d72-b36274d1bc77.txt 到ftptrue 地址:20170111/3c0ae5a2-adb4-4800-9d72-b36274d1bc77.txt
+[2017-01-11 17:51:54][INFO ]ContextLoader.java:285 - Root WebApplicationContext: initialization started
+[2017-01-11 17:51:54][INFO ]AbstractApplicationContext.java:512 - Refreshing Root WebApplicationContext: startup date [Wed Jan 11 17:51:54 CST 2017]; root of context hierarchy
+[2017-01-11 17:51:54][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-context.xml]
+[2017-01-11 17:51:54][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:51:54][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,fileLoader,propertyConfigurer,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; root of factory hierarchy
+[2017-01-11 17:51:54][INFO ]ContextLoader.java:325 - Root WebApplicationContext: initialization completed in 745 ms
+[2017-01-11 17:51:55][INFO ]FrameworkServlet.java:457 - FrameworkServlet 'web-servlet': initialization started
+[2017-01-11 17:51:55][INFO ]AbstractApplicationContext.java:512 - Refreshing WebApplicationContext for namespace 'web-servlet-servlet': startup date [Wed Jan 11 17:51:55 CST 2017]; parent: Root WebApplicationContext
+[2017-01-11 17:51:55][INFO ]XmlBeanDefinitionReader.java:316 - Loading XML bean definitions from class path resource [spring-mvc.xml]
+[2017-01-11 17:51:55][INFO ]AutowiredAnnotationBeanPostProcessor.java:141 - JSR-330 'javax.inject.Inject' annotation found and supported for autowiring
+[2017-01-11 17:52:09][INFO ]AbstractAkkaSystem.java:45 - actor system创建完毕
+[2017-01-11 17:52:09][INFO ]AbstractAkkaSystem.java:58 - actor system 扩展功能启动完毕
+[2017-01-11 17:52:09][INFO ]DefaultListableBeanFactory.java:603 - Pre-instantiating singletons in org.springframework.beans.factory.support.DefaultListableBeanFactory@31e739bf: defining beans [applicationControll,org.springframework.context.annotation.internalConfigurationAnnotationProcessor,org.springframework.context.annotation.internalAutowiredAnnotationProcessor,org.springframework.context.annotation.internalRequiredAnnotationProcessor,org.springframework.context.annotation.internalCommonAnnotationProcessor,multipartResolver,akkaProcessHandler,org.springframework.context.annotation.ConfigurationClassPostProcessor.importAwareProcessor]; parent: org.springframework.beans.factory.support.DefaultListableBeanFactory@4099209b
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile.*] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/queryfile/] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output.*] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/output/] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input.*] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]AbstractUrlHandlerMapping.java:315 - Mapped URL path [/input/] onto handler 'applicationControll'
+[2017-01-11 17:52:09][INFO ]FrameworkServlet.java:476 - FrameworkServlet 'web-servlet': initialization completed in 14487 ms
+[2017-01-11 17:52:31][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:52:31][INFO ]FtpUtil.java:147 - 上传 173030b5-f7eb-4f4f-a422-846d6f553141.txt 到ftptrue 地址:20170111/173030b5-f7eb-4f4f-a422-846d6f553141.txt
+[2017-01-11 17:54:51][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 17:54:51][INFO ]FtpUtil.java:147 - 上传 2923d3e1-e308-4705-9114-2b7e290951e9.txt 到ftptrue 地址:20170111/2923d3e1-e308-4705-9114-2b7e290951e9.txt
+[2017-01-11 18:07:38][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 18:07:38][INFO ]FtpUtil.java:147 - 上传 e9578837-9001-4be0-ab33-582242aa6a06.txt 到ftptrue 地址:20170111/e9578837-9001-4be0-ab33-582242aa6a06.txt
+[2017-01-11 18:10:03][INFO ]FtpUtil.java:52 - FTP连接成功。
+[2017-01-11 18:10:03][INFO ]FtpUtil.java:147 - 上传 eaa693c5-136a-4ae6-babe-2a4cadd16a2a.txt 到ftptrue 地址:20170111/eaa693c5-136a-4ae6-babe-2a4cadd16a2a.txt

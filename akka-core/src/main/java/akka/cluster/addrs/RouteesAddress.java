@@ -6,12 +6,10 @@ import akka.cluster.ClusterContext;
 import akka.cluster.routing.ClusterRouterGroup;
 import akka.cluster.routing.ClusterRouterGroupSettings;
 import akka.enums.RouterGroup;
-import akka.msg.Constant;
 import akka.routing.Group;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -65,8 +63,8 @@ public class RouteesAddress implements ClusterContext {
     }
 
     @Override
-    public List<ActorRef> getReceivers(String path, RouterGroup routerGroup) {
-        return Arrays.asList(this.routActor.get(path).get(routerGroup));
+    public ActorRef getReceiver(String path, RouterGroup routerGroup) {
+        return this.routActor.get(path).get(routerGroup);
     }
 
 

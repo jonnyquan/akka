@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-
-    <!-- 注解模式开启-->
-    <bean id="akkaProcessHandler" class="akka.AkkaProcessHandler"/>
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
 
     <bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
         <property name="locations" >
             <list>
+                <value>classpath*:props/dubbo.properties</value>
             </list>
         </property>
     </bean>
 
-
+    <import resource="/dubbo/dubbo-client.xml"/>
+    <import resource="/spring/spring-mvc.xml"/>
 </beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="task-dubbo" owner="${task.dubbo.application.owner}" logger="slf4j"/>
+    <dubbo:registry address="${task.dubbo.registry.address}" />
+    <dubbo:protocol name="dubbo" port="${task.dubbo.protocol.port}" threads="200"/>
+    <dubbo:monitor protocol="registry" address="${task.dubbo.monitor.address}"/>
+    <dubbo:provider timeout="20000" loadbalance="roundrobin" retries="0" executes="200" group="${task.dubbo.provider.group}" version="${task.dubbo.provider.version}"/>
+
+    <!-- order module -->
+    <dubbo:service interface="com.xkeshi.task.apis.TaskDubboService" ref="taskDubboServiceImpl"/>
+
+</beans>

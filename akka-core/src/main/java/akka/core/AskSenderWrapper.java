@@ -1,10 +1,10 @@
 package akka.core;
 
+import akka.actor.ActorRef;
 import akka.dispatch.*;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
-import akka.params.AskProcessHandler;
-import akka.params.CutParam;
+import akka.params.AskResponseResolver;
 import akka.pattern.Patterns;
 import akka.util.Timeout;
 import scala.concurrent.ExecutionContext;
@@ -12,7 +12,7 @@ import scala.concurrent.Future;
 import scala.concurrent.duration.Duration;
 import scala.concurrent.duration.FiniteDuration;
 
-import java.util.ArrayList;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 
@@ -21,65 +21,85 @@ import java.util.concurrent.TimeUnit;
  * <p>
  * ask 方式的消息发送
  */
-public class AskSenderWrapper<S, R> extends AbstractSenderWrapper {
+public class AskSenderWrapper extends AbstractSenderWrapper implements AskSender {
 
 
-    private final Long time = 20000l;
+    private final Long time;
     private final ExecutionContext ec;
-    private AskProcessHandler<S, R> askProcessHandler;
+    private AskResponseResolver defaultAskResponseResolver;
 
 
-    public AskSenderWrapper(String group,String gettersK, AskProcessHandler<S, R> askProcessHandler, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+    public AskSenderWrapper(String group, String gettersK, AskResponseResolver askResponseResolver, RouterGroup routerGroup, long timeOut, AbstractAkkaSystemContext akkaSystem) {
         super(group,gettersK, routerGroup, akkaSystem);
-        this.askProcessHandler = askProcessHandler;
+        this.defaultAskResponseResolver = askResponseResolver;
         this.ec = akkaSystem.getSystem().dispatcher();
+        this.time = timeOut;
     }
 
 
     @Override
-    public Object handleMsg(Message message) {
-        CutParam cutParam = new CutParam(message);
-        FiniteDuration finiteDuration = Duration.create(time, TimeUnit.MILLISECONDS);
-        final Timeout timeout = new Timeout(finiteDuration);
-        final ArrayList<Future<Object>> futures = new ArrayList<Future<Object>>();
-
-        getGetters().forEach(getter -> {
-            final Future future = Patterns.ask(getter, askProcessHandler.cut(cutParam), timeout);
-            future.onFailure(new OnFailure() {
-                @Override
-                public void onFailure(Throwable throwable) throws Throwable {
-                    askProcessHandler.onFailure(throwable,AskSenderWrapper.this,message);
-                }
-            }, ec);
-            future.onSuccess(new OnSuccess() {
-                @Override
-                public void onSuccess(Object o) throws Throwable {
-                    askProcessHandler.onSuccess(AskSenderWrapper.this,message, (Message) o);
-                }
-            }, ec);
-            future.onComplete(new OnComplete() {
-                @Override
-                public void onComplete(Throwable throwable, Object o) throws Throwable {
-                    askProcessHandler.onComplete(AskSenderWrapper.this, throwable, (Message) o);
-                }
-            }, ec);
-            futures.add(future);//任务切割 参数2为消息内容  需要与消息处理的地方类型统一
-        });
-
-        final Future<Iterable<Object>> aggregate = Futures.sequence(futures,
-                ec);
-
-        //Future<R> back =
-        aggregate.map(
-                new Mapper<Iterable<Object>, R>() {
-                    public R apply(Iterable<Object> coll) {
-                        return askProcessHandler.getReturn(coll.iterator());
-                    }
-                }
-                , ec);
-        // Patterns.pipe(back, ec).to(getSender());
-        return null;
+    public void handleMsg(Message message) {
+       sendMsg(message,null,null);
     }
 
 
+    @Override
+    public Message sendMsgSync(Message message) {
+        return sendMsg(message,null,new CountDownLatch(1));
+    }
+
+    @Override
+    public Message sendMsgSync(Message message, AskResponseResolver askResponseResolver) {
+        return sendMsg(message, askResponseResolver,new CountDownLatch(1));
+    }
+
+    private Message sendMsg(Message message, AskResponseResolver askResponseResolver, CountDownLatch countDownLatch){
+        Message rs = Message.emptyMessage();
+        final AskResponseResolver finalAskResponseResolver;
+        if(askResponseResolver == null){
+            finalAskResponseResolver = this.defaultAskResponseResolver;
+        }else{
+            finalAskResponseResolver = askResponseResolver;
+        }
+        FiniteDuration finiteDuration = Duration.create(time, TimeUnit.MILLISECONDS);
+        final Timeout timeout = new Timeout(finiteDuration);
+
+        ActorRef getter = getGetters();
+        final Future future = Patterns.ask(getter, message, timeout);
+        future.onFailure(new OnFailure() {
+            @Override
+            public void onFailure(Throwable throwable) throws Throwable {
+                finalAskResponseResolver.onFailure(throwable,AskSenderWrapper.this,message);
+            }
+        }, ec);
+        future.onSuccess(new OnSuccess() {
+            @Override
+            public void onSuccess(Object o) throws Throwable {
+                finalAskResponseResolver.onSuccess(AskSenderWrapper.this,message, (Message) o);
+                if(countDownLatch!=null){
+                    rs.reflushSelf((Message)o);
+                    countDownLatch.countDown();
+                }
+            }
+        }, ec);
+        future.onComplete(new OnComplete() {
+            @Override
+            public void onComplete(Throwable throwable, Object o) throws Throwable {
+                finalAskResponseResolver.onComplete(AskSenderWrapper.this, throwable, (Message) o);
+            }
+        }, ec);
+        if(countDownLatch!=null && countDownLatch.getCount()>0){
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return rs;
+    }
+
+    @Override
+    public void sendMsg(Message message, AskResponseResolver askResponseResolver) {
+       sendMsg(message, askResponseResolver,null);
+    }
 }

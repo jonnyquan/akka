@@ -6,7 +6,7 @@
     <title>上传图片</title>
 </head>
 <body>
-<form action="../upload" method="post" enctype="multipart/form-data">
+<form action="../input" method="post" enctype="multipart/form-data">
     <input type="file" name="file" /> <input type="submit" value="Submit" /></form>
 </body>
 </html>

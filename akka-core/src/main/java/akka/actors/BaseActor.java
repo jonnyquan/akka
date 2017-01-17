@@ -5,7 +5,7 @@ import akka.msg.Message;
 /**
  * Created by ruancl@xkeshi.com on 2017/1/6.
  */
-public class BaseActor extends AbstractActor {
+public class BaseActor extends AbstractActor{
 
     private BaseService baseService;
 
@@ -15,6 +15,6 @@ public class BaseActor extends AbstractActor {
 
     @Override
     protected void handleMsg(Message message) {
-        baseService.handleMsg(message);
+        baseService.handleMsg(message,this);
     }
 }

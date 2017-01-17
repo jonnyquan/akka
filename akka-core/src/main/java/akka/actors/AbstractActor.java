@@ -2,18 +2,22 @@ package akka.actors;
 
 import akka.actor.UntypedActor;
 import akka.msg.Message;
+import akka.msg.MessageStatus;
 
 /**
  * Created by ruancl@xkeshi.com on 16/10/12.
- * 自定义actor都来继承该抽象类  此类上面可以做一些请求的信息包装  拆包  监控等扩展
  */
-public abstract class AbstractActor extends UntypedActor {
+public abstract class AbstractActor extends UntypedActor implements Reply{
 
 
     @Override
     public void onReceive(Object o) throws Throwable {
         if (o instanceof Message) {
-            handleMsg((Message) o);
+            Message message = (Message) o;
+            if(message.getMessageStatus() != MessageStatus.OK){
+                throw new IllegalAccessError("消息被拒绝");
+            }
+            handleMsg(message);
         } else {
             unhandled(o);
         }
@@ -24,7 +28,8 @@ public abstract class AbstractActor extends UntypedActor {
      *
      * @param message
      */
-    protected void reply(Message message) {
+    @Override
+    public void reply(Message message) {
         getSender().tell(message, getSelf());
     }
 

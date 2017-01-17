@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <dubbo:application name="task-dubbo" owner="${task.web.application.owner}" logger="slf4j"/>
+
+    <dubbo:registry address="${task.web.registry.address}" />
+
+    <dubbo:protocol name="dubbo" port="${task.web.protocol.port}" threads="200"/>
+
+    <dubbo:consumer check="false" timeout="20000" loadbalance="roundrobin" retries="2" validation="true"
+                    group="${task.web.consumer.group}" version="${task.web.consumer.version}"/>
+
+    <dubbo:reference interface="com.xkeshi.task.apis.TaskDubboService" id="taskDubboService"/>
+
+</beans>

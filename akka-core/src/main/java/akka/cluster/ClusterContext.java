@@ -3,8 +3,6 @@ package akka.cluster;
 import akka.actor.ActorRef;
 import akka.enums.RouterGroup;
 
-import java.util.List;
-
 
 /**
  * Created by ruancl@xkeshi.com on 2016/12/27.
@@ -30,7 +28,7 @@ public interface ClusterContext {
      * @param routerGroup
      * @return
      */
-    List<ActorRef> getReceivers(String gettersKey, RouterGroup routerGroup);
+    ActorRef getReceiver(String gettersKey, RouterGroup routerGroup);
 
 
 }

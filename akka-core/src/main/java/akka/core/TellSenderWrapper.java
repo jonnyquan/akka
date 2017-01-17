@@ -1,5 +1,6 @@
 package akka.core;
 
+import akka.actor.ActorRef;
 import akka.enums.RouterGroup;
 import akka.msg.Message;
 
@@ -9,16 +10,16 @@ import akka.msg.Message;
  * <p>
  * tell模式消息发送
  */
-public class TellSenderWrapper extends AbstractSenderWrapper {
+public class TellSenderWrapper extends AbstractSenderWrapper implements TellSender {
 
 
-    public TellSenderWrapper(String group,String name, RouterGroup routerGroup, AbstractAkkaSystem akkaSystem) {
+    public TellSenderWrapper(String group,String name, RouterGroup routerGroup, AbstractAkkaSystemContext akkaSystem) {
         super(group,name, routerGroup, akkaSystem);
     }
 
     @Override
-    public Object handleMsg(Message message) {
-        getGetters().forEach(o -> o.tell(message, null));
-        return null;
+    public void handleMsg(Message message) {
+        getGetters().tell(message, ActorRef.noSender());
     }
+
 }

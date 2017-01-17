@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+    
+    <description>spring-datasource-configuration</description>
+
+    <bean id="xkeshiOrderDatasource" class="com.alibaba.druid.pool.DruidDataSource"
+        destroy-method="close">
+        <property name="driverClassName" value="${jdbc.driver}" />
+        <property name="url" value="${order.jdbc.url}" />
+        <property name="username" value="${order.jdbc.user}" />
+        <property name="password" value="${order.jdbc.password}" />
+        <!-- Connection Pooling Info -->
+        <property name="filters" value="wall,stat,log4j" />
+        <property name="maxActive" value="${jdbc.pool.maxActive}" />
+        <property name="initialSize" value="${jdbc.pool.initialSize}" />
+        <property name="maxWait" value="${jdbc.pool.maxWait}" />
+        <property name="minIdle" value="${jdbc.pool.minIdle}" />
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.pool.timeBetweenEvictionRunsMillis}" />
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.pool.minEvictableIdleTimeMillis}" />
+        <property name="validationQuery" value="SELECT 'x'" />
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="testOnReturn" value="false" />
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.pool.maxPoolPreparedStatementPerConnectionSize}" />
+        <!--监控信息输出到日志的时间-->
+        <property name="timeBetweenLogStatsMillis" value="300000" />
+    </bean>
+
+    <!--  MyBatis 配置  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.xkeshi.task.dao" />
+        <property name="sqlSessionFactoryBeanName" value="xSqlSessionFactory"/>
+    </bean>
+    <bean id="xSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="xkeshiOrderDatasource" />
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        <property name="plugins">
+            <array>
+                <!--page interceptor-->
+                <bean class="com.xkeshi.core.orm.db.QueryInterceptor" />
+            </array>
+        </property>
+    </bean>
+
+
+</beans>

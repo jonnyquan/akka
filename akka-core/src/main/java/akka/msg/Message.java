@@ -13,6 +13,16 @@ public class Message implements Serializable {
 
     private Object content;
 
+    private MessageStatus messageStatus = MessageStatus.OK;
+
+    public MessageStatus getMessageStatus() {
+        return messageStatus;
+    }
+
+    public void setMessageStatus(MessageStatus messageStatus) {
+        this.messageStatus = messageStatus;
+    }
+
     public Message(Object content) {
         this.content = content;
     }
@@ -27,5 +37,14 @@ public class Message implements Serializable {
 
     public void setContent(Object content) {
         this.content = content;
+    }
+
+    public static Message emptyMessage(){
+        return new Message(null);
+    }
+
+    public void reflushSelf(Message message){
+        this.atomicInteger = message.atomicInteger;
+        this.content = message.content;
     }
 }

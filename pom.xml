@@ -11,9 +11,10 @@
     <modules>
         <module>akka-core</module>
         <module>demon-server-a</module>
-        <module>demon-server-b</module>
-        <module>demon-server-c</module>
+        <module>task-api</module>
+        <module>task-business</module>
         <module>akka-spring</module>
+        <module>task-dubbo</module>
     </modules>
 
     <build>

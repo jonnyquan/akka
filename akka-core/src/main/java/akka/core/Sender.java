@@ -14,7 +14,7 @@ public interface Sender {
      * @param message
      * @return
      */
-    Object sendMsg(Message message);
+    void sendMsg(Message message);
 
     String getGroupName();
 
