@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.*;
 import java.util.*;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Created by ruancl@xkeshi.com on 2017/1/10.
@@ -28,22 +29,28 @@ public abstract class AbstractDataProcessor<PI,PO,R> implements DataProcessor {
 
     @Autowired
     private FileHandler fileHandler;
-
+    /**
+     * 每个文件里面的最大记录条数
+     */
+    @Value("${single.file.rows}")
     final private int SINGLE_FILE_ROWS = 1;
-
-
-    public AbstractDataProcessor() {
-    }
+    /**
+     * 每次查询的最大记录数
+     */
+    @Value("${page.size.one.query}")
+    final private int PAGE_SIZE_ONE_QUERY = 2;
 
     public AbstractDataProcessor(FileHandler fileHandler) {
         //no spring
         this.fileHandler = fileHandler;
     }
 
+    public AbstractDataProcessor() {
+    }
 
     public abstract ServiceSupport matchServiceSupport();
 
-    protected abstract List<R> selectDb(PO param);
+    protected abstract List<R> selectDb(PO param,int offset,int countSize);
 
     protected abstract boolean transferBytesToObjectAndInsertIntoDb(PI importParam,byte[] bytes);
 
@@ -51,7 +58,7 @@ public abstract class AbstractDataProcessor<PI,PO,R> implements DataProcessor {
 
 
 
-    public Object writeDbFromFile(ImportTaskDTO<PI> importTaskDTO){
+    private Object writeDbFromFile(ImportTaskDTO<PI> importTaskDTO){
         HashSet<String> paths = importTaskDTO.getPaths();
         if(CollectionUtils.isEmpty(paths)){
             throw new NullPointerException("未发现任何可以下载的路径");
@@ -91,19 +98,19 @@ public abstract class AbstractDataProcessor<PI,PO,R> implements DataProcessor {
 
     }
 
-
-
-    public Object writeFileFromDb(ExportTaskDTO<PO> outputTaskDTO){
-        //根据自己的参数定义查询各自数据库
-        List<R> list = selectDb(outputTaskDTO.getParams());
+  /**
+   * 每个文件限制记录条数  对每次查询出来的记录数进行切割
+   * @return
+   */
+  private List<List<R>> cutData(List<R> list){
         if(CollectionUtils.isEmpty(list)){
             throw new NullPointerException("未查到数据");
         }
-        //分割结果
+        //分割结果 文件切割
         List<List<R>> cutRs = new ArrayList<>();
         int size = list.size();
         if(size>SINGLE_FILE_ROWS){
-            int mod = size % SINGLE_FILE_ROWS ==0 ? size/SINGLE_FILE_ROWS : size%SINGLE_FILE_ROWS+1;
+            int mod = cutIntoSlicesCount(size,SINGLE_FILE_ROWS);
 
             for(int i=0;i<mod;i++){
                 cutRs.add(new ArrayList<>(SINGLE_FILE_ROWS));
@@ -115,29 +122,83 @@ public abstract class AbstractDataProcessor<PI,PO,R> implements DataProcessor {
                 }
                 cutRs.get(j).add(r);
             }
+        }else{
+            cutRs.add(list);
         }
-        List<FileEntry> entries = new ArrayList<>();
-        String ext = outputTaskDTO.getFileExt().getName();
-        PackageMethod packageExt = outputTaskDTO.getPackageMethod();
-        boolean ifPackage = outputTaskDTO.getMultiFilesPackage();
+        return cutRs;
+    }
+
+    private List<String> writeData(String ext,PackageMethod packageExt,boolean ifPackage,List<List<R>> cutRs){
         List<String> paths;
+        List<FileEntry> entries = new ArrayList<>();
         if(ifPackage){
             List<InputStream> inputStreamList = new ArrayList<>();
-            for(int i=0;i<cutRs.size();i++){
-                inputStreamList.add(new ByteArrayInputStream(transferDataToByte(cutRs.get(i))));
-            }
+              cutRs.forEach(rs ->
+                  inputStreamList.add(new ByteArrayInputStream(transferDataToByte(rs)))
+              );
             String path = fileHandler.uploadFile(FileUtil.packageFiles(inputStreamList,ext,packageExt.getName()),packageExt.getName());
             paths = Arrays.asList(path);
         }else{
-            entries.add(new FileEntry(ext,new ByteArrayInputStream(transferDataToByte(list))));
-            paths = fileHandler.uploadFiles(entries);
+          cutRs.forEach(rs ->
+              entries.add(new FileEntry(ext,new ByteArrayInputStream(transferDataToByte(rs))))
+          );
+          paths = fileHandler.uploadFiles(entries);
         }
-        StringBuilder sb = new StringBuilder();
-        for(String p : paths){
-            sb.append(p).append(":");
-        }
+        return paths;
+    }
 
-        return sb.toString();
+
+    private Object writeFileFromDb(ExportTaskDTO<PO> outputTaskDTO){
+        //根据自己的参数定义查询各自数据库
+        int rowCount = outputTaskDTO.getRouCount();
+        List<Page> pages = null;
+        if(rowCount>PAGE_SIZE_ONE_QUERY){
+            pages  = cutIntoSlices(rowCount);
+        }else{
+            pages = Arrays.asList(new Page(0,rowCount));
+        }
+        final PO param = outputTaskDTO.getParams();
+        String ext = outputTaskDTO.getFileExt().getName();
+        final PackageMethod packageMethod = outputTaskDTO.getPackageMethod();
+        final Boolean multiFilesPac = outputTaskDTO.getMultiFilesPackage();
+        StringBuilder sb = new StringBuilder();
+        pages.forEach(page -> {
+            List<String> paths = writeData(
+                ext,
+                packageMethod,
+                multiFilesPac,
+                cutData(
+                    selectDb(param,page.offSet,page.pageSize)
+                ));
+            paths.forEach(p->sb.append(p).append(':'));
+        });
+      return sb.toString();
+    }
+
+    private int cutIntoSlicesCount(int total,int section){
+        return total%section == 0 ? total/section : total/section + 1;
+    }
+  /**
+   * 分页查询切分
+   */
+  private List<Page> cutIntoSlices(int rowCount){
+      int pageCount = cutIntoSlicesCount(rowCount,PAGE_SIZE_ONE_QUERY);
+      List<Page> pages = new ArrayList<>();
+      while(pageCount >0){
+          pageCount --;
+          pages.add(new Page(pageCount*PAGE_SIZE_ONE_QUERY,PAGE_SIZE_ONE_QUERY));
+      }
+      return pages;
+  }
+
+  private class Page{
+        int offSet;
+        int pageSize;
+
+        public Page(int offSet, int pageSize) {
+            this.offSet = offSet;
+            this.pageSize = pageSize;
+        }
     }
 
     @Override
@@ -149,8 +210,6 @@ public abstract class AbstractDataProcessor<PI,PO,R> implements DataProcessor {
     public Object handleExport(ExportTaskDTO outputTaskDTO) {
         return this.writeFileFromDb(outputTaskDTO);
     }
-
-
 
 
 }

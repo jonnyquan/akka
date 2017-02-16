@@ -43,7 +43,7 @@ public class FileUtil {
                         o.close();
                         zipOutputStream.closeEntry();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        logger.error("io exception");
                     }
                 }
 
@@ -54,16 +54,37 @@ public class FileUtil {
         } catch (IOException e) {
             logger.info("io exception");
         }finally {
-            try {
-                zipOutputStream.close();
-            } catch (IOException e) {
-                logger.error("stream close error");
-            }
-
+           closeOutPutStream(zipOutputStream);
         }
 
 
         return in;
+    }
+
+    public static void closeOutPutStream(OutputStream... outputStreams){
+        try {
+
+            for(OutputStream outputStream : outputStreams){
+            if(outputStream!=null){
+                    outputStream.close();
+            }
+        }
+        } catch (IOException e) {
+            logger.error("io exception");
+        }
+    }
+
+    public static void closeInPutStream(InputStream... inputStreams){
+        try {
+
+            for(InputStream inputStream : inputStreams){
+                if(inputStream!=null){
+                    inputStream.close();
+                }
+            }
+        } catch (IOException e) {
+            logger.error("io exception");
+        }
     }
 
 

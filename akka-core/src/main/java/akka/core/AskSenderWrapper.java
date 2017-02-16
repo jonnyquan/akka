@@ -68,13 +68,13 @@ public class AskSenderWrapper extends AbstractSenderWrapper implements AskSender
         final Future future = Patterns.ask(getter, message, timeout);
         future.onFailure(new OnFailure() {
             @Override
-            public void onFailure(Throwable throwable) throws Throwable {
+            public void onFailure(Throwable throwable) {
                 finalAskResponseResolver.onFailure(throwable,AskSenderWrapper.this,message);
             }
         }, ec);
         future.onSuccess(new OnSuccess() {
             @Override
-            public void onSuccess(Object o) throws Throwable {
+            public void onSuccess(Object o) {
                 finalAskResponseResolver.onSuccess(AskSenderWrapper.this,message, (Message) o);
                 if(countDownLatch!=null){
                     rs.reflushSelf((Message)o);
@@ -84,7 +84,7 @@ public class AskSenderWrapper extends AbstractSenderWrapper implements AskSender
         }, ec);
         future.onComplete(new OnComplete() {
             @Override
-            public void onComplete(Throwable throwable, Object o) throws Throwable {
+            public void onComplete(Throwable throwable, Object o)  {
                 finalAskResponseResolver.onComplete(AskSenderWrapper.this, throwable, (Message) o);
             }
         }, ec);
@@ -92,7 +92,7 @@ public class AskSenderWrapper extends AbstractSenderWrapper implements AskSender
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                //log error
             }
         }
         return rs;

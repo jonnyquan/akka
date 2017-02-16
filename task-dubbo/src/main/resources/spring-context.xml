@@ -8,6 +8,8 @@
             <list>
                 <value>classpath*:props/dubbo.properties</value>
                 <value>classpath*:props/datasource.properties</value>
+                <value>classpath*:props/mq.properties</value>
+                <value>classpath*:props/export.properties</value>
             </list>
         </property>
     </bean>
@@ -16,6 +18,7 @@
     <import resource="/mybatis/mybatis-config.xml"/>
     <import resource="/spring/spring-datasource.xml"/>
     <import resource="/spring/spring-services.xml"/>
+    <import resource="/spring/spring-mq.xml"/>
     <import resource="/dubbo/dubbo-server.xml"/>
 
 

@@ -1,4 +1,5 @@
-package com.xkeshi.task.services.compnents;
+/*
+package com.xkeshi.task.services.compnents.mq.akka;
 
 import akka.actors.AbstractAkkaService;
 import akka.actors.Reply;
@@ -9,37 +10,34 @@ import akka.msg.Message;
 import com.xkeshi.task.dtos.ImportTaskDTO;
 import com.xkeshi.task.handlers.DataProcessorLocator;
 import com.xkeshi.task.services.TaskService;
+import com.xkeshi.task.services.compnents.mq.FileProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 
+*/
 /**
  * Created by ruancl@xkeshi.com on 2017/1/5.
- */
+ *//*
+
 @Actor(name = "fileToDb",pool = RouterPool.ROBIN,number = 10)
 @Component
-public class ImportActor extends AbstractAkkaService {
+public class ImportConsumerActor extends AbstractAkkaService {
 
-    private static final Logger logger = LoggerFactory.getLogger(ImportActor.class);
-
-    /**
-     * dataServiceLocator 定位到相关的业务service进行执行
-     */
-    @Autowired
-    private DataProcessorLocator dataProcessorLocator;
+    private static final Logger logger = LoggerFactory.getLogger(ImportConsumerActor.class);
 
     @Autowired
-    private TaskService taskService;
+    private FileProcessor fileProcessor;
+
 
     @Override
     public void handleMsg(Message message, Reply reply) {
         Object obj = message.getContent();
         if(obj instanceof ImportTaskDTO){
             ImportTaskDTO taskBean = (ImportTaskDTO) obj;
-            Object o = dataProcessorLocator.locationHandler(taskBean.getServiceSupport()).handleImport(taskBean);
-            taskService.updateImportTaskResult(taskBean.getId(),o.toString());
+            fileProcessor.processImport(taskBean);
             logger.info("server b:插入完成,反馈信息");
         }else{
             message.setMessageStatus(MessageStatus.REFUSE);
@@ -48,3 +46,4 @@ public class ImportActor extends AbstractAkkaService {
 
     }
 }
+*/

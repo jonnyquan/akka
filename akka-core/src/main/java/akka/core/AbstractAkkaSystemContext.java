@@ -39,7 +39,7 @@ public abstract class AbstractAkkaSystemContext implements Akka {
             try {
                 countDownLatch.await();
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("InterruptedException");
             }
         }
         logger.info("actor system创建完毕");
@@ -47,13 +47,13 @@ public abstract class AbstractAkkaSystemContext implements Akka {
             Constructor constructor = Constant.CLUSTER_STRATEGY.getConstructor(ActorSystem.class);
             clusterContext = (ClusterContext) constructor.newInstance(system);
         } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            logger.error("NoSuchMethodException");
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("IllegalAccessException");
         } catch (InstantiationException e) {
-            e.printStackTrace();
+            logger.error("InstantiationException");
         } catch (InvocationTargetException e) {
-            e.printStackTrace();
+            logger.error("InvocationTargetException");
         }
         logger.info("actor system 扩展功能启动完毕");
     }

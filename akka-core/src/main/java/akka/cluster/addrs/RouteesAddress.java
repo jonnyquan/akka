@@ -19,7 +19,6 @@ import java.util.Map;
  */
 public class RouteesAddress implements ClusterContext {
 
-    private final int MAX_THREAD_COUNT = 100;
     private final ActorSystem system;
     /**
      * 路由地址
@@ -41,6 +40,7 @@ public class RouteesAddress implements ClusterContext {
 
     @Override
     public void initReceiversAndBalance(String group,String path, RouterGroup routerGroup) {
+        final int MAX_THREAD_COUNT = 100;
         Map<RouterGroup,ActorRef> map = this.routActor.get(path);
         ActorRef actorRef;
         if(map == null){

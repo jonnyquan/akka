@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+           ">
+
+    <description>spring-services-configuration</description>
+
+
+
+    <!--配置生产者服务-->
+    <bean name="onsProducerService" class="com.xkeshi.core.common.ons.ONSProducerServiceImpl" init-method="init">
+        <property name="properties">
+            <props>
+                <prop key="ProducerId">${task.producerid}</prop>
+                <prop key="AccessKey">${task.accesskey}</prop>
+                <prop key="SecretKey">${task.secretkey}</prop>
+            </props>
+        </property>
+    </bean>
+
+
+    <!--消费者消息处理工厂配置-->
+    <bean name="messageHandlerFactory" class="com.xkeshi.core.common.ons.MessageHandlerFactory" init-method="init">
+        <!--默认为true表示启用消费者，false时关闭消费者服务 -->
+        <!--<property name="enabled" value="true"/>-->
+        <property name="consumerConfigs">
+            <list>
+                <ref bean="consumerConfig1"/>
+            </list>
+        </property>
+    </bean>
+
+    <!-- consumer集群1 -->
+    <bean id="consumerConfig1" class="com.xkeshi.core.common.ons.ConsumerConfig">
+        <!--ONS 配置项-->
+        <property name="properties">
+            <props>
+                <prop key="ConsumerId">${task.consumerid}</prop>
+                <prop key="AccessKey">${task.accesskey}</prop>
+                <prop key="SecretKey">${task.secretkey}</prop>
+            </props>
+        </property>
+        <!--支持的消息处理类,配置此项将自动启动消费者-->
+        <property name="supportMessageProcess">
+            <map>
+                <entry key="${task.topic.name}@import" value-ref="importConsumer"/>
+                <entry key="${task.topic.name}@export" value-ref="exportConsumer"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="importConsumer" class="com.xkeshi.task.services.compnents.mq.ons.OnsImportProcess"/>
+    <bean id="exportConsumer" class="com.xkeshi.task.services.compnents.mq.ons.OnsExportProcess"/>
+</beans>

@@ -28,6 +28,8 @@ public class ImportTaskDTO<I> extends BaseTaskDTO {
         this.importParam = importParam;
     }
 
+    public ImportTaskDTO() {
+    }
 
     public I getImportParam() {
         return importParam;

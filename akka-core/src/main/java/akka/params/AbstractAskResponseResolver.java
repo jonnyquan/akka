@@ -48,7 +48,7 @@ public abstract class AbstractAskResponseResolver implements AskResponseResolver
         try {
             Thread.sleep(RETRY_INTERVAL);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+           //log error
         }
 
         if(message.retry()<RETRY_TIMES){

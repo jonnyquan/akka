@@ -37,6 +37,9 @@ public class BaseTaskDTO implements Serializable {
         this.serviceSupport = serviceSupport;
     }
 
+    public BaseTaskDTO() {
+    }
+
     private Date createTime;
 
     private Date updateTime;

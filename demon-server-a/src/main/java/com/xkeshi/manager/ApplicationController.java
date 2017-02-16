@@ -4,6 +4,8 @@ import com.utils.FileHandler;
 import com.xkeshi.task.apis.TaskDubboService;
 import com.xkeshi.task.dtos.ImportTaskDTO;
 import com.xkeshi.task.dtos.ExportTaskDTO;
+import com.xkeshi.task.dtos.ProductExportParamDTO;
+import com.xkeshi.task.dtos.ProductImportParamDTO;
 import com.xkeshi.task.enums.ServiceSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,11 +42,13 @@ public class ApplicationController {
             HashSet<String> paths = new HashSet<>();
             paths.add(path);
             //数据库写入一条导入指令状态 可以用dubbo调用任务数据  此处使用akka来模拟同步
-            ImportTaskDTO taskBean = new ImportTaskDTO(paths,ServiceSupport.PRODUCT,"3");
+            ProductImportParamDTO productImportParamDTO = new ProductImportParamDTO();
+            productImportParamDTO.setSellId(3l);
+            ImportTaskDTO<ProductImportParamDTO> taskBean = new ImportTaskDTO<>(paths,ServiceSupport.PRODUCT,productImportParamDTO);
             Long uniqueId = taskDubboService.sendImportTask(taskBean);
             return "upload file success,doing insert in to database!。。。。。。"+uniqueId;
         } catch (IOException e) {
-            e.printStackTrace();
+            //log error
         }
 
         return "system error please wait...";
@@ -53,10 +57,13 @@ public class ApplicationController {
 
     @ResponseBody
     @RequestMapping("output")
-    public String output(@RequestParam("name")String name,@RequestParam("offset") Integer offset,@RequestParam("size")Integer size){
+    public String output(@RequestParam("sell_id")Long sellId,@RequestParam("size")Integer size){
         //数据库插入一条记录  用于查询此次的文件生成状态  dubbo调用  此处用akka模拟
-        ExportTaskDTO outputTaskDTO = new ExportTaskDTO(name+","+offset+","+size,ServiceSupport.PRODUCT);
-        Long uniqueId =  taskDubboService.sendOuportTask(outputTaskDTO);
+        ProductExportParamDTO productExportParamDTO = new ProductExportParamDTO();
+        productExportParamDTO.setSellId(sellId);
+        ExportTaskDTO outputTaskDTO = new ExportTaskDTO(productExportParamDTO,ServiceSupport.PRODUCT);
+        outputTaskDTO.setRouCount(size);
+        Long uniqueId =  taskDubboService.sendExportTask(outputTaskDTO);
         return "file creating...,please wait a moment and use the file key:' "+uniqueId+" ' to find the file";
     }
 

@@ -1,12 +1,15 @@
-package com.xkeshi.task.services.compnents;
+/*
+package com.xkeshi.task.services.compnents.mq.akka;
 
 import akka.core.Sender;
 import akka.msg.Message;
 import akka.params.AbstractAskResponseResolver;
 
+*/
 /**
  * Created by ruancl@xkeshi.com on 2017/1/5.
- */
+ *//*
+
 public class ExportResponseResolver extends AbstractAskResponseResolver {
 
 
@@ -31,3 +34,4 @@ public class ExportResponseResolver extends AbstractAskResponseResolver {
         System.out.println("记录到缓存"+sender.getGroupName()+sender.getTopicName());
     }
 }
+*/

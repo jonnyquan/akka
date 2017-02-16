@@ -12,5 +12,5 @@ public interface TaskDubboService {
 
     Long sendImportTask(@NotNull(message = "TASK_VALIDATION_001") ImportTaskDTO importTaskDTO);
 
-    Long sendOuportTask(@NotNull(message = "TASK_VALIDATION_002") ExportTaskDTO outputTaskDTO);
+    Long sendExportTask(@NotNull(message = "TASK_VALIDATION_002") ExportTaskDTO outputTaskDTO);
 }

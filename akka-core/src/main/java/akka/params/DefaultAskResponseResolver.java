@@ -21,8 +21,9 @@ public class DefaultAskResponseResolver extends AbstractAskResponseResolver {
 
     @Override
     protected Boolean handleFailedAndReturnIfRetry(Throwable throwable) {
+        boolean b = false;
         System.out.println(throwable.getCause());
-        return false;
+        return b;
     }
 
 

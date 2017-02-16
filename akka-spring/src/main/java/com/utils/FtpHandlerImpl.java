@@ -1,6 +1,7 @@
 package com.utils;
 
 import com.xkeshi.core.utils.DateUtils;
+import java.nio.charset.StandardCharsets;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 import org.slf4j.Logger;
@@ -56,7 +57,7 @@ public class FtpHandlerImpl implements FileHandler {
                 ftpClient.setControlEncoding("UTF-8");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return ftpClient;
     }
@@ -68,7 +69,7 @@ public class FtpHandlerImpl implements FileHandler {
         try {
             ftpClient.disconnect();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return list;
     }
@@ -79,7 +80,7 @@ public class FtpHandlerImpl implements FileHandler {
         try {
             ftpClient.disconnect();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return map;
     }
@@ -89,12 +90,12 @@ public class FtpHandlerImpl implements FileHandler {
     private  InputStream downLoadFile(FTPClient ftpClient,String filePath){
         InputStream in = null;
         try {
-            int index = filePath.lastIndexOf("/");
+            int index = filePath.lastIndexOf('/');
             String fileDirectory = filePath.substring(0,index+1);
             ftpClient.changeWorkingDirectory(fileDirectory);
             in = ftpClient.retrieveFileStream(filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return in;
     }
@@ -104,7 +105,7 @@ public class FtpHandlerImpl implements FileHandler {
         try {
             ftpClient.disconnect();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return in;
     }
@@ -115,7 +116,7 @@ public class FtpHandlerImpl implements FileHandler {
         try {
             ftpClient.disconnect();
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("io exception");
         }
         return returnPath;
     }
@@ -145,7 +146,7 @@ public class FtpHandlerImpl implements FileHandler {
             try {
                 in.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error("io exception");
             }
         }
 
@@ -154,7 +155,7 @@ public class FtpHandlerImpl implements FileHandler {
 
     public static void main(String[] args) {
         FtpHandlerImpl ftpHandler = new FtpHandlerImpl("localhost",21,"huihui","4870025","/Users/huihui/Documents/");
-        InputStream inputStream = new ByteArrayInputStream("hhh".getBytes());
+        InputStream inputStream = new ByteArrayInputStream("hhh".getBytes(StandardCharsets.UTF_8));
         ftpHandler.uploadFile(inputStream,"jpg");
     }
 }

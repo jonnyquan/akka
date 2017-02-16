@@ -17,6 +17,11 @@ public class ExportTaskDTO<T> extends BaseTaskDTO {
     private T params;
 
     /**
+     * 记录条数
+     */
+    private Integer rouCount;
+
+    /**
      * 导出后文件格式
      */
     private FileType fileExt;
@@ -35,10 +40,17 @@ public class ExportTaskDTO<T> extends BaseTaskDTO {
         super(serviceSupport);
         this.params = params;
         this.fileExt = FileType.TXT;
-        this.multiFilesPackage = true;
+        this.multiFilesPackage = Boolean.TRUE;
         this.packageMethod = PackageMethod.ZIP;
     }
 
+    public Integer getRouCount() {
+        return rouCount;
+    }
+
+    public void setRouCount(Integer rouCount) {
+        this.rouCount = rouCount;
+    }
 
     public T getParams() {
         return params;

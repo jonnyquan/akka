@@ -36,7 +36,7 @@ public class DataProcessorLocatorInitializer extends InstantiationAwareBeanPostP
     public void registHandler(AbstractDataProcessor abstractDataHandler){
         ServiceSupport serviceSupport = abstractDataHandler.matchServiceSupport();
         if(serviceSupport == null){
-            throw new NullPointerException("请设置该处理类的ServiceSupport:"+ abstractDataHandler.getClass());
+            throw new NullPointerException("请设置该处理类的ServiceSupport:{}"+ abstractDataHandler.getClass());
         }
         map.put(serviceSupport, abstractDataHandler);
     }
@@ -51,7 +51,7 @@ public class DataProcessorLocatorInitializer extends InstantiationAwareBeanPostP
         Class clazz = bean.getClass();
         if(clazz.getSuperclass() == AbstractDataProcessor.class){
             registHandler((AbstractDataProcessor) bean);
-            logger.info("注册数据处理器:"+beanName);
+            logger.info("注册数据处理器:{}",beanName);
         }
         return bean;
     }

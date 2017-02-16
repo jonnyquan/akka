@@ -1,16 +1,11 @@
 package com.xkeshi.task.services.dubboimpl;
 
-import akka.core.AskSender;
-import akka.enums.RouterGroup;
-import akka.msg.Message;
-import com.annotations.AskActorRef;
 import com.xkeshi.task.apis.TaskDubboService;
 import com.xkeshi.task.dtos.ImportTaskDTO;
 import com.xkeshi.task.dtos.ExportTaskDTO;
 import com.xkeshi.task.entities.ImportTask;
 import com.xkeshi.task.entities.ExportTask;
-import com.xkeshi.task.services.compnents.ImportResponseResolver;
-import com.xkeshi.task.services.compnents.ExportResponseResolver;
+import com.xkeshi.task.services.compnents.mq.MqProducer;
 import com.xkeshi.task.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,15 +16,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class TaskDubboServiceImpl implements TaskDubboService {
 
-    @AskActorRef(group = "import",name = "fileToDb",routerStrategy = RouterGroup.ROBIN,askHandle = ImportResponseResolver.class)
-    private AskSender ftb;
-
-
-    @AskActorRef(group = "output",name = "dbToFile",routerStrategy = RouterGroup.ROBIN,askHandle = ExportResponseResolver.class)
-    private AskSender dtf;
-
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private MqProducer mqProducer;
 
     @Override
     public Long sendImportTask(ImportTaskDTO taskBean) {
@@ -38,7 +29,7 @@ public class TaskDubboServiceImpl implements TaskDubboService {
         importTask.setId(taskBean.getId());
         importTask.setImportParam(taskBean.getImportParam().toString());
         StringBuilder sb = new StringBuilder();
-        taskBean.getPaths().forEach(o->sb.append(o).append(";"));
+        taskBean.getPaths().forEach(o->sb.append(o).append(';'));
         importTask.setPaths(sb.toString());
         importTask.setServiceSupport(taskBean.getServiceSupport());
         importTask.setTaskStatus(taskBean.getTaskStatus());
@@ -47,12 +38,12 @@ public class TaskDubboServiceImpl implements TaskDubboService {
 
         taskBean.setId(id);
         //异步任务发起
-        ftb.sendMsg(new Message(taskBean));
+        mqProducer.sendImportTask(taskBean);
         return id;
     }
 
     @Override
-    public Long sendOuportTask(ExportTaskDTO taskBean) {
+    public Long sendExportTask(ExportTaskDTO taskBean) {
         //任务数据插入
         ExportTask exportTask = new ExportTask();
         exportTask.setTaskStatus(taskBean.getTaskStatus());
@@ -66,7 +57,7 @@ public class TaskDubboServiceImpl implements TaskDubboService {
         Long id = taskService.saveOutputTask(exportTask);
         taskBean.setId(id);
         //异步任务发起
-        dtf.sendMsg(new Message(taskBean));
+        mqProducer.sendExportTask(taskBean);
         return id;
     }
 }
