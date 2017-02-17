@@ -5,7 +5,7 @@ import com.xkeshi.task.dtos.ImportTaskDTO;
 import com.xkeshi.task.dtos.ExportTaskDTO;
 import com.xkeshi.task.entities.ImportTask;
 import com.xkeshi.task.entities.ExportTask;
-import com.xkeshi.task.services.compnents.mq.MqProducer;
+import com.xkeshi.task.services.compnents.command.Producer;
 import com.xkeshi.task.services.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,7 +20,7 @@ public class TaskDubboServiceImpl implements TaskDubboService {
     private TaskService taskService;
 
     @Autowired
-    private MqProducer mqProducer;
+    private Producer producer;
 
     @Override
     public Long sendImportTask(ImportTaskDTO taskBean) {
@@ -38,7 +38,7 @@ public class TaskDubboServiceImpl implements TaskDubboService {
 
         taskBean.setId(id);
         //异步任务发起
-        mqProducer.sendImportTask(taskBean);
+        producer.sendImportTask(taskBean);
         return id;
     }
 
@@ -57,7 +57,7 @@ public class TaskDubboServiceImpl implements TaskDubboService {
         Long id = taskService.saveOutputTask(exportTask);
         taskBean.setId(id);
         //异步任务发起
-        mqProducer.sendExportTask(taskBean);
+        producer.sendExportTask(taskBean);
         return id;
     }
 }

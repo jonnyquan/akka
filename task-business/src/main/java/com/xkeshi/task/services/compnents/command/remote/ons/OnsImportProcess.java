@@ -1,14 +1,10 @@
-package com.xkeshi.task.services.compnents.mq.ons;
+package com.xkeshi.task.services.compnents.command.remote.ons;
 
-import com.alibaba.dubbo.common.json.JSON;
-import com.alibaba.dubbo.common.json.ParseException;
 import com.aliyun.openservices.ons.api.Message;
 import com.xkeshi.core.common.ons.AbstractMessageProcess;
-import com.xkeshi.task.dtos.ExportTaskDTO;
 import com.xkeshi.task.dtos.ImportTaskDTO;
-import com.xkeshi.task.services.compnents.mq.FileProcessor;
+import com.xkeshi.task.services.compnents.FileProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 /**
  * Created by ruancl@xkeshi.com on 2017/2/13.

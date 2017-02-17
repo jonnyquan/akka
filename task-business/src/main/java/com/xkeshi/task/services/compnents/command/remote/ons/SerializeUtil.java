@@ -1,4 +1,4 @@
-package com.xkeshi.task.services.compnents.mq.ons;
+package com.xkeshi.task.services.compnents.command.remote.ons;
 
 import com.xkeshi.task.utils.FileUtil;
 import java.io.ByteArrayInputStream;

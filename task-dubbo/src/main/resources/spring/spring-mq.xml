@@ -51,6 +51,6 @@
         </property>
     </bean>
 
-    <bean id="importConsumer" class="com.xkeshi.task.services.compnents.mq.ons.OnsImportProcess"/>
-    <bean id="exportConsumer" class="com.xkeshi.task.services.compnents.mq.ons.OnsExportProcess"/>
+    <bean id="importConsumer" class="com.xkeshi.task.services.compnents.command.remote.ons.OnsImportProcess"/>
+    <bean id="exportConsumer" class="com.xkeshi.task.services.compnents.command.remote.ons.OnsExportProcess"/>
 </beans>

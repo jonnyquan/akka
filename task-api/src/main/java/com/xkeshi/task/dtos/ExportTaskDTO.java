@@ -17,6 +17,16 @@ public class ExportTaskDTO<T> extends BaseTaskDTO {
     private T params;
 
     /**
+     * 文件追加记录直到最大值 注意此项开启有可能造成服务器压力大
+     */
+    private Boolean fileFix = Boolean.TRUE;
+
+    /**
+     * 每个文件存储的记录条数 非必须
+     */
+    private Integer rowsMaxOneFile;
+
+    /**
      * 记录条数
      */
     private Integer rouCount;
@@ -42,6 +52,22 @@ public class ExportTaskDTO<T> extends BaseTaskDTO {
         this.fileExt = FileType.TXT;
         this.multiFilesPackage = Boolean.TRUE;
         this.packageMethod = PackageMethod.ZIP;
+    }
+
+    public Boolean getFileFix() {
+        return fileFix;
+    }
+
+    public void setFileFix(Boolean fileFix) {
+        this.fileFix = fileFix;
+    }
+
+    public Integer getRowsMaxOneFile() {
+        return rowsMaxOneFile;
+    }
+
+    public void setRowsMaxOneFile(Integer rowsMaxOneFile) {
+        this.rowsMaxOneFile = rowsMaxOneFile;
     }
 
     public Integer getRouCount() {

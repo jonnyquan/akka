@@ -1,4 +1,4 @@
-package com.xkeshi.task.services.handleservices;
+package com.xkeshi.task.services.dataprocessors;
 
 
 import com.xkeshi.task.dtos.ProductExportParamDTO;
@@ -26,7 +26,7 @@ public class ProductServiceDataProcessor extends AbstractDataProcessor<ProductIm
     private ProductDAO productDAO;
 
     @Override
-    protected boolean transferBytesToObjectAndInsertIntoDb(ProductImportParamDTO importParam,byte[] bytes) {
+    protected boolean resolveFileDataAndInsertIntoDb(ProductImportParamDTO importParam,byte[] bytes) {
         String content = new String(bytes,StandardCharsets.UTF_8);
         String[] temp = content.split(":");
         List<Product> list = new ArrayList<>();

@@ -1,4 +1,4 @@
-package com.xkeshi.task.services.compnents.mq;
+package com.xkeshi.task.services.compnents;
 
 import com.xkeshi.task.dtos.ExportTaskDTO;
 import com.xkeshi.task.dtos.ImportTaskDTO;

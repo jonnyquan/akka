@@ -57,11 +57,19 @@ public class ApplicationController {
 
     @ResponseBody
     @RequestMapping("output")
-    public String output(@RequestParam("sell_id")Long sellId,@RequestParam("size")Integer size){
+    public String output(@RequestParam("sell_id")Long sellId,
+        @RequestParam("size")Integer size,
+        @RequestParam("pkg")Boolean pkg,
+        @RequestParam("row")Integer row,
+        @RequestParam("file_fix")Boolean filefix
+        ){
         //数据库插入一条记录  用于查询此次的文件生成状态  dubbo调用  此处用akka模拟
         ProductExportParamDTO productExportParamDTO = new ProductExportParamDTO();
         productExportParamDTO.setSellId(sellId);
         ExportTaskDTO outputTaskDTO = new ExportTaskDTO(productExportParamDTO,ServiceSupport.PRODUCT);
+        outputTaskDTO.setMultiFilesPackage(pkg);
+        outputTaskDTO.setFileFix(filefix);
+        outputTaskDTO.setRowsMaxOneFile(row);
         outputTaskDTO.setRouCount(size);
         Long uniqueId =  taskDubboService.sendExportTask(outputTaskDTO);
         return "file creating...,please wait a moment and use the file key:' "+uniqueId+" ' to find the file";
